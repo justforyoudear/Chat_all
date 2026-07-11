@@ -330,6 +330,11 @@
     "modelName": "模型名称",
     "modelNamePrompt": "端点使用的模型名称，例如 deepseek-chat、qwen-plus、llama3"
   },
+  "deepSeek": {
+    "name": "DeepSeek",
+    "loginPrompt": "打开 DeepSeek 官方聊天页并在该页面完成登录，然后返回后再次选择 DeepSeek。",
+    "openOfficialChat": "打开 DeepSeek 官方聊天页"
+  },
   "updates": {
     "updateAvailable": "有更新!",
     "currentVersion": "您当前的版本",

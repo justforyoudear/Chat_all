@@ -67,6 +67,7 @@ import Grok2APIBot from "./xai/Grok2APIBot";
 import Grok3APIBot from "./xai/Grok3APIBot";
 import Grok3MiniAPIBot from "./xai/Grok3MiniAPIBot";
 import CustomOpenAIAPIBot from "./custom/CustomOpenAIAPIBot";
+import DeepSeekWebBot from "./deepseek/DeepSeekWebBot";
 
 const all = [
   Qihoo360AIBrainBot.getInstance(),
@@ -136,6 +137,7 @@ const all = [
   Grok3APIBot.getInstance(),
   Grok3MiniAPIBot.getInstance(),
   CustomOpenAIAPIBot.getInstance(),
+  DeepSeekWebBot.getInstance(),
 ];
 
 const disabled = ["HuggingChatBot"];
@@ -179,6 +181,7 @@ export const botTags = {
     bots.getBotByClassName("PhindBot"),
     bots.getBotByClassName("PiBot"),
     bots.getBotByClassName("KimiBot"),
+    bots.getBotByClassName("DeepSeekWebBot"),
   ],
   paid: [
     bots.getBotByClassName("ChatGPT4Bot"),
@@ -246,6 +249,7 @@ export const botTags = {
     bots.getBotByClassName("ChatGLMBot"),
     bots.getBotByClassName("ChatGLM4Bot"),
     bots.getBotByClassName("KimiBot"),
+    bots.getBotByClassName("DeepSeekWebBot"),
   ],
 };
 export default bots;

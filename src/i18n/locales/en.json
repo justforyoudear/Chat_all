@@ -333,6 +333,11 @@
     "modelName": "Model Name",
     "modelNamePrompt": "Model name used by the endpoint, e.g. deepseek-chat, qwen-plus, llama3"
   },
+  "deepSeek": {
+    "name": "DeepSeek",
+    "loginPrompt": "Open the official DeepSeek chat page, complete sign-in there, then return and select DeepSeek again.",
+    "openOfficialChat": "Open Official DeepSeek Chat"
+  },
   "updates": {
     "updateAvailable": "Update Available!",
     "currentVersion": "Your Version",

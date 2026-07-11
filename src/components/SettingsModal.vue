@@ -129,6 +129,7 @@ import ClaudeAPIBotSettings from "./BotSettings/ClaudeAPIBotSettings.vue";
 import GroqAPIBotSettings from "./BotSettings/GroqAPIBotSettings.vue";
 import xAIAPIBotSettings from "./BotSettings/xAIAPIBotSettings.vue";
 import CustomOpenAIAPIBotSettings from "./BotSettings/CustomOpenAIAPIBotSettings.vue";
+import DeepSeekWebBotSettings from "./BotSettings/DeepSeekWebBotSettings.vue";
 
 const { ipcRenderer } = window.require("electron");
 const { t: $t, locale } = useI18n();
@@ -148,6 +149,7 @@ const botSettings = [
   { brand: "characterAI", component: CharacterAIBotSettings },
   { brand: "chatGlm", component: ChatGLMBotSettings },
   { brand: "customApi", component: CustomOpenAIAPIBotSettings },
+  { brand: "deepSeek", component: DeepSeekWebBotSettings },
   { brand: "chatGpt", component: ChatGPTBotSettings },
   { brand: "claudeAi", component: ClaudeAIBotSettings },
   { brand: "claudeApi", component: ClaudeAPIBotSettings },
