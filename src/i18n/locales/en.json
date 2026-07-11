@@ -411,6 +411,21 @@
     "tooltip": "Attach text files as context",
     "clearAll": "Clear All"
   },
+  "imageGen": {
+    "tooltip": "Image Generation",
+    "title": "Image Generation",
+    "promptLabel": "Describe the image you want",
+    "promptPlaceholder": "A cat sitting on a windowsill watching the rain...",
+    "model": "Model",
+    "size": "Size",
+    "quality": "Quality",
+    "qualityStandard": "Standard",
+    "qualityHD": "HD",
+    "generate": "Generate",
+    "download": "Download",
+    "empty": "Generated images will appear here",
+    "noApiKey": "No OpenAI API key configured. Please set your OpenAI API key in Settings."
+  },
   "$vuetify": {
     "firstPage": "No Data",
     "dataFooter": {

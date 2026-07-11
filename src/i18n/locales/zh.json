@@ -408,6 +408,21 @@
     "tooltip": "附加文本文件作为上下文",
     "clearAll": "全部清除"
   },
+  "imageGen": {
+    "tooltip": "图像生成",
+    "title": "图像生成",
+    "promptLabel": "描述你想要的图像",
+    "promptPlaceholder": "一只猫坐在窗台上看着雨...",
+    "model": "模型",
+    "size": "尺寸",
+    "quality": "质量",
+    "qualityStandard": "标准",
+    "qualityHD": "高清",
+    "generate": "生成",
+    "download": "下载",
+    "empty": "生成的图片将显示在这里",
+    "noApiKey": "未配置 OpenAI API 密钥，请在设置中配置。"
+  },
   "$vuetify": {
     "firstPage": "无数据显示",
     "dataFooter": {

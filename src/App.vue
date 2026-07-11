@@ -80,6 +80,14 @@
                 @click="clearMessages()"
               ></v-icon
               > <v-icon
+                class="cursor-pointer"
+                color="primary"
+                icon="mdi-image-multiple"
+                size="x-large"
+                @click="isImageGenOpen = true"
+                v-tooltip="$t('imageGen.tooltip')"
+              ></v-icon
+              > <v-icon
                 v-shortkey="SHORTCUT_SETTINGS.key"
                 @shortkey="openSettingsModal"
                 :id="SHORTCUT_SETTINGS.elementId"
@@ -154,6 +162,9 @@
         :responses="store.state.selectedResponses"
         :activeBots="activeBots"
       ></ChatAction
+      > <ImageGenerationDialog
+        v-model:open="isImageGenOpen"
+      ></ImageGenerationDialog
       > </v-container
     > </v-app
   >
@@ -192,6 +203,7 @@ import UpdateNotification from "@/components/Notification/UpdateNotificationModa
 import FindModal from "@/components/FindModal.vue";
 import ShortcutGuide from "@/components/ShortcutGuide/ShortcutGuide.vue";
 import ChatAction from "@/components/ChatAction.vue";
+import ImageGenerationDialog from "@/components/ImageGenerationDialog.vue";
 
 // Styles
 import "@mdi/font/css/materialdesignicons.css";
@@ -228,6 +240,7 @@ const isShowAppBar = ref(store.state.general.isShowAppBar);
 const chatDrawerRef = ref();
 const isSelectedResponsesEmpty = ref(true);
 const isChatActionOpen = ref(false);
+const isImageGenOpen = ref(false);
 
 const columns = computed(() => store.state.columns);
 const userActions = computed(() => {
