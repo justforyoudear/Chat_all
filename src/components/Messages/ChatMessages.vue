@@ -14,24 +14,24 @@
        <template v-for="(message, index) in currentChatMessages" :key="index"
         > <chat-prompt
           v-if="message.type === 'prompt'"
-          :columns="columns"
+          :columns="displayColumns"
           :message="message"
         ></chat-prompt
         > <template v-else
           > <chat-response
             :chat="chat"
-            :columns="columns"
+            :columns="displayColumns"
             :messages="message"
           ></chat-response
           > <consensus-analysis-bar
             v-if="isResponseGroupDone(message)"
             :promptIndex="getResponseGroupPromptIndex(message)"
-            :columns="columns"
+            :columns="displayColumns"
           ></consensus-analysis-bar
           > <quick-summary-bar
             v-if="isResponseGroupDone(message)"
             :promptIndex="getResponseGroupPromptIndex(message)"
-            :columns="columns"
+            :columns="displayColumns"
           ></quick-summary-bar
           > </template
         > </template
@@ -66,7 +66,12 @@ const props = defineProps({
 });
 
 const loading = ref(false);
-const gridTemplateColumns = computed(() => `repeat(${props.columns}, 1fr)`);
+const displayColumns = computed(() =>
+  props.columns > 3 ? Math.ceil(props.columns / 2) : props.columns,
+);
+const gridTemplateColumns = computed(
+  () => `repeat(${displayColumns.value}, 1fr)`,
+);
 const currentChatMessages = ref([]);
 
 function isResponseGroupDone(responseGroup) {
