@@ -395,6 +395,12 @@
     "rawFallbackNote": "The model did not return structured results. Above is the raw content.",
     "noApiBot": "No API bot available. Please configure at least one API bot's key in Settings."
   },
+  "summary": {
+    "button": "Quick Summary",
+    "summarizing": "Summarizing...",
+    "retry": "Retry",
+    "title": "Best Synthesized Answer"
+  },
   "$vuetify": {
     "firstPage": "No Data",
     "dataFooter": {

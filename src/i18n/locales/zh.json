@@ -392,6 +392,12 @@
     "rawFallbackNote": "模型未返回结构化结果，以上为原始内容。",
     "noApiBot": "没有可用的 API 模型，请在设置中配置至少一个 API 模型的密钥。"
   },
+  "summary": {
+    "button": "一键总结",
+    "summarizing": "正在总结…",
+    "retry": "重试",
+    "title": "最佳综合答案"
+  },
   "$vuetify": {
     "firstPage": "无数据显示",
     "dataFooter": {

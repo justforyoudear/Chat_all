@@ -21,6 +21,8 @@ const vuexPersist = new VuexPersistence({
       selectedResponses,
       analysisResults,
       analyzingPromptIndex,
+      summaryResults,
+      summarizingPromptIndex,
       ...persistedState
     } = state;
     /* eslint-enable no-unused-vars */
@@ -150,6 +152,8 @@ export default createStore({
     },
     analysisResults: {},
     analyzingPromptIndex: null,
+    summaryResults: {},
+    summarizingPromptIndex: null,
     actions: [
       {
         name: "Summarize 1",
@@ -445,6 +449,15 @@ export default createStore({
     },
     setAnalyzingPromptIndex(state, promptIndex) {
       state.analyzingPromptIndex = promptIndex;
+    },
+    setSummaryResult(state, { promptIndex, result }) {
+      state.summaryResults[promptIndex] = result;
+    },
+    clearSummaryResult(state, promptIndex) {
+      delete state.summaryResults[promptIndex];
+    },
+    setSummarizingPromptIndex(state, promptIndex) {
+      state.summarizingPromptIndex = promptIndex;
     },
     setConsensusPreferredBot(state, botClassname) {
       state.consensusAnalysis = {
