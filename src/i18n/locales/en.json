@@ -323,6 +323,13 @@
     "grok-3": "Grok 3",
     "grok-3-mini": "Grok 3 Mini"
   },
+  "customApi": {
+    "name": "Custom OpenAI API",
+    "baseUrl": "Base URL",
+    "baseUrlPrompt": "The API endpoint base URL, e.g. https://api.deepseek.com/v1, http://localhost:11434/v1",
+    "modelName": "Model Name",
+    "modelNamePrompt": "Model name used by the endpoint, e.g. deepseek-chat, qwen-plus, llama3"
+  },
   "updates": {
     "updateAvailable": "Update Available!",
     "currentVersion": "Your Version",

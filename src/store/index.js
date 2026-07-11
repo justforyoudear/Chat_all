@@ -132,6 +132,13 @@ export default createStore({
       apiKey: "",
       pastRounds: 5,
     },
+    customApi: {
+      baseUrl: "",
+      apiKey: "",
+      modelName: "",
+      temperature: 1,
+      pastRounds: 5,
+    },
     currentChatIndex: 0,
     updateCounter: 0,
     theme: undefined,
@@ -287,6 +294,9 @@ export default createStore({
     },
     setXaiApi(state, values) {
       state.xaiApi = { ...state.xaiApi, ...values };
+    },
+    setCustomApi(state, values) {
+      state.customApi = { ...state.customApi, ...values };
     },
     setLatestPromptIndex(state, promptIndex) {
       Chats.table.update(state.currentChatIndex, {

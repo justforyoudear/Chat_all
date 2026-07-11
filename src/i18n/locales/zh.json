@@ -320,6 +320,13 @@
     "grok-3": "Grok 3",
     "grok-3-mini": "Grok 3 Mini"
   },
+  "customApi": {
+    "name": "自定义 OpenAI API",
+    "baseUrl": "Base URL",
+    "baseUrlPrompt": "API 端点基础 URL，例如 https://api.deepseek.com/v1、http://localhost:11434/v1",
+    "modelName": "模型名称",
+    "modelNamePrompt": "端点使用的模型名称，例如 deepseek-chat、qwen-plus、llama3"
+  },
   "updates": {
     "updateAvailable": "有更新!",
     "currentVersion": "您当前的版本",

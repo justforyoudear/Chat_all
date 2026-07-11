@@ -128,6 +128,7 @@ import { resolveTheme, applyTheme, Mode } from "../theme";
 import ClaudeAPIBotSettings from "./BotSettings/ClaudeAPIBotSettings.vue";
 import GroqAPIBotSettings from "./BotSettings/GroqAPIBotSettings.vue";
 import xAIAPIBotSettings from "./BotSettings/xAIAPIBotSettings.vue";
+import CustomOpenAIAPIBotSettings from "./BotSettings/CustomOpenAIAPIBotSettings.vue";
 
 const { ipcRenderer } = window.require("electron");
 const { t: $t, locale } = useI18n();
@@ -146,6 +147,7 @@ const botSettings = [
   { brand: "bingChat", component: BingChatBotSettings },
   { brand: "characterAI", component: CharacterAIBotSettings },
   { brand: "chatGlm", component: ChatGLMBotSettings },
+  { brand: "customApi", component: CustomOpenAIAPIBotSettings },
   { brand: "chatGpt", component: ChatGPTBotSettings },
   { brand: "claudeAi", component: ClaudeAIBotSettings },
   { brand: "claudeApi", component: ClaudeAPIBotSettings },
