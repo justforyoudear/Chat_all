@@ -401,6 +401,9 @@
     "retry": "Retry",
     "title": "Best Synthesized Answer"
   },
+  "enhance": {
+    "tooltip": "Enhance this prompt with AI"
+  },
   "$vuetify": {
     "firstPage": "No Data",
     "dataFooter": {

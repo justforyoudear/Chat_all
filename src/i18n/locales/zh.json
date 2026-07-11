@@ -398,6 +398,9 @@
     "retry": "重试",
     "title": "最佳综合答案"
   },
+  "enhance": {
+    "tooltip": "用 AI 优化这个提问"
+  },
   "$vuetify": {
     "firstPage": "无数据显示",
     "dataFooter": {

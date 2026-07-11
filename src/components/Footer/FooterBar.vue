@@ -40,6 +40,16 @@
             style="border-radius: 4px; min-width: unset !important"
             icon="mdi-creation-outline"
           ></v-btn
+          > <v-btn
+            @click="enhanceCurrentPrompt"
+            color="info"
+            variant="plain"
+            class="h-100 w-100"
+            style="border-radius: 4px; min-width: unset !important"
+            :icon="isEnhancing ? 'mdi-loading mdi-spin' : 'mdi-auto-fix'"
+            :disabled="prompt.trim() === '' || isEnhancing"
+            v-tooltip="$t('enhance.tooltip')"
+          ></v-btn
           > </template
         > </v-textarea
       > <v-btn
@@ -133,6 +143,7 @@ import PromptModal from "@/components/PromptModal.vue";
 
 // Composables
 import { useMatomo } from "@/composables/matomo";
+import { usePromptEnhance } from "@/composables/usePromptEnhance";
 
 import _bots from "@/bots";
 import {
@@ -146,6 +157,7 @@ const { ipcRenderer } = window.require("electron");
 
 const store = useStore();
 const matomo = useMatomo();
+const { enhancePrompt } = usePromptEnhance();
 const emit = defineEmits(["updateActiveBots"]);
 const props = defineProps({
   chat: {
@@ -182,6 +194,7 @@ const favBots = computed(() => {
 const prompt = ref("");
 const clickedBot = ref(null);
 const isMakeAvailableOpen = ref(false);
+const isEnhancing = ref(false);
 
 watch(favBots, async (newValue, oldValue) => {
   const botsToCheck = newValue.filter((newBot) => {
@@ -295,6 +308,23 @@ async function sendPromptToBots() {
     "Active bots count",
     toBots.length,
   );
+}
+
+async function enhanceCurrentPrompt() {
+  if (prompt.value.trim() === "" || isEnhancing.value) return;
+  isEnhancing.value = true;
+  try {
+    const enhanced = await enhancePrompt(prompt.value);
+    if (enhanced && enhanced.trim()) {
+      prompt.value = enhanced;
+      focusPromptTextarea();
+    }
+  } catch (err) {
+    // silently fail — the prompt stays as-is
+    console.error("Prompt enhancement failed:", err);
+  } finally {
+    isEnhancing.value = false;
+  }
 }
 
 // current prompt index
