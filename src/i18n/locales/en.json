@@ -377,6 +377,17 @@
     "action": "Action",
     "required": "Required"
   },
+  "consensus": {
+    "analyzeButton": "Analyze Consensus & Differences",
+    "analyzing": "Analyzing...",
+    "retry": "Retry",
+    "reportTitle": "Consensus & Differences Report",
+    "consensus": "Consensus",
+    "differences": "Differences",
+    "suggestion": "Suggestion",
+    "rawFallbackNote": "The model did not return structured results. Above is the raw content.",
+    "noApiBot": "No API bot available. Please configure at least one API bot's key in Settings."
+  },
   "$vuetify": {
     "firstPage": "No Data",
     "dataFooter": {

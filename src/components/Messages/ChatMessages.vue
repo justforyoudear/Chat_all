@@ -17,12 +17,18 @@
           :columns="columns"
           :message="message"
         ></chat-prompt
-        > <chat-response
-          v-else
-          :chat="chat"
-          :columns="columns"
-          :messages="message"
-        ></chat-response
+        > <template v-else
+          > <chat-response
+            :chat="chat"
+            :columns="columns"
+            :messages="message"
+          ></chat-response
+          > <consensus-analysis-bar
+            v-if="isResponseGroupDone(message)"
+            :promptIndex="getResponseGroupPromptIndex(message)"
+            :columns="columns"
+          ></consensus-analysis-bar
+          > </template
         > </template
       >
     </div>
@@ -38,6 +44,7 @@ import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import ChatPrompt from "./ChatPrompt.vue";
 import ChatResponse from "./ChatResponse.vue";
+import ConsensusAnalysisBar from "./ConsensusAnalysisBar.vue";
 import { autoScrollToBottom, scrollToBottom } from "@/helpers/scroll-helper";
 
 const store = useStore();
@@ -55,6 +62,22 @@ const props = defineProps({
 const loading = ref(false);
 const gridTemplateColumns = computed(() => `repeat(${props.columns}, 1fr)`);
 const currentChatMessages = ref([]);
+
+function isResponseGroupDone(responseGroup) {
+  if (!Array.isArray(responseGroup)) return false;
+  return responseGroup.every((group) =>
+    Array.isArray(group) ? group.every((m) => m.done) : group.done,
+  );
+}
+
+function getResponseGroupPromptIndex(responseGroup) {
+  if (!Array.isArray(responseGroup)) return null;
+  const first = responseGroup[0];
+  if (Array.isArray(first)) {
+    return first[0]?.promptIndex;
+  }
+  return first?.promptIndex;
+}
 let createChatMessageLiveQuery = (index) => {
   return liveQuery(async () => {
     const keys = await Messages.table

@@ -374,6 +374,17 @@
     "action": "操作",
     "required": "必填"
   },
+  "consensus": {
+    "analyzeButton": "分析共识与分歧",
+    "analyzing": "正在分析…",
+    "retry": "重试",
+    "reportTitle": "共识与分歧对比报告",
+    "consensus": "共识",
+    "differences": "分歧",
+    "suggestion": "建议",
+    "rawFallbackNote": "模型未返回结构化结果，以上为原始内容。",
+    "noApiBot": "没有可用的 API 模型，请在设置中配置至少一个 API 模型的密钥。"
+  },
   "$vuetify": {
     "firstPage": "无数据显示",
     "dataFooter": {

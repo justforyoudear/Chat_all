@@ -16,7 +16,13 @@ const vuexPersist = new VuexPersistence({
   asyncStorage: true,
   reducer: (state) => {
     /* eslint-disable no-unused-vars */
-    const { updateCounter, selectedResponses, ...persistedState } = state;
+    const {
+      updateCounter,
+      selectedResponses,
+      analysisResults,
+      analyzingPromptIndex,
+      ...persistedState
+    } = state;
     /* eslint-enable no-unused-vars */
     return deepToRaw(persistedState);
   },
@@ -132,6 +138,11 @@ export default createStore({
     mode: "system",
     isChatDrawerOpen: true,
     prompts: [],
+    consensusAnalysis: {
+      preferredBot: "",
+    },
+    analysisResults: {},
+    analyzingPromptIndex: null,
     actions: [
       {
         name: "Summarize 1",
@@ -415,6 +426,21 @@ export default createStore({
     },
     deleteAllSelectedResponses(state) {
       state.selectedResponses = [];
+    },
+    setAnalysisResult(state, { promptIndex, result }) {
+      state.analysisResults[promptIndex] = result;
+    },
+    clearAnalysisResult(state, promptIndex) {
+      delete state.analysisResults[promptIndex];
+    },
+    setAnalyzingPromptIndex(state, promptIndex) {
+      state.analyzingPromptIndex = promptIndex;
+    },
+    setConsensusPreferredBot(state, botClassname) {
+      state.consensusAnalysis = {
+        ...state.consensusAnalysis,
+        preferredBot: botClassname,
+      };
     },
     migrateSettingsPrompts(state) {
       if (localStorage.getItem("isMigratedSettingsPrompts") === "true") {
