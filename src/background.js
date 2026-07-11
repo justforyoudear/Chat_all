@@ -1,6 +1,13 @@
 "use strict";
 
-import { BrowserWindow, app, ipcMain, nativeTheme, protocol } from "electron";
+import {
+  BrowserWindow,
+  app,
+  dialog,
+  ipcMain,
+  nativeTheme,
+  protocol,
+} from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension from "electron-devtools-installer";
 import fs from "fs";
@@ -426,6 +433,58 @@ ipcMain.handle("set-is-show-menu-bar", (_, isShowMenuBar) => {
 
 ipcMain.handle("get-cookies", async (event, filter) => {
   return await getCookies(filter);
+});
+
+ipcMain.handle("select-file", async () => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ["openFile", "multiSelections"],
+    filters: [
+      {
+        name: "Text & Code Files",
+        extensions: [
+          "txt",
+          "md",
+          "csv",
+          "json",
+          "xml",
+          "yaml",
+          "yml",
+          "js",
+          "ts",
+          "py",
+          "java",
+          "c",
+          "cpp",
+          "html",
+          "css",
+          "sql",
+          "sh",
+          "go",
+          "rs",
+          "rb",
+          "php",
+          "log",
+        ],
+      },
+      { name: "All Files", extensions: ["*"] },
+    ],
+  });
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+  return result.filePaths;
+});
+
+ipcMain.handle("read-file", async (event, filePath) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, "utf8", (err, data) => {
+      if (err) {
+        reject({ success: false, error: err.message });
+      } else {
+        resolve({ success: true, content: data });
+      }
+    });
+  });
 });
 
 nativeTheme.on("updated", () => {

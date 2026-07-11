@@ -404,6 +404,10 @@
   "enhance": {
     "tooltip": "用 AI 优化这个提问"
   },
+  "attach": {
+    "tooltip": "附加文本文件作为上下文",
+    "clearAll": "全部清除"
+  },
   "$vuetify": {
     "firstPage": "无数据显示",
     "dataFooter": {

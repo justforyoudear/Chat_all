@@ -16,6 +16,30 @@
         flex-wrap: wrap;
       "
     >
+
+      <div v-if="attachedFiles.length" class="attached-files-bar">
+         <v-chip
+          v-for="(file, index) in attachedFiles"
+          :key="index"
+          closable
+          size="small"
+          color="primary"
+          variant="tonal"
+          @click:close="removeAttachedFile(index)"
+          > <v-icon size="x-small" class="mr-1"
+            >mdi-file-document-outline</v-icon
+          > {{ file.name }} <span class="file-size"
+            >({{ formatFileSize(file.size) }})</span
+          > </v-chip
+        > <v-btn
+          size="x-small"
+          variant="text"
+          color="error"
+          @click="clearAttachedFiles"
+          class="ml-1"
+          > {{ $t("attach.clearAll") }} </v-btn
+        >
+      </div>
        <v-textarea
         :id="SHORTCUT_PROMPT_TEXTAREA.elementId"
         v-model="prompt"
@@ -49,6 +73,15 @@
             :icon="isEnhancing ? 'mdi-loading mdi-spin' : 'mdi-auto-fix'"
             :disabled="prompt.trim() === '' || isEnhancing"
             v-tooltip="$t('enhance.tooltip')"
+          ></v-btn
+          > <v-btn
+            @click="openFileAttach"
+            color="secondary"
+            variant="plain"
+            class="h-100 w-100"
+            style="border-radius: 4px; min-width: unset !important"
+            icon="mdi-paperclip"
+            v-tooltip="$t('attach.tooltip')"
           ></v-btn
           > </template
         > </v-textarea
@@ -144,6 +177,7 @@ import PromptModal from "@/components/PromptModal.vue";
 // Composables
 import { useMatomo } from "@/composables/matomo";
 import { usePromptEnhance } from "@/composables/usePromptEnhance";
+import { useFileAttach } from "@/composables/useFileAttach";
 
 import _bots from "@/bots";
 import {
@@ -158,6 +192,8 @@ const { ipcRenderer } = window.require("electron");
 const store = useStore();
 const matomo = useMatomo();
 const { enhancePrompt } = usePromptEnhance();
+const { selectFiles, formatFileSize, buildContextString, canAddMore } =
+  useFileAttach();
 const emit = defineEmits(["updateActiveBots"]);
 const props = defineProps({
   chat: {
@@ -195,6 +231,7 @@ const prompt = ref("");
 const clickedBot = ref(null);
 const isMakeAvailableOpen = ref(false);
 const isEnhancing = ref(false);
+const attachedFiles = ref([]);
 
 watch(favBots, async (newValue, oldValue) => {
   const botsToCheck = newValue.filter((newBot) => {
@@ -288,16 +325,22 @@ async function sendPromptToBots() {
 
   const count = await Messages.getMessagesCount(store.state.currentChatIndex);
   const isFirstPrompt = count === 0;
+  let finalPrompt = prompt.value;
+  if (attachedFiles.value.length > 0) {
+    const context = buildContextString(attachedFiles.value);
+    finalPrompt = prompt.value + context;
+  }
   await store.dispatch("sendPrompt", {
-    prompt: prompt.value,
+    prompt: finalPrompt,
     bots: toBots,
   });
   if (isFirstPrompt) {
     updateChatTitleWithFirstPrompt();
   }
 
-  // Clear the textarea after sending the prompt
+  // Clear the textarea and attachments after sending the prompt
   prompt.value = "";
+  attachedFiles.value = [];
 
   // reset prompt index
   promptIndex = 0;
@@ -325,6 +368,22 @@ async function enhanceCurrentPrompt() {
   } finally {
     isEnhancing.value = false;
   }
+}
+
+async function openFileAttach() {
+  if (!canAddMore(attachedFiles.value)) return;
+  const files = await selectFiles();
+  if (files && files.length) {
+    attachedFiles.value.push(...files);
+  }
+}
+
+function removeAttachedFile(index) {
+  attachedFiles.value.splice(index, 1);
+}
+
+function clearAttachedFiles() {
+  attachedFiles.value = [];
 }
 
 // current prompt index
@@ -554,6 +613,21 @@ textarea::placeholder {
 
 :deep() .v-field__append-inner {
   padding-top: 0;
+}
+
+.attached-files-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  padding: 0 4px 4px 4px;
+  width: 100%;
+}
+
+.attached-files-bar .file-size {
+  opacity: 0.6;
+  font-size: 0.7rem;
+  margin-left: 2px;
 }
 </style>
 

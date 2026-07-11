@@ -407,6 +407,10 @@
   "enhance": {
     "tooltip": "Enhance this prompt with AI"
   },
+  "attach": {
+    "tooltip": "Attach text files as context",
+    "clearAll": "Clear All"
+  },
   "$vuetify": {
     "firstPage": "No Data",
     "dataFooter": {
