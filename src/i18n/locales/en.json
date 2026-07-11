@@ -27,6 +27,9 @@
     "singleColumn": "Single Column",
     "doubleColumn": "Double Column",
     "tripleColumn": "Triple Column",
+    "quadColumn": "Quad Column",
+    "pentaColumn": "Penta Column",
+    "hexaColumn": "Hexa Column",
     "selectedResponsesCount": "{ selectedCount } Selected"
   },
   "footer": {

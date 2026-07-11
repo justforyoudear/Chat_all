@@ -42,7 +42,7 @@
               v-show="isSelectedResponsesEmpty"
             >
                <img
-                v-for="columnCount in 3"
+                v-for="columnCount in 6"
                 :id="`column-${columnCount}`"
                 :key="columnCount"
                 :src="getColumnImage(columnCount)"

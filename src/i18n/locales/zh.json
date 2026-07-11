@@ -28,6 +28,9 @@
     "singleColumn": "单列",
     "doubleColumn": "双列",
     "tripleColumn": "三列",
+    "quadColumn": "四列",
+    "pentaColumn": "五列",
+    "hexaColumn": "六列",
     "selectedResponsesCount": "已选择 { selectedCount } 个"
   },
   "footer": {
