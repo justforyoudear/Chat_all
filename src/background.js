@@ -21,6 +21,7 @@ const allowedDomains = ["aliyun.com", "qianwen.aliyun.com"];
 const DEFAULT_USER_AGENT = ""; // Empty string to use the Electron default
 /** @type {BrowserWindow} */
 let mainWindow = null;
+const webChatWindows = new Map();
 
 // start - makes  application a Single Instance Application
 const singleInstanceLock = app.requestSingleInstanceLock();
@@ -373,6 +374,28 @@ function createNewWindow({ url, userAgent = "", loginScript }) {
   });
 }
 
+async function openWebChatWindow({ providerId, url }) {
+  let chatWindow = webChatWindows.get(providerId);
+  if (chatWindow && !chatWindow.isDestroyed()) {
+    chatWindow.focus();
+    return;
+  }
+
+  chatWindow = new BrowserWindow({
+    width: 1080,
+    height: 760,
+    backgroundColor: nativeTheme.shouldUseDarkColors ? "#1a1a20" : "#fff",
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+
+  webChatWindows.set(providerId, chatWindow);
+  chatWindow.on("closed", () => webChatWindows.delete(providerId));
+  await chatWindow.loadURL(url);
+}
+
 async function getCookies(filter) {
   const cookies = await mainWindow.webContents.session.cookies.get({
     ...filter,
@@ -386,6 +409,18 @@ ipcMain.handle(
     createNewWindow({ url, userAgent, loginScript });
   },
 );
+
+ipcMain.handle("web-chat-open", async (_, options) => {
+  await openWebChatWindow(options);
+});
+
+ipcMain.handle("web-chat-evaluate", async (_, { providerId, script }) => {
+  const chatWindow = webChatWindows.get(providerId);
+  if (!chatWindow || chatWindow.isDestroyed()) {
+    throw new Error("Official chat window is not open");
+  }
+  return await chatWindow.webContents.executeJavaScript(script, true);
+});
 
 ipcMain.handle("get-native-theme", () => {
   return Promise.resolve({
