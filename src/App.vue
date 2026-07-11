@@ -49,6 +49,7 @@
                 @click="changeColumns(columnCount)"
                 @shortkey="changeColumns(columnCount)"
                 v-shortkey="[`f${columnCount}`]"
+                :title="columnTitle(columnCount)"
                 :class="{
                   selected: columns === columnCount,
                   'dark-png': store.state.theme === Theme.DARK,
@@ -325,6 +326,18 @@ function getColumnImage(columnCount) {
   return require(`@/assets/column-${columnCount}.svg`);
 }
 
+function columnTitle(columnCount) {
+  const titles = [
+    "header.singleColumn",
+    "header.doubleColumn",
+    "header.tripleColumn",
+    "header.quadColumn",
+    "header.pentaColumn",
+    "header.hexaColumn",
+  ];
+  return i18n.global.t(titles[columnCount - 1]);
+}
+
 function deselectAll() {
   store.commit("deleteAllSelectedResponses");
 }
@@ -375,13 +388,32 @@ header {
 .column-icons img {
   opacity: 0.5;
   cursor: pointer;
-  width: 24px;
-  height: 24px;
-  margin: 4px;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 2px;
+  border-radius: 4px;
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease;
 }
 
-img.selected {
+.column-icons {
+  display: grid;
+  grid-template-columns: repeat(3, 22px);
+  grid-template-rows: repeat(2, 22px);
+  gap: 3px;
+  padding: 4px 10px;
+}
+
+.column-icons img:hover {
+  opacity: 0.85;
+  background-color: rgba(var(--v-theme-primary), 0.12);
+}
+
+.column-icons img.selected {
   opacity: 1;
+  background-color: rgba(var(--v-theme-primary), 0.18);
 }
 
 .content {
