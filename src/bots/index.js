@@ -159,6 +159,14 @@ disabled.forEach((className) => {
 });
 
 export const botTags = {
+  officialWeb: [
+    bots.getBotByClassName("DeepSeekWebBot"),
+    bots.getBotByClassName("QianWenBot"),
+    bots.getBotByClassName("KimiBot"),
+    bots.getBotByClassName("ChatGLMBot"),
+    bots.getBotByClassName("SparkBot"),
+  ],
+  openAICompatible: [bots.getBotByClassName("CustomOpenAIAPIBot")],
   free: [
     bots.getBotByClassName("BardBot"),
     bots.getBotByClassName("BingChatBalancedBot"),

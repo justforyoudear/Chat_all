@@ -46,18 +46,21 @@
         > <v-divider></v-divider> <v-list
           > <v-list-item
             > <v-list-item-title class="font-weight-black"
-              > {{ $t("footer.chooseFavorite") }} </v-list-item-title
+              > {{ $t("footer.chooseModel") }} </v-list-item-title
             > <template v-slot:append
               > <v-btn-toggle
-                v-model="selectedTags"
+                v-model="selectedCategory"
                 divided
                 color="primary"
                 group
                 variant="outlined"
                 rounded="xl"
-                @update:model-value="filterBots($event)"
-                > <v-btn v-for="(tag, index) in tags" :key="index" :value="tag"
-                  > {{ $t(`footer.${tag}`) }} </v-btn
+                mandatory
+                > <v-btn
+                  v-for="category in categories"
+                  :key="category"
+                  :value="category"
+                  > {{ $t(`footer.${category}`) }} </v-btn
                 > </v-btn-toggle
               > </template
             > </v-list-item
@@ -72,7 +75,6 @@
 <script setup>
 import { computed, ref } from "vue";
 
-import bots from "@/bots";
 import { botTags } from "@/bots";
 import BotLogo from "./BotLogo.vue";
 import store from "@/store";
@@ -84,11 +86,11 @@ const favorited = computed(() => {
   return props.favBots.map((bot) => bot.classname);
 });
 
-const tags = Object.keys(botTags);
-const selectedTags = ref([]);
-
-const notDisabledBots = bots.all.filter((bot) => !bot.isDisabled());
-const shownBots = ref(notDisabledBots);
+const categories = ["officialWeb", "openAICompatible"];
+const selectedCategory = ref("officialWeb");
+const shownBots = computed(() =>
+  (botTags[selectedCategory.value] || []).filter((bot) => !bot.isDisabled()),
+);
 
 const toggleFavorite = (bot) => {
   const classname = bot.getClassname();
@@ -101,23 +103,6 @@ const toggleFavorite = (bot) => {
 
 function toggleMenu() {
   menu.value = !menu.value;
-}
-
-function filterBots(selectedTags) {
-  let filteredIn = notDisabledBots;
-
-  // If the toggle is not multi-select, the selectedTags will be a string
-  if (typeof selectedTags === "string") {
-    selectedTags = [selectedTags];
-  }
-
-  if (selectedTags?.length) {
-    const tagBots = selectedTags.map((tag) => botTags[tag]);
-    filteredIn = filteredIn.filter((bot) => {
-      return tagBots.every((tagBot) => tagBot.includes(bot));
-    });
-  }
-  shownBots.value = filteredIn;
 }
 
 defineExpose({

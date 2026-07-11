@@ -34,6 +34,7 @@
   },
   "footer": {
     "chooseFavorite": "Choose your favorite AI bots",
+    "chooseModel": "Choose a Model",
     "sendPrompt": "Send to:",
     "promptPlaceholder": "Type a message. (Shift+Enter to add a new line)",
     "madeInChina": "Made in China",
@@ -41,6 +42,8 @@
     "free": "Free",
     "paid": "Paid",
     "api": "API",
+    "officialWeb": "Official Login",
+    "openAICompatible": "OpenAI-compatible API",
     "enableAll": "Enable All",
     "disableAll": "Disable All",
     "removeAll": "Remove All"
