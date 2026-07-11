@@ -431,6 +431,11 @@
     "empty": "生成的图片将显示在这里",
     "noApiKey": "未配置 OpenAI API 密钥，请在设置中配置。"
   },
+  "modelSlots": {
+    "emptyTitle": "为此面板选择模型",
+    "selectModel": "选择模型",
+    "changeModel": "更换模型"
+  },
   "$vuetify": {
     "firstPage": "无数据显示",
     "dataFooter": {

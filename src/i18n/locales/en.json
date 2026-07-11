@@ -434,6 +434,11 @@
     "empty": "Generated images will appear here",
     "noApiKey": "No OpenAI API key configured. Please set your OpenAI API key in Settings."
   },
+  "modelSlots": {
+    "emptyTitle": "Choose a model for this panel",
+    "selectModel": "Select Model",
+    "changeModel": "Change Model"
+  },
   "$vuetify": {
     "firstPage": "No Data",
     "dataFooter": {

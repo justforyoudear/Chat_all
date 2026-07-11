@@ -6,8 +6,14 @@
     > </v-container
   >
   <div class="messages">
-
+     <EmptyModelSlots
+      v-if="!loading && currentChatMessages.length === 0"
+      :chat="chat"
+      :columns="displayColumns"
+      :slotCount="columns"
+    />
     <div
+      v-else
       class="message-grid"
       :style="{ gridTemplateColumns: gridTemplateColumns }"
     >
@@ -51,6 +57,7 @@ import ChatPrompt from "./ChatPrompt.vue";
 import ChatResponse from "./ChatResponse.vue";
 import ConsensusAnalysisBar from "./ConsensusAnalysisBar.vue";
 import QuickSummaryBar from "./QuickSummaryBar.vue";
+import EmptyModelSlots from "./EmptyModelSlots.vue";
 import { autoScrollToBottom, scrollToBottom } from "@/helpers/scroll-helper";
 
 const store = useStore();
