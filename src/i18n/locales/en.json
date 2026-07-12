@@ -341,6 +341,13 @@
     "loginPrompt": "Open the official DeepSeek chat page, complete sign-in there, then return and select DeepSeek again.",
     "openOfficialChat": "Open Official DeepSeek Chat"
   },
+  "officialLogin": {
+    "title": "Sign in to {provider}",
+    "subtitle": "Complete sign-in on the official page, then close this window to return to the workspace.",
+    "cardHint": "Complete sign-in on the official page to enable this model.",
+    "complete": "I've signed in",
+    "loggingIn": "Complete sign-in in the official login panel."
+  },
   "updates": {
     "updateAvailable": "Update Available!",
     "currentVersion": "Your Version",
@@ -413,7 +420,11 @@
     "title": "Best Synthesized Answer"
   },
   "enhance": {
-    "tooltip": "Enhance this prompt with AI"
+    "tooltip": "Enhance this prompt with AI",
+    "configurationRequired": "Prompt enhancement requires a configured API model."
+  },
+  "doubao": {
+    "name": "Doubao"
   },
   "attach": {
     "tooltip": "Attach text files as context",
@@ -437,7 +448,8 @@
   "modelSlots": {
     "emptyTitle": "Choose a model for this panel",
     "selectModel": "Select Model",
-    "changeModel": "Change Model"
+    "changeModel": "Change Model",
+    "ready": "Ready"
   },
   "$vuetify": {
     "firstPage": "No Data",

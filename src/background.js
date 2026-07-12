@@ -7,6 +7,7 @@ import {
   ipcMain,
   nativeTheme,
   protocol,
+  webContents,
 } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension from "electron-devtools-installer";
@@ -21,7 +22,64 @@ const allowedDomains = ["aliyun.com", "qianwen.aliyun.com"];
 const DEFAULT_USER_AGENT = ""; // Empty string to use the Electron default
 /** @type {BrowserWindow} */
 let mainWindow = null;
-const webChatWindows = new Map();
+const webChatContents = new Map();
+const WEB_CHAT_REGISTRATION_RETRIES = 20;
+const WEB_CHAT_REGISTRATION_RETRY_MS = 250;
+
+function bgLog(...args) {
+  const msg = args.map(String).join(" ");
+  console.log(msg);
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    try {
+      mainWindow.webContents.send("bg-log", msg);
+    } catch (_) {
+      // The main renderer can be gone while Electron is shutting down.
+    }
+  }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function getOfficialWebContents(providerId) {
+  for (let attempt = 0; attempt < WEB_CHAT_REGISTRATION_RETRIES; attempt++) {
+    const contents = webChatContents.get(providerId);
+    if (contents && !contents.isDestroyed()) return contents;
+
+    await sleep(WEB_CHAT_REGISTRATION_RETRY_MS);
+  }
+
+  return null;
+}
+
+function keepWebChatInPlace(contents) {
+  contents.setWindowOpenHandler(({ url }) => {
+    bgLog("[DEBUG-chat-send] popup denied", contents.id, url);
+    return { action: "deny" };
+  });
+
+  if (contents.__chatSendDiagnosticsBound) return;
+  contents.__chatSendDiagnosticsBound = true;
+  contents.on("did-start-navigation", (_event, url, isInPlace, isMainFrame) => {
+    bgLog(
+      "[DEBUG-chat-send] navigation started",
+      contents.id,
+      isMainFrame ? "main" : "subframe",
+      isInPlace ? "in-page" : "document",
+      url,
+    );
+  });
+  contents.on("did-navigate", (_event, url) => {
+    bgLog("[DEBUG-chat-send] navigation committed", contents.id, url);
+  });
+  contents.on("did-navigate-in-page", (_event, url) => {
+    bgLog("[DEBUG-chat-send] in-page navigation committed", contents.id, url);
+  });
+  contents.on("did-stop-loading", () => {
+    bgLog("[DEBUG-chat-send] loading stopped", contents.id, contents.getURL());
+  });
+}
 
 // start - makes  application a Single Instance Application
 const singleInstanceLock = app.requestSingleInstanceLock();
@@ -36,11 +94,19 @@ if (!singleInstanceLock) {
     }
   });
 }
+
+app.on("browser-window-created", (_event, win) => {
+  const url = win ? win.webContents?.getURL() || "(not loaded)" : "(unknown)";
+  bgLog("[bg] browser-window-created:", url);
+});
 // end - makes application a Single Instance Application
 
 // Disable QUIC
 // Prevent Cloudflare from detecting the real IP when using a proxy that bypasses UDP traffic
 app.commandLine.appendSwitch("disable-quic");
+if (isDevelopment) {
+  app.commandLine.appendSwitch("remote-debugging-port", "9222");
+}
 
 const userDataPath = app.getPath("userData");
 const proxySettingPath = path.join(userDataPath, "proxySetting.json");
@@ -164,11 +230,20 @@ async function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
       webSecurity: false,
-      preload: "./preload.js",
+      webviewTag: true,
     },
   });
 
   mainWindow = win;
+
+  win.webContents.on("did-attach-webview", (_event, contents) => {
+    keepWebChatInPlace(contents);
+  });
+
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    bgLog("[bg] BLOCKED popup from main window:", url);
+    return { action: "deny" };
+  });
 
   // Force the SameSite attribute to None for all cookies
   // This is required for the cross-origin request to work
@@ -292,6 +367,7 @@ async function createWindow() {
 }
 
 function createNewWindow({ url, userAgent = "", loginScript }) {
+  bgLog("[bg] createNewWindow called for:", url);
   const newWin = new BrowserWindow({
     width: 800,
     height: 600,
@@ -374,28 +450,6 @@ function createNewWindow({ url, userAgent = "", loginScript }) {
   });
 }
 
-async function openWebChatWindow({ providerId, url }) {
-  let chatWindow = webChatWindows.get(providerId);
-  if (chatWindow && !chatWindow.isDestroyed()) {
-    chatWindow.focus();
-    return;
-  }
-
-  chatWindow = new BrowserWindow({
-    width: 1080,
-    height: 760,
-    backgroundColor: nativeTheme.shouldUseDarkColors ? "#1a1a20" : "#fff",
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-    },
-  });
-
-  webChatWindows.set(providerId, chatWindow);
-  chatWindow.on("closed", () => webChatWindows.delete(providerId));
-  await chatWindow.loadURL(url);
-}
-
 async function getCookies(filter) {
   const cookies = await mainWindow.webContents.session.cookies.get({
     ...filter,
@@ -410,16 +464,69 @@ ipcMain.handle(
   },
 );
 
-ipcMain.handle("web-chat-open", async (_, options) => {
-  await openWebChatWindow(options);
-});
+ipcMain.handle(
+  "web-chat-register",
+  async (_, { providerId, webContentsId, url }) => {
+    const contents = webContents.fromId(webContentsId);
+    if (!contents || contents.isDestroyed()) {
+      throw new Error("Official chat page is not available");
+    }
+    webChatContents.set(providerId, contents);
+    keepWebChatInPlace(contents);
+    bgLog("[bg] registered official webview:", providerId, contents.id);
+    contents.once("destroyed", () => {
+      if (webChatContents.get(providerId) === contents) {
+        webChatContents.delete(providerId);
+      }
+    });
+    if (mainWindow && !mainWindow.isDestroyed() && url) {
+      bgLog("[bg] sending CHECK-AVAILABILITY for", url);
+      mainWindow.webContents.send("CHECK-AVAILABILITY", url);
+    }
+  },
+);
 
 ipcMain.handle("web-chat-evaluate", async (_, { providerId, script }) => {
-  const chatWindow = webChatWindows.get(providerId);
-  if (!chatWindow || chatWindow.isDestroyed()) {
+  const contents = await getOfficialWebContents(providerId);
+  if (!contents) {
     throw new Error("Official chat window is not open");
   }
-  return await chatWindow.webContents.executeJavaScript(script, true);
+  return await contents.executeJavaScript(script, true);
+});
+
+ipcMain.handle("web-chat-insert-text", async (_, { providerId, text }) => {
+  const contents = await getOfficialWebContents(providerId);
+  if (!contents) {
+    throw new Error("Official chat window is not open");
+  }
+  contents.focus();
+  contents.insertText(text);
+});
+
+ipcMain.handle("web-chat-click", async (_, { providerId, x, y }) => {
+  const contents = await getOfficialWebContents(providerId);
+  if (!contents) {
+    throw new Error("Official chat window is not open");
+  }
+  if (!Number.isFinite(x) || !Number.isFinite(y)) {
+    throw new Error("Official chat click coordinates are invalid");
+  }
+  mainWindow?.focus();
+  contents.focus();
+  contents.sendInputEvent({
+    type: "mouseDown",
+    x,
+    y,
+    button: "left",
+    clickCount: 1,
+  });
+  contents.sendInputEvent({
+    type: "mouseUp",
+    x,
+    y,
+    button: "left",
+    clickCount: 1,
+  });
 });
 
 ipcMain.handle("get-native-theme", () => {

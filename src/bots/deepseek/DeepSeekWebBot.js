@@ -1,10 +1,6 @@
 import AsyncLock from "async-lock";
 import WebChatBot from "@/bots/WebChatBot";
 
-const POLL_INTERVAL_MS = 800;
-const MAX_POLL_ATTEMPTS = 150;
-const STABLE_POLL_COUNT = 4;
-
 export default class DeepSeekWebBot extends WebChatBot {
   static _brandId = "deepSeek";
   static _className = "DeepSeekWebBot";
@@ -13,107 +9,169 @@ export default class DeepSeekWebBot extends WebChatBot {
   static _loginUrl = "https://chat.deepseek.com/";
   static _chatUrl = "https://chat.deepseek.com/";
   static _lock = new AsyncLock();
+  static _sendSelector =
+    "[role='button'].ds-button--primary:not(.ds-button--disabled)";
 
   async _checkAvailability() {
     try {
       const state = await this.evaluateOfficialChat(`
-        (() => ({
-          hasComposer: Boolean(document.querySelector('textarea, [contenteditable="true"]')),
-          pageUrl: location.href,
-        }))()
+        (() => ({ pageUrl: location.href }))()
       `);
-      return state.hasComposer && state.pageUrl.includes("chat.deepseek.com");
+      return Boolean(state.pageUrl);
     } catch {
       return false;
     }
   }
 
   async _sendPrompt(prompt, onUpdateResponse, callbackParam) {
-    const serializedPrompt = JSON.stringify(prompt);
-    await this.evaluateOfficialChat(`
+    const inputSelector = JSON.stringify(
+      this.constructor._inputSelector ||
+        "textarea, [contenteditable='true'], [role='textbox']",
+    );
+    const sendSelector = JSON.stringify(
+      this.constructor._sendSelector ||
+        "button[type='submit']:not(:disabled), button[aria-label*='send' i]:not(:disabled), [data-testid*='send' i]:not(:disabled), [data-testid*='submit' i]:not(:disabled)",
+    );
+    const hasConfiguredSendSelector = JSON.stringify(
+      Boolean(this.constructor._sendSelector),
+    );
+    const inputTarget = await this.evaluateOfficialChat(`
       (() => {
-        const input = document.querySelector('textarea, [contenteditable="true"]');
+        const isVisible = (element) => {
+          const style = window.getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return style.visibility !== "hidden" && style.display !== "none" &&
+            rect.width > 0 && rect.height > 0;
+        };
+        const inputs = Array.from(document.querySelectorAll(${inputSelector}))
+          .filter(isVisible);
+        const input = inputs.at(-1);
         if (!input) {
-          throw new Error("DeepSeek input box not found. Open the official chat page and sign in first.");
+          throw new Error("Official chat input box not found. Open the official chat page and sign in first.");
         }
+        const rect = input.getBoundingClientRect();
+        return {
+          x: Math.round(rect.left + rect.width / 2),
+          y: Math.round(rect.top + rect.height / 2),
+        };
+      })()
+    `);
+    await this.clickOfficialChat(inputTarget.x, inputTarget.y);
+    // The trusted mouse event is queued in the WebView. Let the official
+    // editor receive focus before Electron inserts text into it.
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await this.insertOfficialText(prompt);
 
-        if (input instanceof HTMLTextAreaElement) {
-          const setter = Object.getOwnPropertyDescriptor(
-            HTMLTextAreaElement.prototype,
-            "value",
-          ).set;
-          setter.call(input, ${serializedPrompt});
-        } else {
-          input.textContent = ${serializedPrompt};
+    const clickTarget = await this.evaluateOfficialChat(`
+      (async () => {
+        const isVisible = (element) => {
+          const style = window.getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return style.visibility !== "hidden" && style.display !== "none" &&
+            rect.width > 0 && rect.height > 0;
+        };
+        const getInputText = (input) =>
+          input instanceof HTMLTextAreaElement ? input.value : input.textContent || "";
+        const input = Array.from(document.querySelectorAll(${inputSelector}))
+          .filter(isVisible)
+          .at(-1);
+        if (!input) throw new Error("Official chat input box disappeared before send.");
+        const submittedText = getInputText(input);
+        if (!submittedText.trim()) throw new Error("Official chat did not receive the prompt text.");
+
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+        const composerRoots = [];
+        for (let element = input; element && composerRoots.length < 5; element = element.parentElement) {
+          composerRoots.push(element);
+          if (element.tagName === "FORM") break;
         }
-        input.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText" }));
-        input.dispatchEvent(new Event("change", { bubbles: true }));
-
-        const buttons = Array.from(document.querySelectorAll("button"));
-        const sendButton = buttons.find((button) => {
-          const label = [button.getAttribute("aria-label"), button.title, button.innerText]
-            .filter(Boolean)
-            .join(" ");
-          return /send|发送/i.test(label) && !button.disabled;
-        });
-        if (sendButton) {
-          sendButton.click();
-          return;
+        const composerControls = composerRoots
+          .flatMap((root) =>
+            Array.from(root.querySelectorAll("button, [role='button']")),
+          )
+          .filter(
+            (control, index, controls) => controls.indexOf(control) === index,
+          );
+        const configuredControls = composerRoots
+          .flatMap((root) => [
+            ...(root.matches(${sendSelector}) ? [root] : []),
+            ...Array.from(root.querySelectorAll(${sendSelector})),
+            ...(${hasConfiguredSendSelector}
+              ? Array.from(document.querySelectorAll(${sendSelector}))
+              : []),
+          ])
+          .filter(
+            (control, index, controls) => controls.indexOf(control) === index,
+          );
+        const configuredButton = configuredControls
+          .filter(
+            (control) =>
+              !control.disabled &&
+              !control.classList.contains("disabled") &&
+              !control.classList.contains("ds-button--disabled") &&
+              control.getAttribute("aria-disabled") !== "true" &&
+              isVisible(control),
+          )
+          .at(-1);
+        const inputRect = input.getBoundingClientRect();
+        const adjacentButton = composerControls
+          .filter(
+            (control) =>
+              !control.disabled &&
+              !control.classList.contains("disabled") &&
+              !control.classList.contains("ds-button--disabled") &&
+              control.getAttribute("aria-disabled") !== "true",
+          )
+          .filter(isVisible)
+          .filter((control) => {
+            const rect = control.getBoundingClientRect();
+            return rect.left >= inputRect.right - 8 &&
+              rect.top <= inputRect.bottom && rect.bottom >= inputRect.top;
+          })
+          .sort((left, right) =>
+            right.getBoundingClientRect().left - left.getBoundingClientRect().left,
+          )
+          .at(0);
+        const sendButton = configuredButton || adjacentButton;
+        if (!sendButton) {
+          throw new Error(
+            "Official chat send button not found or disabled in the composer.",
+          );
         }
+        const rect = sendButton.getBoundingClientRect();
+        return {
+          x: Math.round(rect.left + rect.width / 2),
+          y: Math.round(rect.top + rect.height / 2),
+        };
+      })()
+    `);
+    await this.clickOfficialChat(clickTarget.x, clickTarget.y);
 
-        input.dispatchEvent(new KeyboardEvent("keydown", {
-          key: "Enter",
-          code: "Enter",
-          bubbles: true,
-        }));
+    await this.evaluateOfficialChat(`
+      (async () => {
+        const isVisible = (element) => {
+          const style = window.getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return style.visibility !== "hidden" && style.display !== "none" &&
+            rect.width > 0 && rect.height > 0;
+        };
+        const getInputText = (input) =>
+          input instanceof HTMLTextAreaElement ? input.value : input.textContent || "";
+        for (let attempt = 0; attempt < 40; attempt++) {
+          await new Promise((resolve) => setTimeout(resolve, 50));
+          const input = Array.from(document.querySelectorAll(${inputSelector}))
+            .filter(isVisible)
+            .at(-1);
+          const accepted = !input || !getInputText(input).trim();
+          if (accepted) return "button";
+        }
+        throw new Error("Official chat did not acknowledge the sent prompt.");
       })()
     `);
 
-    let lastContent = "";
-    let stablePolls = 0;
-    let receivedContent = false;
-
-    for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++) {
-      await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
-      const content = await this.evaluateOfficialChat(`
-        (() => {
-          const selectors = [
-            ".ds-markdown",
-            "[class*='markdown']",
-            "[class*='message-content']",
-            "[data-role='assistant']",
-          ];
-          for (const selector of selectors) {
-            const nodes = Array.from(document.querySelectorAll(selector));
-            const text = nodes.at(-1)?.innerText?.trim();
-            if (text) return text;
-          }
-          return "";
-        })()
-      `);
-
-      if (!content) continue;
-      receivedContent = true;
-      if (content !== lastContent) {
-        lastContent = content;
-        stablePolls = 0;
-        onUpdateResponse(callbackParam, { content, done: false });
-      } else {
-        stablePolls++;
-      }
-
-      if (stablePolls >= STABLE_POLL_COUNT) {
-        onUpdateResponse(callbackParam, { content: lastContent, done: true });
-        return;
-      }
-    }
-
-    if (receivedContent) {
-      onUpdateResponse(callbackParam, { content: lastContent, done: true });
-      return;
-    }
-    throw new Error(
-      "DeepSeek did not return a response. Please confirm you are signed in on the official chat page.",
-    );
+    // The official page owns response rendering. Releasing the per-provider lock
+    // here keeps later prompts from waiting on brittle DOM response scraping.
+    onUpdateResponse(callbackParam, { content: "", done: true });
   }
 }

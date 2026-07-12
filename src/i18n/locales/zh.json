@@ -338,6 +338,13 @@
     "loginPrompt": "打开 DeepSeek 官方聊天页并在该页面完成登录，然后返回后再次选择 DeepSeek。",
     "openOfficialChat": "打开 DeepSeek 官方聊天页"
   },
+  "officialLogin": {
+    "title": "登录 {provider}",
+    "subtitle": "请在官方页面完成登录，完成后关闭此浮层并返回工作台。",
+    "cardHint": "请在下方官方页面完成登录，以启用此模型。",
+    "complete": "我已完成登录",
+    "loggingIn": "请在官方登录面板完成登录。"
+  },
   "updates": {
     "updateAvailable": "有更新!",
     "currentVersion": "您当前的版本",
@@ -410,7 +417,11 @@
     "title": "最佳综合答案"
   },
   "enhance": {
-    "tooltip": "用 AI 优化这个提问"
+    "tooltip": "用 AI 优化这个提问",
+    "configurationRequired": "提示词优化需要配置 API 模型。"
+  },
+  "doubao": {
+    "name": "豆包"
   },
   "attach": {
     "tooltip": "附加文本文件作为上下文",
@@ -434,7 +445,8 @@
   "modelSlots": {
     "emptyTitle": "为此面板选择模型",
     "selectModel": "选择模型",
-    "changeModel": "更换模型"
+    "changeModel": "更换模型",
+    "ready": "准备就绪"
   },
   "$vuetify": {
     "firstPage": "无数据显示",

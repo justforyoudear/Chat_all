@@ -1,11 +1,5 @@
 <template>
-   <v-bottom-navigation
-    class="footer"
-    v-shortkey="{
-      focusPromptTextarea: SHORTCUT_PROMPT_TEXTAREA.key,
-      toggleBotsMenu: SHORTCUT_BOTS_MENU.key,
-    }"
-    @shortkey="handleShortcut"
+   <v-bottom-navigation class="footer"
     >
     <div
       style="
@@ -40,8 +34,17 @@
           > {{ $t("attach.clearAll") }} </v-btn
         >
       </div>
-       <v-textarea
-        :id="SHORTCUT_PROMPT_TEXTAREA.elementId"
+       <v-alert
+        v-if="enhanceError"
+        type="warning"
+        density="compact"
+        variant="tonal"
+        closable
+        class="enhance-error"
+        @click:close="enhanceError = ''"
+        > {{ enhanceError }} </v-alert
+      > <v-textarea
+        id="prompt-textarea"
         v-model="prompt"
         ref="promptTextArea"
         auto-grow
@@ -56,7 +59,7 @@
         style="min-width: 390px"
         > <template v-slot:append-inner
           > <v-btn
-            :id="SHORTCUT_PROMPT_MANAGEMENT.elementId"
+            id="prompt-btn"
             @click="isPromptManagementOpen = !isPromptManagementOpen"
             color="primary"
             variant="plain"
@@ -89,64 +92,18 @@
         class="send-prompt-btn"
         elevation="2"
         :disabled="
-          prompt.trim() === '' ||
-          favBots.filter((favBot) => activeBots[favBot.classname]).length === 0
+          prompt.trim() === '' || selectedBots.length === 0 || isSending
         "
         @click="sendPromptToBots"
         > {{ $t("footer.sendPrompt") }} </v-btn
-      >
-      <div
-        class="bot-logos"
-        ref="favBotLogosRef"
-        :key="rerenderFavBotLogos"
-        @contextmenu="show"
-      >
-         <v-menu
-          v-model="showMenu"
-          class="position-fixed"
-          :style="{ left: `${x}px`, top: `${y}px` }"
-          > <v-list
-            > <v-list-item @click="disableAllBots"
-              > <v-list-item-title>{{
-                $t("footer.disableAll")
-              }}</v-list-item-title
-              > </v-list-item
-            > <v-list-item @click="enableAllBots"
-              > <v-list-item-title>{{
-                $t("footer.enableAll")
-              }}</v-list-item-title
-              > </v-list-item
-            > <v-list-item @click="removeAllBots"
-              > <v-list-item-title>{{
-                $t("footer.removeAll")
-              }}</v-list-item-title
-              > </v-list-item
-            > </v-list
-          > </v-menu
-        > <BotLogo
-          v-for="(bot, index) in favBots"
-          :id="`fav-bot-${index + 1}`"
-          :key="index"
-          :bot="bot.instance"
-          :active="activeBots[bot.classname]"
-          :data-id="bot.classname"
-          size="36"
-          @click="toggleSelected(bot.instance)"
-          v-shortkey="['ctrl', `${index + 1}`]"
-          @shortkey="toggleSelected(bot.instance)"
-        />
-      </div>
-       <BotsMenu
+      > <BotsMenu
         style="padding-bottom: 0.5rem; padding-left: 4px"
-        :id="SHORTCUT_BOTS_MENU.elementId"
+        id="bots-menu-btn"
         ref="botsMenuRef"
         :favBots="favBots"
       />
     </div>
-     <MakeAvailableModal v-model:open="isMakeAvailableOpen" :bot="clickedBot" />
-    <ConfirmModal ref="confirmModal" /> <PromptModal
-      v-shortkey="SHORTCUT_PROMPT_MANAGEMENT.key"
-      @shortkey="isPromptManagementOpen = !isPromptManagementOpen"
+     <ConfirmModal ref="confirmModal" /> <PromptModal
       v-model:open="isPromptManagementOpen"
       @after-leave="usePrompt"
     ></PromptModal
@@ -155,22 +112,12 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  computed,
-  onMounted,
-  onBeforeMount,
-  reactive,
-  watch,
-  nextTick,
-} from "vue";
+import { ref, computed, onBeforeMount, reactive, watch, nextTick } from "vue";
 import { useStore } from "vuex";
-import Sortable from "sortablejs";
+import { useI18n } from "vue-i18n";
 
 // Components
-import MakeAvailableModal from "@/components/MakeAvailableModal.vue";
 import ConfirmModal from "@/components/ConfirmModal.vue";
-import BotLogo from "./BotLogo.vue";
 import BotsMenu from "./BotsMenu.vue";
 import PromptModal from "@/components/PromptModal.vue";
 
@@ -180,16 +127,13 @@ import { usePromptEnhance } from "@/composables/usePromptEnhance";
 import { useFileAttach } from "@/composables/useFileAttach";
 
 import _bots from "@/bots";
-import {
-  SHORTCUT_PROMPT_TEXTAREA,
-  SHORTCUT_PROMPT_MANAGEMENT,
-  SHORTCUT_BOTS_MENU,
-} from "./../ShortcutGuide/shortcut.const";
+import WebChatBot from "@/bots/WebChatBot";
 import Messages from "@/store/messages";
 
 const { ipcRenderer } = window.require("electron");
 
 const store = useStore();
+const { t } = useI18n();
 const matomo = useMatomo();
 const { enhancePrompt } = usePromptEnhance();
 const { selectFiles, formatFileSize, buildContextString, canAddMore } =
@@ -200,17 +144,18 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  slotCount: {
+    type: Number,
+    required: true,
+  },
 });
 
 const confirmModal = ref(null);
 const promptTextArea = ref(null);
 const botsMenuRef = ref(null);
-const favBotLogosRef = ref();
 const isPromptManagementOpen = ref(false);
 
-const bots = ref(_bots.all);
 const activeBots = reactive({});
-const rerenderFavBotLogos = ref(0);
 const favBots = computed(() => {
   if (!props.chat || !props.chat.favBots) {
     return [];
@@ -226,28 +171,45 @@ const favBots = computed(() => {
     .filter((bot) => bot.instance)
     .sort((a, b) => a.order - b.order); // sort by order property
 });
+// Only the models displayed in the current comparison panels receive the
+// bottom prompt. Favorites can also contain unassigned models.
+const selectedBots = computed(() => {
+  const displayedClassnames = new Set();
+  const unassignedBots = favBots.value.filter((bot) => bot.slot === undefined);
+  for (let slot = 0; slot < props.slotCount; slot++) {
+    const bot =
+      favBots.value.find((favorite) => favorite.slot === slot) ||
+      unassignedBots[slot];
+    if (bot) displayedClassnames.add(bot.classname);
+  }
+  return favBots.value.filter((bot) => displayedClassnames.has(bot.classname));
+});
 
 const prompt = ref("");
-const clickedBot = ref(null);
-const isMakeAvailableOpen = ref(false);
+const isSending = ref(false);
 const isEnhancing = ref(false);
+const enhanceError = ref("");
 const attachedFiles = ref([]);
 
 watch(favBots, async (newValue, oldValue) => {
   const botsToCheck = newValue.filter((newBot) => {
     return !oldValue.some((oldBot) => oldBot.classname === newBot.classname);
   });
-  await botsToCheck.forEach(async (favBot) => {
+  for (const favBot of botsToCheck) {
     const bot = favBot.instance;
-    if (!bot.isAvailable()) {
+    if (!(bot instanceof WebChatBot) && !bot.isAvailable()) {
       await bot.checkAvailability();
-      updateActiveBots();
     }
-  });
+  }
   updateActiveBots();
 });
 
 async function updateActiveBots() {
+  const currentClassnames = new Set(favBots.value.map((bot) => bot.classname));
+  for (const classname of Object.keys(activeBots)) {
+    if (!currentClassnames.has(classname)) delete activeBots[classname];
+  }
+
   for (const favBot of favBots.value) {
     // Unselect the bot if user has not confirmed to use it
     if (favBot.selected) {
@@ -269,18 +231,6 @@ async function updateActiveBots() {
 
 function focusPromptTextarea() {
   promptTextArea.value.focus();
-}
-
-function toggleBotsMenu() {
-  botsMenuRef.value.toggleMenu();
-}
-
-function handleShortcut(event) {
-  if (event.srcKey === "focusPromptTextarea") {
-    focusPromptTextarea();
-  } else if (event.srcKey === "toggleBotsMenu") {
-    toggleBotsMenu();
-  }
 }
 
 // Send the prompt when the user presses enter and prevent the default behavior
@@ -315,46 +265,62 @@ function filterEnterKey(event) {
 }
 
 async function sendPromptToBots() {
-  if (prompt.value.trim() === "") return;
+  if (prompt.value.trim() === "" || isSending.value) return;
+  isSending.value = true;
 
-  const toBots = favBots.value
-    .filter((favBot) => activeBots[favBot.classname])
-    .map((favBot) => favBot.instance);
+  try {
+    // Official WebViews publish their availability after registration. Rechecking
+    // already-ready models here can wait for the registration retry window and
+    // delays every prompt, especially when multiple providers are selected.
+    await Promise.all(
+      selectedBots.value
+        .filter((favBot) => !favBot.instance.isAvailable())
+        .map((favBot) => favBot.instance.checkAvailability()),
+    );
+    await updateActiveBots();
 
-  if (toBots.length === 0) return;
+    const toBots = selectedBots.value
+      .filter((favBot) => favBot.instance.isAvailable())
+      .map((favBot) => favBot.instance);
 
-  const count = await Messages.getMessagesCount(store.state.currentChatIndex);
-  const isFirstPrompt = count === 0;
-  let finalPrompt = prompt.value;
-  if (attachedFiles.value.length > 0) {
-    const context = buildContextString(attachedFiles.value);
-    finalPrompt = prompt.value + context;
+    if (toBots.length === 0) return;
+
+    const count = await Messages.getMessagesCount(store.state.currentChatIndex);
+    const isFirstPrompt = count === 0;
+    let finalPrompt = prompt.value;
+    if (attachedFiles.value.length > 0) {
+      const context = buildContextString(attachedFiles.value);
+      finalPrompt = prompt.value + context;
+    }
+    await store.dispatch("sendPrompt", {
+      prompt: finalPrompt,
+      bots: toBots,
+    });
+    if (isFirstPrompt) {
+      updateChatTitleWithFirstPrompt();
+    }
+
+    // Clear the textarea and attachments after sending the prompt
+    prompt.value = "";
+    attachedFiles.value = [];
+
+    // reset prompt index
+    promptIndex = 0;
+
+    matomo.value?.trackEvent(
+      "prompt",
+      "send",
+      "Active bots count",
+      toBots.length,
+    );
+  } finally {
+    isSending.value = false;
   }
-  await store.dispatch("sendPrompt", {
-    prompt: finalPrompt,
-    bots: toBots,
-  });
-  if (isFirstPrompt) {
-    updateChatTitleWithFirstPrompt();
-  }
-
-  // Clear the textarea and attachments after sending the prompt
-  prompt.value = "";
-  attachedFiles.value = [];
-
-  // reset prompt index
-  promptIndex = 0;
-
-  matomo.value?.trackEvent(
-    "prompt",
-    "send",
-    "Active bots count",
-    toBots.length,
-  );
 }
 
 async function enhanceCurrentPrompt() {
   if (prompt.value.trim() === "" || isEnhancing.value) return;
+  enhanceError.value = "";
   isEnhancing.value = true;
   try {
     const enhanced = await enhancePrompt(prompt.value);
@@ -363,8 +329,11 @@ async function enhanceCurrentPrompt() {
       focusPromptTextarea();
     }
   } catch (err) {
-    // silently fail — the prompt stays as-is
     console.error("Prompt enhancement failed:", err);
+    enhanceError.value =
+      err?.message ||
+      (typeof err === "string" ? err : "") ||
+      t("enhance.configurationRequired");
   } finally {
     isEnhancing.value = false;
   }
@@ -410,89 +379,25 @@ function getHistoryPrompt(keyCode) {
   return historyPrompts[promptIndex];
 }
 
-async function toggleSelected(bot) {
-  const botClassname = bot.getClassname();
-  let selected = false;
-  if (activeBots[botClassname]) {
-    selected = false;
-  } else {
-    selected = true;
-    if (!bot.isAvailable()) {
-      const availability = await bot.checkAvailability();
-      if (!availability) {
-        clickedBot.value = bot;
-        // Open the bot's settings dialog
-        isMakeAvailableOpen.value = true;
-      } else {
-        updateActiveBots();
-      }
+onBeforeMount(async () => {
+  for (const favBot of favBots.value) {
+    if (!(favBot.instance instanceof WebChatBot)) {
+      await favBot.instance.checkAvailability();
     }
   }
-  store.commit("setBotSelected", { botClassname, selected });
-}
-
-onBeforeMount(async () => {
-  favBots.value.forEach(async (favBot) => {
-    await favBot.instance.checkAvailability();
-    updateActiveBots();
-  });
+  updateActiveBots();
 
   // Listen message trigged by main process
   ipcRenderer.on("CHECK-AVAILABILITY", async (event, url) => {
-    const botsToCheck = bots.value.filter((bot) => bot.getLoginUrl() === url);
-    botsToCheck.forEach(async (bot) => {
-      await bot.checkAvailability();
-      updateActiveBots();
-    });
-  });
-});
-
-onMounted(() => {
-  initializeSortable();
-});
-
-let sortable = undefined;
-function initializeSortable() {
-  let isDropOnFavBotBar = false;
-  const onDragEnd = (event) => {
-    event.target.removeEventListener("dragend", onDragEnd);
-    if (isDropOnFavBotBar) {
-      return; // dropped on fav bot bar
+    const botsToCheck = favBots.value.filter(
+      (favBot) => favBot.instance.getLoginUrl() === url,
+    );
+    for (const bot of botsToCheck) {
+      await bot.instance.checkAvailability();
     }
-    // if not drop on fav bot bar, remove it from favorite bar
-    event.target.parentNode.removeChild(event.target);
-    store.commit("removeFavoriteBot", event.target.dataset.id);
-    rerenderFavBotLogos.value++; // trigger re-render to refresh order and shortkey
-    nextTick().then(() => {
-      sortable = undefined;
-      initializeSortable(); // re-initialize sortable instance after re-render
-    });
-  };
-
-  sortable = new Sortable(favBotLogosRef.value, {
-    animation: 200, // ms, animation speed moving items when sorting
-    // dragging started
-    onStart: function (favBot) {
-      isDropOnFavBotBar = false;
-      favBot.item.addEventListener("dragend", onDragEnd);
-    },
-    // dragging ended
-    onEnd: async function (favBot) {
-      if (favBot.oldIndex === favBot.newIndex) {
-        return; // order not changed, return
-      }
-      store.commit("setFavBotOrder", sortable.toArray());
-      rerenderFavBotLogos.value++; // trigger re-render to refresh order and shortkey
-      nextTick().then(() => {
-        sortable = undefined;
-        initializeSortable(); // re-initialize sortable instance after re-render
-      });
-    },
+    updateActiveBots();
   });
-  favBotLogosRef.value.addEventListener("drop", () => {
-    isDropOnFavBotBar = true;
-  });
-}
+});
 
 async function updateChatTitleWithFirstPrompt() {
   // if this is first prompt, update chat title to first 30 characters of user prompt
@@ -509,50 +414,6 @@ async function usePrompt(value) {
   await nextTick();
   focusPromptTextarea();
   document.execCommand("insertText", false, value);
-}
-
-const showMenu = ref(false);
-const x = ref(0);
-const y = ref(0);
-function show(e) {
-  x.value = e.clientX;
-  y.value = e.clientY - 160;
-  showMenu.value = true;
-}
-
-async function disableAllBots() {
-  for (const botClassname in activeBots) {
-    if (activeBots[botClassname]) {
-      await store.dispatch("setBotSelected", { botClassname, selected: false });
-    }
-  }
-}
-
-async function enableAllBots() {
-  for (const botClassname in activeBots) {
-    if (!activeBots[botClassname]) {
-      const bot = favBots.value.find((bot) => bot.classname === botClassname);
-      if (bot && bot.instance && !bot.instance.isAvailable()) {
-        const availability = await bot.instance.checkAvailability();
-        if (!availability) {
-          clickedBot.value = bot.instance;
-          // Open the bot's settings dialog
-          isMakeAvailableOpen.value = true;
-        } else {
-          updateActiveBots();
-        }
-      } else {
-        await store.dispatch("setBotSelected", {
-          botClassname,
-          selected: true,
-        });
-      }
-    }
-  }
-}
-
-function removeAllBots() {
-  store.commit("setFavoriteBot", []);
 }
 
 defineExpose({
@@ -572,14 +433,6 @@ defineExpose({
   box-sizing: border-box;
   padding-bottom: 0.5rem;
   box-shadow: none !important;
-}
-
-.bot-logos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  align-items: center;
-  padding-bottom: 0.5rem;
 }
 
 /* Override default style of vuetify v-textarea */
@@ -628,6 +481,10 @@ textarea::placeholder {
   opacity: 0.6;
   font-size: 0.7rem;
   margin-left: 2px;
+}
+
+.enhance-error {
+  width: 100%;
 }
 </style>
 

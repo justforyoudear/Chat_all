@@ -8,7 +8,7 @@ import { createVueI18nAdapter } from "vuetify/locale/adapters/vue-i18n";
 import { useI18n } from "vue-i18n";
 import "material-design-icons/iconfont/material-icons.css";
 import VueMatomo from "vue-matomo";
-import VueShortkey from "vue3-shortkey";
+import shortkey from "./directives/shortkey";
 import { resolveTheme, applyTheme } from "./theme";
 
 // Vuetify
@@ -38,6 +38,17 @@ VMdPreview.use(vuepressTheme, {
   .use(createKatexPlugin());
 
 const { ipcRenderer } = window.require("electron");
+
+window.addEventListener(
+  "error",
+  (event) => {
+    if (/^ResizeObserver loop/.test(event.message)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  },
+  true,
+);
 
 await store.restored; // wait for state to be restore
 i18n.global.locale.value = store.state.lang;
@@ -114,7 +125,7 @@ createApp(App)
   .use(store)
   .use(vuetify)
   .use(VMdPreview)
-  .use(VueShortkey)
+  .directive("shortkey", shortkey)
   .use(VueMatomo, {
     // Configure your matomo server and site by providing
     host: "https://matomo.chatall.ai/",

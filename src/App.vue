@@ -148,6 +148,7 @@
         > <FooterBar
           ref="footerBarRef"
           :chat="currentChat"
+          :slot-count="columns"
           @update-active-bots="(bots) => (activeBots = bots)"
         ></FooterBar
         > </v-main
@@ -163,10 +164,8 @@
         :responses="store.state.selectedResponses"
         :activeBots="activeBots"
       ></ChatAction
-      > <ImageGenerationDialog
-        v-model:open="isImageGenOpen"
-      ></ImageGenerationDialog
-      > </v-container
+      > <ImageGenerationDialog v-model:open="isImageGenOpen" />
+      <OfficialLoginDialog /> </v-container
     > </v-app
   >
 </template>
@@ -205,6 +204,7 @@ import FindModal from "@/components/FindModal.vue";
 import ShortcutGuide from "@/components/ShortcutGuide/ShortcutGuide.vue";
 import ChatAction from "@/components/ChatAction.vue";
 import ImageGenerationDialog from "@/components/ImageGenerationDialog.vue";
+import OfficialLoginDialog from "@/components/OfficialLoginDialog.vue";
 
 // Styles
 import "@mdi/font/css/materialdesignicons.css";

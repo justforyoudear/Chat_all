@@ -24,7 +24,7 @@ function getPreferredApiBot() {
       return bot;
     }
   }
-  const apiBotList = botTags?.api || [];
+  const apiBotList = botTags?.workbenchApi || [];
   for (const bot of apiBotList) {
     if (bot && !bot.isDisabled() && bot.isAvailable()) {
       return bot;

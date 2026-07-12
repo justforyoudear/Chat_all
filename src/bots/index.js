@@ -32,7 +32,6 @@ import OpenAIAPI45Bot from "./openai/OpenAIAPI45Bot";
 import MistralBot from "./MistralBot";
 import MOSSBot from "@/bots/MOSSBot";
 import WenxinQianfanBot from "@/bots/baidu/WenxinQianfanBot";
-import ChatGLMBot from "@/bots/zhipu/ChatGLMBot";
 import DevBot from "@/bots/DevBot";
 import GradioAppBot from "@/bots/huggingface/GradioAppBot";
 import Gemma7bGroqAPIBot from "@/bots/groq/Gemma7bGroqAPIBot";
@@ -42,7 +41,6 @@ import Llama370bGroqAPIBot from "@/bots/groq/Llama370bGroqAPIBot";
 import Llama4ScoutGroqAPIBot from "@/bots/groq/Llama4ScoutGroqAPIBot";
 import Llama4MaverickGroqAPIBot from "@/bots/groq/Llama4MaverickGroqAPIBot";
 import HuggingChatBot from "@/bots/huggingface/HuggingChatBot";
-import QianWenBot from "./QianWenBot";
 import SkyWorkBot from "./SkyWorkBot";
 import AzureOpenAIAPIBot from "./microsoft/AzureOpenAIAPIBot";
 import WenxinQianfanTurboBot from "./baidu/WenxinQianfanTurboBot";
@@ -55,8 +53,6 @@ import CharacterAIBot from "./CharacterAIBot";
 import ClaudeAIBot from "./ClaudeAIBot";
 import WenxinQianfan4Bot from "./baidu/WenxinQianfan4Bot";
 import GeminiAdvBot from "./google/GeminiAdvBot";
-import ChatGLM4Bot from "./zhipu/ChatGLM4Bot";
-import KimiBot from "./moonshot/KimiBot";
 import ClaudeAPIOpusBot from "./anthropic/ClaudeAPIOpusBot";
 import ClaudeAPI20Bot from "./anthropic/ClaudeAPI20Bot";
 import ClaudeAPI21Bot from "./anthropic/ClaudeAPI21Bot";
@@ -68,6 +64,12 @@ import Grok3APIBot from "./xai/Grok3APIBot";
 import Grok3MiniAPIBot from "./xai/Grok3MiniAPIBot";
 import CustomOpenAIAPIBot from "./custom/CustomOpenAIAPIBot";
 import DeepSeekWebBot from "./deepseek/DeepSeekWebBot";
+import {
+  ChatGLMWebBot,
+  DoubaoWebBot,
+  KimiWebBot,
+  QianWenWebBot,
+} from "./china/DomesticWebBots";
 
 const all = [
   Qihoo360AIBrainBot.getInstance(),
@@ -75,8 +77,6 @@ const all = [
   BingChatBalancedBot.getInstance(),
   BingChatPreciseBot.getInstance(),
   CharacterAIBot.getInstance(),
-  ChatGLMBot.getInstance(),
-  ChatGLM4Bot.getInstance(),
   ClaudeAIBot.getInstance(),
   ClaudeAPIOpusBot.getInstance(),
   ClaudeAPISonnetBot.getInstance(),
@@ -122,14 +122,12 @@ const all = [
   Llama370bGroqAPIBot.getInstance(),
   Llama4ScoutGroqAPIBot.getInstance(),
   Llama4MaverickGroqAPIBot.getInstance(),
-  KimiBot.getInstance(),
   MistralBot.getInstance(),
   MOSSBot.getInstance(),
   HuggingChatBot.getInstance(),
   PerplexityBot.getInstance(),
   PhindBot.getInstance(),
   PiBot.getInstance(),
-  QianWenBot.getInstance(),
   SkyWorkBot.getInstance(),
   SparkBot.getInstance(),
   YouChatBot.getInstance(),
@@ -138,6 +136,10 @@ const all = [
   Grok3MiniAPIBot.getInstance(),
   CustomOpenAIAPIBot.getInstance(),
   DeepSeekWebBot.getInstance(),
+  QianWenWebBot.getInstance(),
+  KimiWebBot.getInstance(),
+  ChatGLMWebBot.getInstance(),
+  DoubaoWebBot.getInstance(),
 ];
 
 const disabled = ["HuggingChatBot"];
@@ -161,10 +163,10 @@ disabled.forEach((className) => {
 export const botTags = {
   officialWeb: [
     bots.getBotByClassName("DeepSeekWebBot"),
-    bots.getBotByClassName("QianWenBot"),
-    bots.getBotByClassName("KimiBot"),
-    bots.getBotByClassName("ChatGLMBot"),
-    bots.getBotByClassName("SparkBot"),
+    bots.getBotByClassName("QianWenWebBot"),
+    bots.getBotByClassName("KimiWebBot"),
+    bots.getBotByClassName("ChatGLMWebBot"),
+    bots.getBotByClassName("DoubaoWebBot"),
   ],
   openAICompatible: [bots.getBotByClassName("CustomOpenAIAPIBot")],
   free: [
@@ -172,13 +174,10 @@ export const botTags = {
     bots.getBotByClassName("BingChatBalancedBot"),
     bots.getBotByClassName("BingChatCreativeBot"),
     bots.getBotByClassName("BingChatPreciseBot"),
-    bots.getBotByClassName("ChatGLMBot"),
-    bots.getBotByClassName("ChatGLM4Bot"),
     bots.getBotByClassName("HuggingChatBot"),
     bots.getBotByClassName("MistralBot"),
     bots.getBotByClassName("MOSSBot"),
     bots.getBotByClassName("Qihoo360AIBrainBot"),
-    bots.getBotByClassName("QianWenBot"),
     bots.getBotByClassName("SkyWorkBot"),
     bots.getBotByClassName("SparkBot"),
     bots.getBotByClassName("YouChatBot"),
@@ -188,7 +187,6 @@ export const botTags = {
     bots.getBotByClassName("PerplexityBot"),
     bots.getBotByClassName("PhindBot"),
     bots.getBotByClassName("PiBot"),
-    bots.getBotByClassName("KimiBot"),
     bots.getBotByClassName("DeepSeekWebBot"),
   ],
   paid: [
@@ -247,17 +245,16 @@ export const botTags = {
   ],
   madeInChina: [
     bots.getBotByClassName("Qihoo360AIBrainBot"),
-    bots.getBotByClassName("QianWenBot"),
     bots.getBotByClassName("SkyWorkBot"),
     bots.getBotByClassName("SparkBot"),
     bots.getBotByClassName("WenxinQianfanBot"),
     bots.getBotByClassName("WenxinQianfanTurboBot"),
     bots.getBotByClassName("WenxinQianfan4Bot"),
     bots.getBotByClassName("MOSSBot"),
-    bots.getBotByClassName("ChatGLMBot"),
-    bots.getBotByClassName("ChatGLM4Bot"),
-    bots.getBotByClassName("KimiBot"),
     bots.getBotByClassName("DeepSeekWebBot"),
   ],
 };
+
+botTags.workbenchApi = botTags.api.filter(Boolean);
+
 export default bots;

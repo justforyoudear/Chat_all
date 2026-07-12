@@ -23,6 +23,7 @@ const vuexPersist = new VuexPersistence({
       analyzingPromptIndex,
       summaryResults,
       summarizingPromptIndex,
+      officialLogin,
       ...persistedState
     } = state;
     /* eslint-enable no-unused-vars */
@@ -146,6 +147,13 @@ export default createStore({
     theme: undefined,
     mode: "system",
     isChatDrawerOpen: true,
+    officialLogin: {
+      open: false,
+      providerId: "",
+      title: "",
+      url: "",
+      slot: null,
+    },
     prompts: [],
     consensusAnalysis: {
       preferredBot: "",
@@ -387,6 +395,9 @@ export default createStore({
     setIsChatDrawerOpen(state, isChatDrawerOpen) {
       state.isChatDrawerOpen = isChatDrawerOpen;
     },
+    setOfficialLogin(state, values) {
+      state.officialLogin = { ...state.officialLogin, ...values };
+    },
     async deleteChats(state) {
       const currentChat = await Chats.getCurrentChat();
       await Chats.table.clear();
@@ -558,23 +569,26 @@ export default createStore({
         await Messages.table.add(msg);
         msgs.push(msg);
       }
-      for (let i = 0; i < bots.length; i++) {
-        const bot = bots[i];
-        const message = msgs[i];
-        bot.sendPrompt(
-          prompt,
-          (index, values) =>
-            dispatch("updateMessage", { index, message: values }),
-          message.index,
-        );
-
-        getMatomo()?.trackEvent(
-          "prompt",
-          "sendTo",
-          message.className,
-          prompt.length,
-        );
-      }
+      await Promise.all(
+        bots.map((bot, index) => {
+          const message = msgs[index];
+          getMatomo()?.trackEvent(
+            "prompt",
+            "sendTo",
+            message.className,
+            prompt.length,
+          );
+          return bot.sendPrompt(
+            prompt,
+            (messageIndex, values) =>
+              dispatch("updateMessage", {
+                index: messageIndex,
+                message: values,
+              }),
+            message.index,
+          );
+        }),
+      );
     },
     async sendPromptInThread(
       { commit, state, dispatch },

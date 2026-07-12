@@ -182,9 +182,16 @@ export default class Bot {
     }
 
     const executeSendPrompt = async () => {
+      const startedAt = performance.now();
+      console.debug("[DEBUG-chat-send] dispatch started", this.getClassname());
       // Begin thinking...
       onUpdateResponse(callbackParam, { content: "...", done: false });
       await this._sendPrompt(prompt, onUpdateResponse, callbackParam);
+      console.debug(
+        "[DEBUG-chat-send] dispatch finished",
+        this.getClassname(),
+        `${Math.round(performance.now() - startedAt)}ms`,
+      );
     };
 
     try {

@@ -97,32 +97,10 @@ import ProxySettings from "@/components/ProxySetting.vue";
 import ChatSettings from "@/components/ChatSetting.vue";
 import CommonBotSettings from "@/components/BotSettings/CommonBotSettings.vue";
 
-import ChatGPTBotSettings from "@/components/BotSettings/ChatGPTBotSettings.vue";
 import OpenAIAPIBotSettings from "@/components/BotSettings/OpenAIAPIBotSettings.vue";
 import GeminiAPIBotSettings from "@/components/BotSettings/GeminiAPIBotSettings.vue";
 import AzureOpenAIAPIBotSettings from "./BotSettings/AzureOpenAIAPIBotSettings.vue";
-import BingChatBotSettings from "@/components/BotSettings/BingChatBotSettings.vue";
-import SparkBotSettings from "./BotSettings/SparkBotSettings.vue";
-import BardBotSettings from "@/components/BotSettings/BardBotSettings.vue";
-import MistralBotSettings from "@/components/BotSettings/MistralBotSettings.vue";
-import MOSSBotSettings from "@/components/BotSettings/MOSSBotSettings.vue";
-import WenxinQianfanBotSettings from "@/components/BotSettings/WenxinQianfanBotSettings.vue";
-import GradioAppBotSettings from "@/components/BotSettings/GradioAppBotSettings.vue";
-import LMSYSBotSettings from "@/components/BotSettings/LMSYSBotSettings.vue";
-import HuggingChatBotSettings from "@/components/BotSettings/HuggingChatBotSettings.vue";
-import QianWenBotSettings from "@/components/BotSettings/QianWenBotSettings.vue";
-import PoeBotSettings from "@/components/BotSettings/PoeBotSettings.vue";
-import SkyWorkBotSettings from "@/components/BotSettings/SkyWorkBotSettings.vue";
-import YouChatBotSettings from "@/components/BotSettings/YouChatBotSettings.vue";
-import PerplexityBotSettings from "@/components/BotSettings/PerplexityBotSettings.vue";
-import PhindBotSettings from "@/components/BotSettings/PhindBotSettings.vue";
-import PiBotSettings from "@/components/BotSettings/PiBotSettings.vue";
-import Qihoo360AIBrainBotSettings from "./BotSettings/Qihoo360AIBrainBotSettings.vue";
-import CharacterAIBotSettings from "./BotSettings/CharacterAIBotSettings.vue";
-import ClaudeAIBotSettings from "./BotSettings/ClaudeAIBotSettings.vue";
-import ChatGLMBotSettings from "./BotSettings/ChatGLMBotSettings.vue";
 import CohereAPIBotSettings from "./BotSettings/CohereAPIBotSettings.vue";
-import KimiBotSettings from "./BotSettings/KimiBotSettings.vue";
 
 import { resolveTheme, applyTheme, Mode } from "../theme";
 import ClaudeAPIBotSettings from "./BotSettings/ClaudeAPIBotSettings.vue";
@@ -142,37 +120,15 @@ const emit = defineEmits(["update:open", "done"]);
 const tab = ref(null);
 
 const botSettings = [
-  { brand: "360AiBrain", component: Qihoo360AIBrainBotSettings },
   { brand: "azureOpenaiApi", component: AzureOpenAIAPIBotSettings },
-  { brand: "bard", component: BardBotSettings },
-  { brand: "bingChat", component: BingChatBotSettings },
-  { brand: "characterAI", component: CharacterAIBotSettings },
-  { brand: "chatGlm", component: ChatGLMBotSettings },
   { brand: "customApi", component: CustomOpenAIAPIBotSettings },
   { brand: "deepSeek", component: DeepSeekWebBotSettings },
-  { brand: "chatGpt", component: ChatGPTBotSettings },
-  { brand: "claudeAi", component: ClaudeAIBotSettings },
   { brand: "claudeApi", component: ClaudeAPIBotSettings },
   { brand: "cohereApi", component: CohereAPIBotSettings },
   { brand: "geminiApi", component: GeminiAPIBotSettings },
-  { brand: "gradio", component: GradioAppBotSettings },
   { brand: "groqApi", component: GroqAPIBotSettings },
-  { brand: "huggingChat", component: HuggingChatBotSettings },
-  { brand: "kimi", component: KimiBotSettings },
-  { brand: "lmsys", component: LMSYSBotSettings },
-  { brand: "mistral", component: MistralBotSettings },
-  { brand: "moss", component: MOSSBotSettings },
   { brand: "openaiApi", component: OpenAIAPIBotSettings },
-  { brand: "perplexity", component: PerplexityBotSettings },
-  { brand: "phind", component: PhindBotSettings },
-  { brand: "pi", component: PiBotSettings },
-  { brand: "poe", component: PoeBotSettings },
-  { brand: "qianWen", component: QianWenBotSettings },
-  { brand: "skyWork", component: SkyWorkBotSettings },
-  { brand: "spark", component: SparkBotSettings },
-  { brand: "wenxinQianfan", component: WenxinQianfanBotSettings },
   { brand: "xaiApi", component: xAIAPIBotSettings },
-  { brand: "youChat", component: YouChatBotSettings },
 ];
 
 const proxy = ProxySettings;

@@ -2,6 +2,16 @@ const { defineConfig } = require("@vue/cli-service");
 
 module.exports = defineConfig({
   transpileDependencies: ["vuetify"],
+  devServer: {
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false,
+        runtimeErrors: (error) =>
+          !/^ResizeObserver loop/.test(error?.message || ""),
+      },
+    },
+  },
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
