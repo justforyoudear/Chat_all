@@ -134,6 +134,30 @@
 - 最终验证通过：Prettier、定向 lint、`git diff --check` 与 `npm run build` 均完成；构建仅保留项目既有的 Browserslist、LangChain 导出和 top-level-await 提示。当前为主分支普通工作区，改动未提交；Electron 开发实例仍运行在本地页面 `http://localhost:8080/`。
 - 已创建本次提交 `99f85d8 feat-paginate-model-panels-in-groups-of-three`。推送分别经默认本地代理、临时直连和恢复默认代理尝试，均无法连接 GitHub；本机 `127.0.0.1:2073` 当前没有监听。用户要求停止推送，当前 `main` 比 `origin/main` 领先两个本地提交，等待用户自行处理网络后推送。
 
+## 2026-07-12 官方会话绑定
+
+- 用户确认规则：新建侧栏会话不创建官网对话；模型首次实际发送后保存该官网会话 URL；以后切回侧栏会话时右侧各官网面板恢复各自保存的 URL。
+- 已实现最小绑定链路：`EmptyModelSlots` 将 `officialChatBindings` 持久化到 Chat 记录，按 provider ID 键保存；复用现有 WebView 并按当前 Chat 的绑定或官网入口导航。导航恢复期间会抑制迟到的旧页面事件，避免把旧会话 URL 写入新 Chat；只有各提供方已知的真实会话 URL 形态才会保存。
+- 已将 Chat index watcher 设为同步 flush，使旧 Chat 的 WebView URL 快照发生在 `favoriteBots` 触发新会话导航之前；避免切换时丢失首次会话绑定。
+- F12 已确认当前侧栏 Chat 记录没有 `officialChatBindings` 字段，符合首次发送前未绑定的规则。下一步通过临时 Chat 记录验证“切换到未绑定会话后加载官网入口、切回不重建 WebView”；该验证不发送官网消息。
+
 ## 结论
 
 代码层已针对用户连续报告的发送、二次会话、新窗口和 ResizeObserver 问题完成修复。最终外部官网消息回归需要在未被手动最小化的 Electron 窗口中执行。
+
+## 2026-07-13 官方会话绑定状态机根因
+
+- F12 根因确认：GLM 官网入口重定向使恢复标记永久为 `true`，导致首次 `cid` 会话 URL 不会写入绑定；同时 URL 比较遗漏 query 会混淆不同 `cid`。已改为比较 origin、path、query，并在 `did-stop-loading` 解除恢复抑制；待热更新后验证 GLM 状态和两条侧栏会话的隔离。
+
+## 2026-07-13 官方会话绑定 WebView 重建根因
+
+- F12 临时会话 A/B 回归证明当前切换侧栏会话会重建 WebView，阻断绑定功能的验收。根因锁定为 `ChatMessages` 的 `v-if="!loading"` 卸载 `EmptyModelSlots`；已移除该条件，仅保留加载遮罩。待热更新后先验证 WebView ID 不变，再重跑真实发送与 URL 绑定隔离。
+
+## 2026-07-13 官方会话绑定 F12 验收
+
+- 已完成真实底部统一发送和 A -> B -> A 隔离回归。三站绑定均从官网实际 URL 写入 Dexie，并可在未重建 WebView 的情况下恢复；未绑定 B 仅加载官网入口。临时 Chat A/B 已隐藏、原 Chat 已恢复。下一步仅剩生产构建与差异审查。
+
+## 2026-07-13 官方会话绑定完成
+
+- 生产构建已完成，只有既有 `baseline-browser-mapping`/Browserslist 过期提示。最终定向 lint、Prettier 与 `git diff --check` 均通过。
+- 最终 F12 读取当前原 Chat：已持久化 DeepSeek、通义、GLM 三条 `officialChatBindings`，且全部 WebView 的 `restoring=false`。浏览器保持单一 `page` target，验证 Chat 已隐藏。按用户指示未提交、未推送。

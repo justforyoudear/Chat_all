@@ -148,3 +148,17 @@
 - 6 面板两页通过：两页各显示 3 个 `446.21875 x 786` 小窗，文档高度均为 `970px`，已配置的四个 WebView 仍保持在相同物理 slot，未因切页重建。
 - 4 面板第二页通过：仅显示 slot 3 的一个 `446.21875 x 786` 小窗，文档高度仍为 `970px`，四个已配置 WebView 均连接且 slot/provider 不变。
 - Footer 组件运行时取证：总数为 4 时，即使页面仅显示一页内容，`FooterBar.props.slotCount` 仍为 `4`，`selectedBots` 仍包含 DeepSeek、豆包、GLM、通义四个模型。分页不改变底部的全量派发目标。
+
+## 2026-07-13 官方会话绑定状态机根因
+
+- F12 根因确认：ChatGLM 的入口 `https://chatglm.cn/main/detail` 会重定向到 `https://chatglm.cn/main/alltoolsdetail?lang=zh`。恢复状态此前仅在目标 URL 完全命中时才解除，因此 GLM 永久处于 restoring，后续含 `cid` 的首次会话导航会被丢弃；另一个比较函数此前忽略查询参数，会把两个不同 `cid` URL 视为同一会话。Electron 官方 `webview` 文档确认 `did-stop-loading` 可作为完成含服务端重定向的加载状态边界，且 SPA 路由继续由 `did-navigate-in-page` 观察。
+
+## 2026-07-13 官方会话绑定 WebView 重建根因
+
+- F12 使用临时 Chat A/B 验证时，切换 A -> B -> A 后 DeepSeek/通义/GLM 的 `webContentsId` 分别由 `65/66/67` 变为 `68/69/70` 再变为 `71/72/73`，而浏览器 `page` target 仍为 1，排除独立 BrowserWindow。根因是 `ChatMessages.vue` 以 `v-if="!loading"` 包裹 `EmptyModelSlots`；切换时 watcher 先设 `loading=true`，触发 `EmptyModelSlots.onBeforeUnmount()` 删除全部卡片 WebView。加载提示应保留，但槽位组件必须持续挂载，才能让同 provider 的 URL 绑定在不变的 WebView 实例上恢复。
+
+## 2026-07-13 官方会话绑定 F12 验收
+
+- 在临时 Chat A 的底部统一发送后，DeepSeek、通义、GLM 分别形成并保存真实官网 URL：`/a/chat/s/66af19f7-c0aa-473b-b888-f332c1de8757`、`/c/0e7ced26-c83b-480c-85a7-f758e56dcc4d`、`?lang=zh&cid=6a53bfd547c6ecda860cb4fd`。发送完成后初次快速快照仍处于根页，但官网异步路由完成后 `did-navigate-in-page` 已写入 Chat A；随后切换验证读取到持久化结果。
+- Chat B 没有 `officialChatBindings`，显示三家官网入口。A -> B -> A 后 DeepSeek/通义/GLM 的物理 `webContentsId` 始终为 `77/82/83`，只改变 URL；浏览器级 target 计数保持 `webview:3, page:1`，未创建 BrowserWindow。三家 `restoring` 均为 `false`，说明 GLM 重定向不会再抑制首条会话路由。
+- 验证用的两个 Chat 已设置为 `hide:true`，且当前已切回用户原 Chat；未删除消息记录，保持与应用现有“隐藏会话”语义一致。

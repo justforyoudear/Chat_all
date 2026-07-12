@@ -7,7 +7,6 @@
   >
   <div class="messages">
      <EmptyModelSlots
-      v-if="!loading"
       :chat="chat"
       :columns="displayColumns"
       :slotCount="columns"

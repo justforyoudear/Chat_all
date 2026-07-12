@@ -104,6 +104,7 @@ import { useStore } from "vuex";
 import bots, { botTags } from "@/bots";
 import BotLogo from "@/components/Footer/BotLogo.vue";
 import WebChatBot from "@/bots/WebChatBot";
+import Chats from "@/store/chats";
 
 const props = defineProps({
   chat: {
@@ -148,6 +149,111 @@ const categories = computed(() => [
 const cardWebviews = new Map();
 const wasOverlayOpen = ref(false);
 
+function isSameOfficialUrl(left, right) {
+  if (!left || !right) return left === right;
+  try {
+    const leftUrl = new URL(left);
+    const rightUrl = new URL(right);
+    return (
+      leftUrl.origin === rightUrl.origin &&
+      leftUrl.pathname === rightUrl.pathname &&
+      leftUrl.search === rightUrl.search
+    );
+  } catch {
+    return left === right;
+  }
+}
+
+function isOfficialConversationUrl(providerId, rootUrl, url) {
+  if (!url?.startsWith("http") || isSameOfficialUrl(url, rootUrl)) {
+    return false;
+  }
+
+  const parsedUrl = new URL(url);
+  const patterns = {
+    deepseek: /^\/a\/chat\/s\/[^/]+/,
+    kimi: /^\/chat\/[^/]+/,
+    qianwen: /^\/c\/[^/]+/,
+    chatglm: /^\/main\/alltoolsdetail/,
+    doubao: /^\/chat\/\d+$/,
+  };
+  if (providerId === "chatglm") {
+    return (
+      patterns.chatglm.test(parsedUrl.pathname) &&
+      parsedUrl.searchParams.has("cid")
+    );
+  }
+  return patterns[providerId]?.test(parsedUrl.pathname) ?? true;
+}
+
+function getOfficialRootUrl(bot) {
+  return bot.constructor._chatUrl || bot.getLoginUrl();
+}
+
+function getOfficialChatUrl(slot) {
+  const bot = getSlotBot(slot);
+  if (!bot) return null;
+  const rootUrl = getOfficialRootUrl(bot);
+  const providerId = bot.constructor._providerId;
+  return props.chat?.officialChatBindings?.[providerId] || rootUrl;
+}
+
+async function persistOfficialChatBindings(chatIndex, candidates) {
+  if (!chatIndex || candidates.length === 0) return;
+  const chat = await Chats.table.get(chatIndex);
+  if (!chat) return;
+
+  const officialChatBindings = { ...(chat.officialChatBindings || {}) };
+  let changed = false;
+  for (const { providerId, rootUrl, url } of candidates) {
+    if (
+      !isOfficialConversationUrl(providerId, rootUrl, url) ||
+      officialChatBindings[providerId] === url
+    ) {
+      continue;
+    }
+    officialChatBindings[providerId] = url;
+    changed = true;
+  }
+  if (changed) await Chats.update(chatIndex, { officialChatBindings });
+}
+
+function captureCurrentChatBindings() {
+  return [...cardWebviews.values()].map((webview) => ({
+    providerId: webview.dataset.providerId,
+    rootUrl: webview.dataset.rootUrl,
+    url: webview.getURL(),
+  }));
+}
+
+function setWebviewChatTarget(webview, chatIndex, rootUrl, url) {
+  webview.dataset.chatIndex = chatIndex || "";
+  webview.dataset.rootUrl = rootUrl;
+  webview.dataset.targetUrl = url;
+  webview.dataset.restoring = "true";
+  if (webview.getAttribute("src") !== url) {
+    webview.setAttribute("src", url);
+  } else {
+    webview.dataset.restoring = "false";
+  }
+}
+
+function rememberOfficialNavigation(webview, url) {
+  if (webview.dataset.restoring === "true") {
+    if (isSameOfficialUrl(url, webview.dataset.targetUrl)) {
+      webview.dataset.restoring = "false";
+    }
+    return;
+  }
+  void persistOfficialChatBindings(webview.dataset.chatIndex, [
+    {
+      providerId: webview.dataset.providerId,
+      rootUrl: webview.dataset.rootUrl,
+      url,
+    },
+  ]);
+}
+
 function removeCardWebview(slot) {
   const webview = cardWebviews.get(slot);
   if (webview) webview.remove();
@@ -159,13 +265,15 @@ function ensureCardWebview(slot) {
   if (!host) return;
   const bot = getSlotBot(slot);
   if (!bot) return;
-  const url = bot.constructor._chatUrl || bot.getLoginUrl();
+  const rootUrl = getOfficialRootUrl(bot);
+  const url = getOfficialChatUrl(slot);
   if (!url) return;
   const providerId = bot.constructor._providerId;
   const zoomFactor = bot.constructor._webviewZoomFactor || 1;
 
   const existing = cardWebviews.get(slot);
   if (existing?.isConnected && existing.dataset.providerId === providerId) {
+    setWebviewChatTarget(existing, props.chat?.index, rootUrl, url);
     return;
   }
 
@@ -177,6 +285,19 @@ function ensureCardWebview(slot) {
   wv.style.background = "white";
   wv.dataset.providerId = providerId;
   wv.setAttribute("disableblinkfeatures", "Auxclick");
+  wv.addEventListener("did-navigate", (_event, navigatedUrl) => {
+    rememberOfficialNavigation(wv, navigatedUrl);
+  });
+  wv.addEventListener("did-navigate-in-page", (_event, navigatedUrl) => {
+    rememberOfficialNavigation(wv, navigatedUrl);
+  });
+  wv.addEventListener("did-stop-loading", () => {
+    // A configured provider root can redirect to its canonical landing page.
+    // Keep suppressing navigation persistence only until that load settles.
+    if (wv.dataset.restoring === "true") {
+      wv.dataset.restoring = "false";
+    }
+  });
   wv.addEventListener("did-attach", () => {
     console.log("[CARD] did-attach, slot:", slot);
   });
@@ -197,7 +318,7 @@ function ensureCardWebview(slot) {
   });
   host.appendChild(wv);
   cardWebviews.set(slot, wv);
-  wv.setAttribute("src", url);
+  setWebviewChatTarget(wv, props.chat?.index, rootUrl, url);
   console.log("[CARD] created card webview for slot", slot, "url:", url);
 }
 
@@ -293,6 +414,21 @@ watch(favoriteBots, async () => {
   await nextTick();
   syncCardWebviews();
 });
+
+watch(
+  () => props.chat?.index,
+  async (nextChatIndex, previousChatIndex) => {
+    if (previousChatIndex && previousChatIndex !== nextChatIndex) {
+      await persistOfficialChatBindings(
+        previousChatIndex,
+        captureCurrentChatBindings(),
+      );
+    }
+    await nextTick();
+    syncCardWebviews();
+  },
+  { flush: "sync" },
+);
 
 onMounted(async () => {
   await nextTick();
