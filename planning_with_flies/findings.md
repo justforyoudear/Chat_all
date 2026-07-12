@@ -128,3 +128,23 @@
 - 修复在 `WebChatBot.clickOfficialChat()`：仅将 IPC 鼠标坐标乘以模型的 `_webviewZoomFactor`。GLM/通义为 `0.8`；DeepSeek、Kimi、豆包为默认 `1`，行为不变。
 - ChatALL adapter 首条回归通过：GLM 的坐标修正后，测试文本出现在新的 `cid` 会话且 textarea 清空；通义适配器回调无错误、在新 `/c/c5d6...` 会话请求 `POST /api/v2/chat/completions`，正文含精确文本；豆包适配器回调无错误、在新 `/chat/38434830036091650` 会话请求 `POST /chat/completion`，正文含精确文本。三者均由 `FooterBar` 持有的实例调用 `Bot.sendPrompt`，不是手工 CDP 点击。
 - 最终底部统一发送回归通过：用户从底部连续发送 `123`、`12345` 后，ChatALL 消息存储为 DeepSeek、Kimi、GLM、通义、豆包分别记录了两轮完成态响应且无错误内容。五个官网 WebView 均同时包含两条文本、输入框为空，且各自保持一个稳定会话 URL：DeepSeek `/a/chat/s/6f4520ec-...`、Kimi `/chat/19f56363-...`、GLM `cid=6a53807347c6ecda860c29fa`、通义 `/c/c5d6bd8e-...`、豆包 `/chat/38434830036091650`。
+
+## 2026-07-12 多面板运行时尺寸
+
+- 主页面 CDP 在 4 面板模式确认红色回归：`clientHeight=970`，`scrollHeight=1200`，页面纵向溢出 `230px`；`main.content` 已被撑至 `1200px`。
+- `.model-slots` 的高度为 `1080px`（包含上下各 `32px` 内边距），四张官网卡片均固定为 `500px`，第二行底部到达 `1112px`。根因位于 ChatALL 自身网格最小高度和内容区约束，不在官网 WebView 的内部滚动。
+
+## 2026-07-12 Vuetify 布局项错误
+
+- 用户报告 `[Vuetify] Could not find layout item "layout-item-v-1"`，栈顶在 `VAppBar` 的布局计算。
+- 当前 Vuetify 文档示例要求 `v-app-bar`、导航抽屉和 `v-main` 在 `v-app` 布局上下文中作为同级项。现有 `App.vue` 将 `v-app-bar` 嵌入 `v-main`；这使其在热更新时可能先注销布局项、再由过期渲染效果访问该项，和报错一致。
+
+## 2026-07-12 三面板分页运行时回归
+
+- 干净 Electron 实例的 4 面板第一页通过：页面 `clientHeight=scrollHeight=970`，三个可见面板各为 `446.21875 x 786`，四个物理 WebView（DeepSeek、GLM、通义、豆包）均保持 `isConnected=true`。
+- 第二个分页探针得到 5 面板第二页状态：两个可见面板均为 `446.21875 x 786`，文档仍为 `970px` 高，确认第二页不会拉伸剩余面板或产生页面滚动。该探针的 `button:last-child` 选择器还意外切换了总数，后续只使用带 `title` 的精确分页按钮定位。
+- 分页控件包含且仅包含两个按钮，标题分别为“上一页”和“下一页”。以该控件的确定索引切回 5 面板第一页后，得到 3 个 `446.21875 x 786` 小窗、`scrollHeight=clientHeight=970`，并且四个已配置 WebView 的 provider/slot/连接状态保持不变。
+- 5 面板第二页复核通过：显示 2 个 `446.21875 x 786` 小窗，页面不滚动，四个已配置 WebView 的 provider/slot/连接状态与第一页完全相同。
+- 6 面板两页通过：两页各显示 3 个 `446.21875 x 786` 小窗，文档高度均为 `970px`，已配置的四个 WebView 仍保持在相同物理 slot，未因切页重建。
+- 4 面板第二页通过：仅显示 slot 3 的一个 `446.21875 x 786` 小窗，文档高度仍为 `970px`，四个已配置 WebView 均连接且 slot/provider 不变。
+- Footer 组件运行时取证：总数为 4 时，即使页面仅显示一页内容，`FooterBar.props.slotCount` 仍为 `4`，`selectedBots` 仍包含 DeepSeek、豆包、GLM、通义四个模型。分页不改变底部的全量派发目标。

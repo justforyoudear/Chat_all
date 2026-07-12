@@ -11,6 +11,7 @@
       :chat="chat"
       :columns="displayColumns"
       :slotCount="columns"
+      :page="page"
       :messages="currentChatMessages"
     />
   </div>
@@ -32,15 +33,17 @@ const props = defineProps({
     type: Number,
     default: 3,
   },
+  page: {
+    type: Number,
+    default: 0,
+  },
   chat: {
     type: Object,
   },
 });
 
 const loading = ref(false);
-const displayColumns = computed(() =>
-  props.columns > 3 ? Math.ceil(props.columns / 2) : props.columns,
-);
+const displayColumns = computed(() => Math.min(props.columns, 3));
 const currentChatMessages = ref([]);
 let createChatMessageLiveQuery = (index) => {
   return liveQuery(async () => {
@@ -117,8 +120,10 @@ onMounted(async () => {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  flex: 1;
   height: 100%;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
   gap: 16px;
   padding: 0;
 }

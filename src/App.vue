@@ -1,172 +1,198 @@
 <template>
    <v-app
-    > <v-container fluid style="padding: 0"
-      > <ChatDrawer
-        ref="chatDrawerRef"
-        v-model:open="isChatDrawerOpen"
-        @focus-textarea="focusPromptTextarea"
-      ></ChatDrawer
-      > <v-main class="content" :class="{ paddingTopZero: !isShowAppBar }"
-        > <v-slide-y-transition
-          > <v-app-bar
-            :id="SHORTCUT_APP_BAR.elementId"
-            @shortkey="
-              isShowAppBar = !isShowAppBar;
-              ipcRenderer.invoke('set-is-show-menu-bar', isShowAppBar);
-            "
-            v-shortkey="SHORTCUT_APP_BAR.key"
-            v-show="isShowAppBar"
-            :style="{
-              transform: isShowAppBar ? 'translateY(0)' : 'translateY(-100%)',
-            }"
-            class="header-content pa-0"
-            > <!-- Start Header  -->
-            <div class="header-content" v-show="isSelectedResponsesEmpty">
-               <v-app-bar-nav-icon
-                :id="SHORTCUT_CHAT_DRAWER.elementId"
-                variant="text"
-                @click.stop="isChatDrawerOpen = !isChatDrawerOpen"
-                @shortkey="isChatDrawerOpen = !isChatDrawerOpen"
-                v-shortkey="SHORTCUT_CHAT_DRAWER.key"
-                > </v-app-bar-nav-icon
-              > <img
-                :class="{ 'dark-png': store.state.theme === Theme.DARK }"
-                class="logo"
-                src="@/assets/logo-banner.png"
-                alt="ChatALL"
-              />
-            </div>
+    > <ChatDrawer
+      ref="chatDrawerRef"
+      v-model:open="isChatDrawerOpen"
+      @focus-textarea="focusPromptTextarea"
+    ></ChatDrawer
+    > <v-slide-y-transition
+      > <v-app-bar
+        :id="SHORTCUT_APP_BAR.elementId"
+        @shortkey="
+          isShowAppBar = !isShowAppBar;
+          ipcRenderer.invoke('set-is-show-menu-bar', isShowAppBar);
+        "
+        v-shortkey="SHORTCUT_APP_BAR.key"
+        v-show="isShowAppBar"
+        :style="{
+          transform: isShowAppBar ? 'translateY(0)' : 'translateY(-100%)',
+        }"
+        class="header-content pa-0"
+        > <!-- Start Header  -->
+        <div class="header-content" v-show="isSelectedResponsesEmpty">
+           <v-app-bar-nav-icon
+            :id="SHORTCUT_CHAT_DRAWER.elementId"
+            variant="text"
+            @click.stop="isChatDrawerOpen = !isChatDrawerOpen"
+            @shortkey="isChatDrawerOpen = !isChatDrawerOpen"
+            v-shortkey="SHORTCUT_CHAT_DRAWER.key"
+            > </v-app-bar-nav-icon
+          > <img
+            :class="{ 'dark-png': store.state.theme === Theme.DARK }"
+            class="logo"
+            src="@/assets/logo-banner.png"
+            alt="ChatALL"
+          />
+        </div>
 
-            <div
-              class="column-icons header-content"
-              v-show="isSelectedResponsesEmpty"
-            >
-               <img
-                v-for="columnCount in 6"
-                :id="`column-${columnCount}`"
-                :key="columnCount"
-                :src="getColumnImage(columnCount)"
-                @click="changeColumns(columnCount)"
-                @shortkey="changeColumns(columnCount)"
-                v-shortkey="[`f${columnCount}`]"
-                :title="columnTitle(columnCount)"
-                :class="{
-                  selected: columns === columnCount,
-                  'dark-png': store.state.theme === Theme.DARK,
-                }"
-              />
-            </div>
+        <div class="panel-layout-controls header-content">
 
-            <div
-              class="header-content"
-              style="padding-right: 16px"
-              v-show="isSelectedResponsesEmpty"
-            >
-               <v-icon
-                :id="SHORTCUT_FIND.elementId"
-                class="cursor-pointer"
-                color="primary"
-                icon="mdi-magnify"
-                size="x-large"
-                @click="openFind()"
-              ></v-icon
-              > <v-icon
-                v-shortkey="SHORTCUT_CLEAR_MESSAGES.key"
-                @shortkey="clearMessages"
-                :id="SHORTCUT_CLEAR_MESSAGES.elementId"
-                class="cursor-pointer"
-                color="primary"
-                icon="mdi-broom"
-                size="x-large"
-                @click="clearMessages()"
-              ></v-icon
-              > <v-icon
-                class="cursor-pointer"
-                color="primary"
-                icon="mdi-image-multiple"
-                size="x-large"
-                @click="isImageGenOpen = true"
-                v-tooltip="$t('imageGen.tooltip')"
-              ></v-icon
-              > <v-icon
-                v-shortkey="SHORTCUT_SETTINGS.key"
-                @shortkey="openSettingsModal"
-                :id="SHORTCUT_SETTINGS.elementId"
-                class="cursor-pointer"
-                color="primary"
-                icon="mdi-cog"
-                size="x-large"
-                @click="openSettingsModal()"
-              ></v-icon
-              > <v-icon
-                v-shortkey="SHORTCUT_SHORTCUT_GUIDE.key"
-                @shortkey="toggleShortcutGuide"
-                :id="SHORTCUT_SHORTCUT_GUIDE.elementId"
-                class="cursor-pointer"
-                color="primary"
-                icon="mdi-help"
-                size="x-large"
-                @click="toggleShortcutGuide()"
-              ></v-icon
-              >
-            </div>
-             <!-- End Header  --> <!-- Start Selected Responses  -->
-            <div
-              class="header-content pr-3"
-              style="text-wrap: nowrap"
-              v-show="!isSelectedResponsesEmpty"
-            >
-               <v-btn icon color="primary" @click="deselectAll"
-                > <v-icon>mdi-arrow-left</v-icon> </v-btn
-              > {{
-                $t("header.selectedResponsesCount", {
-                  selectedCount: store.state.selectedResponses.length,
-                })
-              }}
-            </div>
+          <div class="column-icons" v-show="isSelectedResponsesEmpty">
+             <img
+              v-for="columnCount in 6"
+              :id="`column-${columnCount}`"
+              :key="columnCount"
+              :src="getColumnImage(columnCount)"
+              @click="changeColumns(columnCount)"
+              @shortkey="changeColumns(columnCount)"
+              v-shortkey="[`f${columnCount}`]"
+              :title="columnTitle(columnCount)"
+              :class="{
+                selected: columns === columnCount,
+                'dark-png': store.state.theme === Theme.DARK,
+              }"
+            />
+          </div>
 
-            <div
-              class="header-content overflow-auto"
-              v-show="!isSelectedResponsesEmpty"
+          <div
+            v-if="panelPageCount > 1"
+            class="panel-page-controls"
+            v-show="isSelectedResponsesEmpty"
+          >
+             <v-btn
+              icon="mdi-chevron-left"
+              size="small"
+              variant="text"
+              :disabled="panelPage === 0"
+              title="上一页"
+              @click="changePanelPage(-1)"
+            ></v-btn
+            > <span class="panel-page-indicator"
+              >{{ panelPage + 1 }} / {{ panelPageCount }}</span
+            > <v-btn
+              icon="mdi-chevron-right"
+              size="small"
+              variant="text"
+              :disabled="panelPage === panelPageCount - 1"
+              title="下一页"
+              @click="changePanelPage(1)"
+            ></v-btn
             >
-               <v-btn
-                v-for="action in userActions"
-                color="primary"
-                class="no-text-transform"
-                :text="action.name"
-                :key="action.index"
-                @click="callAction(action)"
-              ></v-btn
-              >
-            </div>
-             <!-- End Selected Responses  --> </v-app-bar
-          > </v-slide-y-transition
-        > <FindModal ref="findRef"></FindModal> <ChatMessages
-          :chat="currentChat"
-          :columns="columns"
-        ></ChatMessages
-        > <FooterBar
-          ref="footerBarRef"
-          :chat="currentChat"
-          :slot-count="columns"
-          @update-active-bots="(bots) => (activeBots = bots)"
-        ></FooterBar
-        > </v-main
-      > <SettingsModal v-model:open="isSettingsOpen" /> <ConfirmModal
-        ref="confirmModal"
-      /> <UpdateNotification></UpdateNotification> <ShortcutGuide
-        ref="shortcutGuideRef"
-        v-model:open="isShortcutGuideOpen"
-      ></ShortcutGuide
-      > <ChatAction
-        v-model:open="isChatActionOpen"
-        :action="action"
-        :responses="store.state.selectedResponses"
-        :activeBots="activeBots"
-      ></ChatAction
-      > <ImageGenerationDialog v-model:open="isImageGenOpen" />
-      <OfficialLoginDialog /> </v-container
-    > </v-app
+          </div>
+
+        </div>
+
+        <div
+          class="header-content"
+          style="padding-right: 16px"
+          v-show="isSelectedResponsesEmpty"
+        >
+           <v-icon
+            :id="SHORTCUT_FIND.elementId"
+            class="cursor-pointer"
+            color="primary"
+            icon="mdi-magnify"
+            size="x-large"
+            @click="openFind()"
+          ></v-icon
+          > <v-icon
+            v-shortkey="SHORTCUT_CLEAR_MESSAGES.key"
+            @shortkey="clearMessages"
+            :id="SHORTCUT_CLEAR_MESSAGES.elementId"
+            class="cursor-pointer"
+            color="primary"
+            icon="mdi-broom"
+            size="x-large"
+            @click="clearMessages()"
+          ></v-icon
+          > <v-icon
+            class="cursor-pointer"
+            color="primary"
+            icon="mdi-image-multiple"
+            size="x-large"
+            @click="isImageGenOpen = true"
+            v-tooltip="$t('imageGen.tooltip')"
+          ></v-icon
+          > <v-icon
+            v-shortkey="SHORTCUT_SETTINGS.key"
+            @shortkey="openSettingsModal"
+            :id="SHORTCUT_SETTINGS.elementId"
+            class="cursor-pointer"
+            color="primary"
+            icon="mdi-cog"
+            size="x-large"
+            @click="openSettingsModal()"
+          ></v-icon
+          > <v-icon
+            v-shortkey="SHORTCUT_SHORTCUT_GUIDE.key"
+            @shortkey="toggleShortcutGuide"
+            :id="SHORTCUT_SHORTCUT_GUIDE.elementId"
+            class="cursor-pointer"
+            color="primary"
+            icon="mdi-help"
+            size="x-large"
+            @click="toggleShortcutGuide()"
+          ></v-icon
+          >
+        </div>
+         <!-- End Header  --> <!-- Start Selected Responses  -->
+        <div
+          class="header-content pr-3"
+          style="text-wrap: nowrap"
+          v-show="!isSelectedResponsesEmpty"
+        >
+           <v-btn icon color="primary" @click="deselectAll"
+            > <v-icon>mdi-arrow-left</v-icon> </v-btn
+          > {{
+            $t("header.selectedResponsesCount", {
+              selectedCount: store.state.selectedResponses.length,
+            })
+          }}
+        </div>
+
+        <div
+          class="header-content overflow-auto"
+          v-show="!isSelectedResponsesEmpty"
+        >
+           <v-btn
+            v-for="action in userActions"
+            color="primary"
+            class="no-text-transform"
+            :text="action.name"
+            :key="action.index"
+            @click="callAction(action)"
+          ></v-btn
+          >
+        </div>
+         <!-- End Selected Responses  --> </v-app-bar
+      > </v-slide-y-transition
+    > <v-main class="content" :class="{ paddingTopZero: !isShowAppBar }"
+      > <FindModal ref="findRef"></FindModal> <ChatMessages
+        :chat="currentChat"
+        :columns="columns"
+        :page="panelPage"
+      ></ChatMessages
+      > <FooterBar
+        ref="footerBarRef"
+        :chat="currentChat"
+        :slot-count="columns"
+        @update-active-bots="(bots) => (activeBots = bots)"
+      ></FooterBar
+      > </v-main
+    > <SettingsModal v-model:open="isSettingsOpen" /> <ConfirmModal
+      ref="confirmModal"
+    /> <UpdateNotification></UpdateNotification> <ShortcutGuide
+      ref="shortcutGuideRef"
+      v-model:open="isShortcutGuideOpen"
+    ></ShortcutGuide
+    > <ChatAction
+      v-model:open="isChatActionOpen"
+      :action="action"
+      :responses="store.state.selectedResponses"
+      :activeBots="activeBots"
+    ></ChatAction
+    > <ImageGenerationDialog v-model:open="isImageGenOpen" />
+    <OfficialLoginDialog /> </v-app
   >
 </template>
 
@@ -244,11 +270,28 @@ const isChatActionOpen = ref(false);
 const isImageGenOpen = ref(false);
 
 const columns = computed(() => store.state.columns);
+const panelPage = ref(0);
+const panelPageCount = computed(() => Math.ceil(columns.value / 3));
 const userActions = computed(() => {
   return store.state.actions.filter((p) => !p.hide);
 });
 
-const changeColumns = (columns) => store.commit("changeColumns", columns);
+function changeColumns(columnCount) {
+  store.commit("changeColumns", columnCount);
+  panelPage.value = 0;
+}
+
+function changePanelPage(delta) {
+  panelPage.value = Math.min(
+    Math.max(panelPage.value + delta, 0),
+    panelPageCount.value - 1,
+  );
+}
+
+watch(panelPageCount, (count) => {
+  if (panelPage.value >= count) panelPage.value = 0;
+});
+
 const setUuid = (uuid) => store.commit("setUuid", uuid);
 let action;
 let activeBots;
@@ -406,6 +449,23 @@ header {
   padding: 4px 10px;
 }
 
+.panel-layout-controls,
+.panel-page-controls {
+  display: flex;
+  align-items: center;
+}
+
+.panel-page-controls {
+  gap: 2px;
+}
+
+.panel-page-indicator {
+  min-width: 34px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.75rem;
+}
+
 .column-icons img:hover {
   opacity: 0.85;
   background-color: rgba(var(--v-theme-primary), 0.12);
@@ -418,6 +478,9 @@ header {
 
 .content {
   background-color: rgb(var(--v-theme-background));
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .cursor-pointer {

@@ -8,6 +8,7 @@
     <section
       v-for="slot in slotCount"
       :key="slot"
+      v-show="isSlotVisible(slot - 1)"
       class="model-slot"
       :class="{ 'model-slot--webview': isOfficialWebBot(slot - 1) }"
     >
@@ -117,6 +118,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  page: {
+    type: Number,
+    default: 0,
+  },
   messages: {
     type: Array,
     default: () => [],
@@ -215,6 +220,10 @@ function getSlotBot(slot) {
   return bots.getBotByClassName(unassigned[slot]?.classname);
 }
 
+function isSlotVisible(slot) {
+  return slot >= props.page * 3 && slot < (props.page + 1) * 3;
+}
+
 function getSlotResponse(slot) {
   const bot = getSlotBot(slot);
   if (!bot || bot instanceof WebChatBot) return null;
@@ -298,24 +307,23 @@ onBeforeUnmount(() => {
 <style scoped>
 .model-slots {
   display: grid;
+  grid-auto-rows: minmax(0, 1fr);
   gap: 16px;
   width: 100%;
+  height: 100%;
+  min-height: 0;
   padding: 2rem;
-  align-content: center;
-  min-height: 100%;
+  box-sizing: border-box;
+  align-content: stretch;
 }
 
 .model-slot {
-  min-height: 180px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
   border-radius: 8px;
   background-color: rgb(var(--v-theme-response));
-}
-
-.model-slot--webview {
-  min-height: 500px;
 }
 
 .model-menu {
@@ -362,7 +370,7 @@ onBeforeUnmount(() => {
 
 .slot-webview-host {
   flex: 1;
-  min-height: 200px;
+  min-height: 0;
   overflow: hidden;
   border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
 }
