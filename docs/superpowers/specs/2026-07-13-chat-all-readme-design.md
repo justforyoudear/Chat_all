@@ -1,47 +1,36 @@
-# chat_all README Design
+# chat_all README 设计
 
-## Goal
+## 目标
 
-Replace inherited ChatALL README content with concise, accurate documentation for
-the `chat_all` desktop application in every supported README language.
+将继承自 ChatALL 的 README 内容替换为简洁、准确的 `chat_all` 桌面应用文档，覆盖所有现有语言版本。
 
-## Scope
+## 范围
 
-- Use `chat_all` as the public product and repository name.
-- Keep the existing language selector, logo, screenshot, and the final sponsor
-  heading in each README.
-- Remove inherited static provider tables, vendor-specific installation channels,
-  upstream contributor material, and sponsor copy.
-- Describe capabilities implemented in this repository: official web login for
-  supported providers, API and OpenAI-compatible endpoints, one-to-six panel
-  comparisons, prompt enhancement, text-file context, image generation, quick
-  summaries, and consensus/difference analysis.
-- State that chats, settings, and credentials remain local and that users need
-  a supported account or API key plus network access.
-- Provide current development and packaging commands from `package.json`.
+- 使用 `chat_all` 作为对外产品名和仓库名。
+- 保留每份 README 现有的语言导航、徽标、截图和最后的赞助标题。
+- 删除继承的静态模型表、特定厂商的安装渠道、上游贡献者信息和赞助正文。
+- 说明本仓库已实现的能力：支持服务商的官方网页登录、API 和 OpenAI 兼容端点、一至六面板对比、提示词增强、文本文件上下文、图像生成、快速摘要，以及共识与差异分析。
+- 说明聊天记录、设置和凭据保留在本地，用户需要可用的账号或 API 密钥以及网络连接。
+- 提供 `package.json` 中实际存在的开发与打包命令。
 
-## Content Structure
+## 内容结构
 
-Each README uses the same structure in its own language:
+每份 README 均以各自语言使用相同结构：
 
-1. Product name and concise purpose.
-2. Screenshot.
-3. Current capabilities.
-4. Requirements and privacy.
-5. Development and build commands.
-6. Repository issue link and the retained empty sponsor heading.
+1. 产品名称和简明定位。
+2. 截图。
+3. 当前能力。
+4. 使用条件与隐私。
+5. 开发与构建命令。
+6. 仓库 Issue 链接，以及保留为空的赞助标题。
 
-## Constraints
+## 约束
 
-- Do not claim support for a provider unless the current bot registry exposes
-  it; avoid a static provider matrix that becomes stale quickly.
-- Do not change application code, package metadata, or build configuration in
-  this documentation pass.
-- Preserve upstream license files; this README rewrite is not a license change.
+- 不声明当前机器人注册表未提供的服务商；避免容易过时的静态服务商矩阵。
+- 本轮仅修改文档，不改动应用代码、包元数据或构建配置。
+- 保留上游许可证文件；README 改写不改变许可证。
 
-## Verification
+## 验证
 
-- Confirm every README uses `chat_all`, retains a language selector and its
-  final sponsor heading, and contains no `ai-shifu/ChatALL` reference.
-- Run `git diff --check` after normalizing the Korean README's CRLF line endings
-  to its tracked format.
+- 确认每份 README 使用 `chat_all`，保留语言导航和最后的赞助标题，且不含 `ai-shifu/ChatALL` 引用。
+- 在将韩文 README 的 CRLF 行尾规范为 Git 跟踪格式后，运行 `git diff --check`。
