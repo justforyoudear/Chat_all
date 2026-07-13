@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="512px" height="448px" viewBox="0 0 512 448" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>five-columns</title>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Artboard" fill="#062AAA" fill-rule="nonzero">
-            <path d="M0,64 C0,28.7 28.7,0 64,0 L448,0 C483.3,0 512,28.7 512,64 L512,384 C512,419.3 483.3,448 448,448 L64,448 C28.7,448 0,419.3 0,384 L0,64 Z M64,128 L64,384 L143,384 L143,128 L64,128 Z M161,128 L161,384 L240,384 L240,128 L161,128 Z M258,128 L258,384 L337,384 L337,128 L258,128 Z M355,128 L355,384 L434,384 L434,128 L355,128 Z M452,128 L452,384 L448,384 L448,128 L452,128 Z" id="Shape"></path>
-        </g>
-    </g>
-</svg>

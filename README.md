@@ -1,199 +1,93 @@
 <div align="center">
-  <img src="src/assets/logo-cover.png" width=256></img>
-  <p><strong>Chat with ALL AI Bots Concurrently, Discover the Best</strong></p>
+  <h1>chat_all</h1>
+  <p><strong>One desktop workspace for comparing AI conversations</strong></p>
 
-[Deutsch](README_DE-DE.md) | English | [Español](README_ES-ES.md) | [Français](README_FR-FR.md) | [Italian](README_IT-IT.md) | [日本語](README_JA-JP.md) | [한국어](README_KO-KR.md) | [Русский](README_RU-RU.md) | [Tiếng Việt](README_VI-VN.md) | [简体中文](README_ZH-CN.md)
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ai-shifu/ChatALL)
+[Deutsch](README_DE-DE.md) | English | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | [Italiano](README_IT-IT.md) | [Japanese](README_JA-JP.md) | [Korean](README_KO-KR.md) | [Russian](README_RU-RU.md) | [Tieng Viet](README_VI-VN.md) | [Chinese](README_ZH-CN.md)
 
 </div>
 
-## Screenshots
+## Screenshot
 
-![Screenshot](screenshots/screenshot-1.png?raw=true)
+## Overview
+
+`chat_all` is an Electron desktop workspace for sending a prompt to several AI models and comparing their results in one place. It keeps model selection, conversations, and follow-up work in a single local workspace.
 
 ## Features
 
-Large Language Models (LLMs) based AI bots are amazing. However, their behavior can be random and different bots excel at different tasks. If you want the best experience, don't try them one by one. ChatALL (Chinese name: 齐叨) can send prompt to several AI bots concurrently, help you to discover the best results. All you need to do is [download, install](https://github.com/ai-shifu/ChatALL/releases) and ask.
+- Compare responses in one to six model panels.
+- Sign in to supported official web chats, including [DeepSeek](https://chat.deepseek.com/), [Qianwen](https://chat.qwen.ai/), [Kimi](https://kimi.moonshot.cn/), [ChatGLM](https://chatglm.cn/), and Doubao.
+- Configure API models from OpenAI, Azure OpenAI, Anthropic, Google, Cohere, Groq, xAI, Baidu, and OpenAI-compatible endpoints.
+- Improve prompts, attach text or code files as context, and generate images with a configured OpenAI API model.
+- Produce a quick summary or analyze consensus and differences across selected responses.
+- Save chats, prompts, and settings locally; manage multiple conversations, layouts, and proxy settings.
 
-### Is this you?
+## Official Web Login
 
-Typical users of ChatALL are:
+The following providers are available through the embedded official web workspace. The planned entries mirror the former project's web-access scope, but are not currently available.
 
-- 🤠**Gurus of LLMs**, who want to find the best answers or creations from LLMs.
-- 🤓**Researchers of LLMs**, who want to intuitively compare the strengths and weaknesses of various LLMs in different fields.
-- 😎**Developers of LLM applications**, who want to quickly debug prompts and find the best-performing foundation models.
+| Provider                                                                       | URL                                                                | Official web login | Notes                           |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ------------------ | ------------------------------- |
+| [DeepSeek](https://chat.deepseek.com/)                                         | <https://chat.deepseek.com/>                                       | Supported          | Embedded official web workspace |
+| [Qianwen](https://chat.qwen.ai/)                                               | <https://chat.qwen.ai/>                                            | Supported          | Embedded official web workspace |
+| [Kimi](https://kimi.moonshot.cn/)                                              | <https://kimi.moonshot.cn/>                                        | Supported          | Embedded official web workspace |
+| [ChatGLM](https://chatglm.cn/)                                                 | <https://chatglm.cn/>                                              | Supported          | Embedded official web workspace |
+| [Doubao](https://www.doubao.com/chat/)                                         | <https://www.doubao.com/chat/>                                     | Supported          | Embedded official web workspace |
+| [360 AI Brain](https://ai.360.cn/)                                             | <https://ai.360.cn/>                                               | Planned            | Former web-access scope         |
+| [Character.AI](https://character.ai/)                                          | <https://character.ai/>                                            | Planned            | Former web-access scope         |
+| [ChatGPT](https://chatgpt.com/)                                                | <https://chatgpt.com/>                                             | Planned            | Former web-access scope         |
+| [Claude](https://www.anthropic.com/claude)                                     | <https://www.anthropic.com/claude>                                 | Planned            | Former web-access scope         |
+| [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/) | <https://ai.meta.com/blog/code-llama-large-language-model-coding/> | Planned            | Former web-access scope         |
+| [Copilot](https://copilot.microsoft.com/)                                      | <https://copilot.microsoft.com/>                                   | Planned            | Former web-access scope         |
+| [Dedao Learning Assistant](https://ai.dedao.cn/)                               | <https://ai.dedao.cn/>                                             | Planned            | Former planned web-access scope |
+| [Falcon 180B](https://huggingface.co/tiiuae/falcon-180b-chat)                  | <https://huggingface.co/tiiuae/falcon-180b-chat>                   | Planned            | Former web-access scope         |
+| [Gemini](https://gemini.google.com/)                                           | <https://gemini.google.com/>                                       | Planned            | Former web-access scope         |
+| [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/)  | <https://blog.google/technology/developers/gemma-open-models/>     | Planned            | Former web-access scope         |
+| [Gradio](https://gradio.app/)                                                  | <https://gradio.app/>                                              | Planned            | Former web-access scope         |
+| [HuggingChat](https://huggingface.co/chat/)                                    | <https://huggingface.co/chat/>                                     | Planned            | Former web-access scope         |
+| [iFLYTEK SPARK](http://xinghuo.xfyun.cn/)                                      | <http://xinghuo.xfyun.cn/>                                         | Planned            | Former web-access scope         |
+| [Llama 2](https://ai.meta.com/llama/)                                          | <https://ai.meta.com/llama/>                                       | Planned            | Former web-access scope         |
+| [MOSS](https://moss.fastnlp.top/)                                              | <https://moss.fastnlp.top/>                                        | Planned            | Former web-access scope         |
+| [Perplexity](https://www.perplexity.ai/)                                       | <https://www.perplexity.ai/>                                       | Planned            | Former web-access scope         |
+| [Phind](https://www.phind.com/)                                                | <https://www.phind.com/>                                           | Planned            | Former web-access scope         |
+| [Pi](https://pi.ai/)                                                           | <https://pi.ai/>                                                   | Planned            | Former web-access scope         |
+| [Poe](https://poe.com/)                                                        | <https://poe.com/>                                                 | Planned            | Former web-access scope         |
+| [SkyWork](https://neice.tiangong.cn/)                                          | <https://neice.tiangong.cn/>                                       | Planned            | Former web-access scope         |
+| [Vicuna](https://lmsys.org/blog/2023-03-30-vicuna/)                            | <https://lmsys.org/blog/2023-03-30-vicuna/>                        | Planned            | Former web-access scope         |
+| [WizardLM](https://github.com/nlpxucan/WizardLM)                               | <https://github.com/nlpxucan/WizardLM>                             | Planned            | Former web-access scope         |
+| [YouChat](https://you.com/)                                                    | <https://you.com/>                                                 | Planned            | Former web-access scope         |
+| [You](https://you.com/)                                                        | <https://you.com/>                                                 | Planned            | Former web-access scope         |
+| [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)              | <https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat>          | Planned            | Former web-access scope         |
 
-### Supported bots
+## Get Started
 
-| AI Bots                                                                        | Web Access  | API         | Notes                                       |
-| ------------------------------------------------------------------------------ | ----------- | ----------- | ------------------------------------------- |
-| [360 AI Brain](https://ai.360.cn/)                                             | Yes         | No API      |                                             |
-| [Baidu ERNIE](https://yiyan.baidu.com/)                                        | No          | Yes         |                                             |
-| [Character.AI](https://character.ai/)                                          | Yes         | No API      |                                             |
-| [ChatGLM2 6B & 130B](https://chatglm.cn/)                                      | Yes         | No API      | No Login required                           |
-| [ChatGPT](https://chatgpt.com)                                             | Yes         | Yes         | Web Browsing, Azure OpenAI service included |
-| [Claude](https://www.anthropic.com/claude)                                     | Yes         | Yes         |                                             |
-| [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/) | Yes         | No API      |                                             |
-| [Cohere Aya 23](https://cohere.com/blog/aya23)                                 | No          | Yes         |                                             |
-| [Cohere Command R Models](https://cohere.com/command)                          | No          | Yes         |                                             |
-| [Copilot](https://copilot.microsoft.com/)                                      | Yes         | No API      |                                             |
-| [Dedao Learning Assistant](https://ai.dedao.cn/)                               | Coming soon | No API      |                                             |
-| [Falcon 180B](https://huggingface.co/tiiuae/falcon-180B-chat)                  | Yes         | No API      |                                             |
-| [Gemini](https://gemini.google.com/)                                           | Yes         | Yes         |                                             |
-| [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/)  | Yes         | No API      |                                             |
-| [Gradio](https://gradio.app/)                                                  | Yes         | No API      | For Hugging Face space/self-deployed models |
-| [Groq Cloud](https://console.groq.com/docs/models)                             | No          | Yes         |                                             |
-| [HuggingChat](https://huggingface.co/chat/)                                    | Yes         | No API      |                                             |
-| [iFLYTEK SPARK](http://xinghuo.xfyun.cn/)                                      | Yes         | Coming soon |                                             |
-| [Kimi](https://kimi.moonshot.cn/               )                               | Yes         | No API      |                                             |
-| [Llama 2 13B & 70B](https://ai.meta.com/llama/)                                | Yes         | No API      |                                             |
-| [MOSS](https://moss.fastnlp.top/)                                              | Yes         | No API      |                                             |
-| [Perplexity](https://www.perplexity.ai/)                                       | Yes         | No API      |                                             |
-| [Phind](https://www.phind.com/)                                                | Yes         | No API      |                                             |
-| [Pi](https://pi.ai)                                                            | Yes         | No API      |                                             |
-| [Poe](https://poe.com/)                                                        | Yes         | Coming soon |                                             |
-| [SkyWork](https://neice.tiangong.cn/)                                          | Yes         | Coming soon |                                             |
-| [Tongyi Qianwen](http://tongyi.aliyun.com/)                                    | Yes         | Coming soon |                                             |
-| [Vicuna 13B & 33B](https://lmsys.org/blog/2023-03-30-vicuna/)                  | Yes         | No API      | No Login required                           |
-| [WizardLM 70B](https://github.com/nlpxucan/WizardLM)                           | Yes         | No API      |                                             |
-| [xAI Grok](https://x.ai)                                                       | No          | Yes         |                                             |
-| [YouChat](https://you.com/)                                                    | Yes         | No API      |                                             |
-| [You](https://you.com/)                                                        | Yes         | No API      |                                             |
-| [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)              | Yes         | No API      |                                             |
+1. Launch `chat_all` and choose a model for each comparison panel.
+2. For an official web model, sign in in its embedded login panel. For an API model, add its credentials in Settings.
+3. Enter a prompt and send it to the selected panels.
+4. Review the responses side by side, then summarize or analyze the results when needed.
 
-More is coming. Upvote your favorite bots in [these issues](https://github.com/ai-shifu/ChatALL/labels/more%20LLMs).
-
-### Note on Web-connected Bot Reliability
-
-Web-connected AI bots (those marked with "Web Access") are inherently less reliable and frequently face stability issues, as service providers regularly update their web interfaces and security measures. These web-based connections rely on reverse engineering and are difficult to maintain, often breaking unexpectedly. For a dependable experience, we strongly recommend using bots that offer API access whenever possible.
-
-### Other features
-
-- Quick-prompt mode: send the next prompt without waiting for the previous request to complete
-- Save chat history locally, protect your privacy
-- Highlight the response you like, delete the bad
-- Enable/disable any bots at any time
-- Switch between one, two, or three-column view
-- Auto update to the latest version
-- Dark mode (contributed by @tanchekwei)
-- Short keys. Press <kbd>Ctrl</kbd> + <kbd>/</kbd> to know all of them (contributed by @tanchekwei)
-- Multiple chats (contributed by @tanchekwei)
-- Proxy setting (contributed by @msaong)
-- Prompt management (contributed by @tanchekwei)
-- Supports multiple languages (Chinese, English, German, French, Russian, Vietnamese, Korean, Japanese, Spanish, Italian)
-- Supports Windows, macOS and Linux
-
-Planned features:
-
-You are welcome to contribute to these features.
-
-- [ ] Deploy front-end to GitHub Pages
+You need a valid account or API key for the models you use, plus network access to the relevant service.
 
 ## Privacy
 
-All chat history, settings and login data are saved locally on your computer.
+Chats, settings, and credentials are stored locally on your computer. API keys are not included when exporting chat data.
 
-ChatALL collects anonymous usage data to help us improve the product. Including:
+## Development
 
-- Which AI bots are prompted and how long the prompt is. Not including the prompt content.
-- How long the response is, and which response is deleted/highlighted. Not including the response content.
-
-## Prerequisites
-
-ChatALL is a client, not a proxy. Therefore, you must:
-
-1. Have working accounts and/or API tokens for the bots.
-2. Have reliable network connections to the bots.
-
-## Download / Install
-
-Download from https://github.com/ai-shifu/ChatALL/releases
-
-### On Windows
-
-Just download the \*-win.exe file and proceed with the setup.
-
-### On macOS
-
-For Apple Silicon Mac (M1, M2 CPU), download the \*-mac-arm64.dmg file.
-
-For other Macs, download \*-mac-x64.dmg file.
-
-If you are using [Homebrew](https://brew.sh/), you can also install it with:
-
-```bash
-brew install --cask chatall
-```
-
-### On Linux
-
-Debian-based Distributions: Download the .deb file, double click it and install the software.
-Arch-based Distributions: You can clone ChatALL from the AUR [here](https://aur.archlinux.org/packages/chatall-bin). You can install it manually or using an AUR helper like yay or paru.
-Other Distributions: Download the .AppImage file, make it executable, and enjoy the click-to-run experience. You can also use [AppimageLauncher](https://github.com/TheAssassin/AppImageLauncher).
-
-## Troubleshooting
-
-If you encounter any problems while using ChatALL, you can try the following methods to resolve them:
-
-1. **Refresh** - press <kbd>Ctrl</kbd> + <kbd>R</kbd> or <kbd>⌘</kbd> + <kbd>R</kbd>.
-2. **Restart** - exit ChatALL and run it again.
-3. **Re-login** - click the settings button in the upper right corner, then click the corresponding login/logout link to relogin the website.
-4. **Create a new chat** - click the `New Chat` button and send prompt again.
-
-If none of the above methods work, you can try **resetting ChatALL**. Note that this will delete all your settings and message history.
-
-You can reset ChatALL by deleting the following directories:
-
-- Windows: `C:\Users\<user>\AppData\Roaming\chatall\`
-- Linux: `/home/<user>/.config/chatall/`
-- macOS: `/Users/<user>/Library/Application Support/chatall/`
-
-If the problem persists, please [submit an issue](https://github.com/ai-shifu/ChatALL/issues).
-
-## For developers
-
-### Contribute a Bot
-
-[The guide](https://github.com/ai-shifu/ChatALL/wiki/%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84-AI-%E5%AF%B9%E8%AF%9D%E6%9C%BA%E5%99%A8%E4%BA%BA) may help you.
-
-### Run
+Use Node.js 20.
 
 ```bash
 npm install
 npm run electron:serve
 ```
 
-### Build
-
-Build for your current platform:
+Build a desktop package for the current platform:
 
 ```bash
 npm run electron:build
 ```
 
-Build for all platforms:
+## Feedback
 
-```bash
-npm run electron:build -- -wml --x64 --arm64
-```
-
-## Credits
-
-### Contributors
-
-<a href="https://github.com/ai-shifu/ChatALL/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ai-shifu/ChatALL" />
-</a>
-
-### Others
-
-- GPT-4 contributed much of the code
-- ChatGPT, Copilot and Google provide many solutions (ranked in order)
-- Inspired by [ChatHub](https://github.com/chathub-dev/chathub). Respect!
+Report bugs or feature requests in [GitHub Issues](https://github.com/justforyoudear/Chat_all/issues).
 
 ## Sponsor
-
-If you like this project, please consider:
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F8KZJGJ)

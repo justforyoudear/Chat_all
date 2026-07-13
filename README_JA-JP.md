@@ -1,199 +1,93 @@
 <div align="center">
-  <img src="src/assets/logo-cover.png" width=256></img>
-  <p><strong>全てのAIと同時にチャットし、ベストを見つける</strong></p>
+  <h1>chat_all</h1>
+  <p><strong>複数の AI 会話を比較するためのデスクトップワークスペース</strong></p>
 
-[Deutsch](README_DE-DE.md) | [English](README.md) | [Español](README_ES-ES.md) | [Français](README_FR-FR.md) | [Italian](README_IT-IT.md) | 日本語 | [한국어](README_KO-KR.md) | [Русский](README_RU-RU.md) | [Tiếng Việt](README_VI-VN.md) | [简体中文](README_ZH-CN.md)
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ai-shifu/ChatALL)
+[Deutsch](README_DE-DE.md) | [English](README.md) | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | [Italiano](README_IT-IT.md) | 日本語 | [Korean](README_KO-KR.md) | [Russian](README_RU-RU.md) | [Tieng Viet](README_VI-VN.md) | [Chinese](README_ZH-CN.md)
 
 </div>
 
-## 画像
+## スクリーンショット
 
-![Screenshot](screenshots/screenshot-1.png?raw=true)
+## 概要
 
-## 特徴
+`chat_all` は、同じプロンプトを複数の AI モデルへ送信し、結果を一か所で比較できる Electron デスクトップワークスペースです。モデル選択、会話、後続の作業は一つのローカルワークスペースに保持されます。
 
-大規模言語モデル（LLM）ベースの AIは素晴らしいです。しかし、その回答はAIによってバラバラで、AIによって得意とする処理が異なります。最高の体験をしたいのであれば、AIを別々に毎回試すのはやめましょう！ChatALL（中国語名：齐叨）は、同時に複数のAIにメッセージを送信することができ、各AIの回答を見て比較するのに役立ちます。ChatALLを使うのに必要なのは[ダウンロード・インストール](https://github.com/ai-shifu/ChatALL/releases)・質問それだけです。
+## 主な機能
 
-### あなたの目的は？
+- 一つから六つのモデルパネルで応答を比較。
+- [DeepSeek](https://chat.deepseek.com/)、Qianwen、Kimi、ChatGLM、Doubao など、対応する公式 Web チャットに埋め込みログインパネルからサインイン。
+- OpenAI、Azure OpenAI、Anthropic、Google、Cohere、Groq、xAI、Baidu、および OpenAI 互換エンドポイントの API モデルを設定。
+- プロンプトの改善、テキストまたはコードファイルのコンテキスト添付、設定済み OpenAI API モデルによる画像生成。
+- 選択した応答のクイック要約、または合意点と相違点の分析。
+- 会話、プロンプト、設定をローカル保存し、複数会話、レイアウト、プロキシ設定を管理。
 
-ChatALLのユーザーはこんな感じ：
+## 公式 Web ログイン
 
-- 🤠**LLMのプロたち**, LLMから最高の答えや創造物を見つけたい人たち。
-- 🤓**LLMの研究者**, 様々な分野のLLMの長所と短所を直感的に比較したい人。
-- 😎**LLMアプリケーションの開発者**, プロンプトを素早くデバッグし、最もパフォーマンスの高い基礎モデルを見つけたい人。
+以下のプロバイダーは埋め込み公式 Web ワークスペースで利用できます。予定項目は元プロジェクトの Web 接入範囲に合わせたものであり、現在は利用できません。
 
-### 対応するAI
+| プロバイダー                                                                   | URL                                                                | 公式 Web ログイン | 状態                            |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ----------------- | ------------------------------- |
+| [DeepSeek](https://chat.deepseek.com/)                                         | <https://chat.deepseek.com/>                                       | 対応済み          | 埋め込み公式 Web ワークスペース |
+| [Qianwen](https://chat.qwen.ai/)                                               | <https://chat.qwen.ai/>                                            | 対応済み          | 埋め込み公式 Web ワークスペース |
+| [Kimi](https://kimi.moonshot.cn/)                                              | <https://kimi.moonshot.cn/>                                        | 対応済み          | 埋め込み公式 Web ワークスペース |
+| [ChatGLM](https://chatglm.cn/)                                                 | <https://chatglm.cn/>                                              | 対応済み          | 埋め込み公式 Web ワークスペース |
+| [Doubao](https://www.doubao.com/chat/)                                         | <https://www.doubao.com/chat/>                                     | 対応済み          | 埋め込み公式 Web ワークスペース |
+| [360 AI Brain](https://ai.360.cn/)                                             | <https://ai.360.cn/>                                               | 予定              | 以前の Web 接入範囲             |
+| [Character.AI](https://character.ai/)                                          | <https://character.ai/>                                            | 予定              | 以前の Web 接入範囲             |
+| [ChatGPT](https://chatgpt.com/)                                                | <https://chatgpt.com/>                                             | 予定              | 以前の Web 接入範囲             |
+| [Claude](https://www.anthropic.com/claude)                                     | <https://www.anthropic.com/claude>                                 | 予定              | 以前の Web 接入範囲             |
+| [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/) | <https://ai.meta.com/blog/code-llama-large-language-model-coding/> | 予定              | 以前の Web 接入範囲             |
+| [Copilot](https://copilot.microsoft.com/)                                      | <https://copilot.microsoft.com/>                                   | 予定              | 以前の Web 接入範囲             |
+| [Dedao Learning Assistant](https://ai.dedao.cn/)                               | <https://ai.dedao.cn/>                                             | 予定              | 以前に予定された Web 接入範囲   |
+| [Falcon 180B](https://huggingface.co/tiiuae/falcon-180b-chat)                  | <https://huggingface.co/tiiuae/falcon-180b-chat>                   | 予定              | 以前の Web 接入範囲             |
+| [Gemini](https://gemini.google.com/)                                           | <https://gemini.google.com/>                                       | 予定              | 以前の Web 接入範囲             |
+| [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/)  | <https://blog.google/technology/developers/gemma-open-models/>     | 予定              | 以前の Web 接入範囲             |
+| [Gradio](https://gradio.app/)                                                  | <https://gradio.app/>                                              | 予定              | 以前の Web 接入範囲             |
+| [HuggingChat](https://huggingface.co/chat/)                                    | <https://huggingface.co/chat/>                                     | 予定              | 以前の Web 接入範囲             |
+| [iFLYTEK SPARK](http://xinghuo.xfyun.cn/)                                      | <http://xinghuo.xfyun.cn/>                                         | 予定              | 以前の Web 接入範囲             |
+| [Llama 2](https://ai.meta.com/llama/)                                          | <https://ai.meta.com/llama/>                                       | 予定              | 以前の Web 接入範囲             |
+| [MOSS](https://moss.fastnlp.top/)                                              | <https://moss.fastnlp.top/>                                        | 予定              | 以前の Web 接入範囲             |
+| [Perplexity](https://www.perplexity.ai/)                                       | <https://www.perplexity.ai/>                                       | 予定              | 以前の Web 接入範囲             |
+| [Phind](https://www.phind.com/)                                                | <https://www.phind.com/>                                           | 予定              | 以前の Web 接入範囲             |
+| [Pi](https://pi.ai/)                                                           | <https://pi.ai/>                                                   | 予定              | 以前の Web 接入範囲             |
+| [Poe](https://poe.com/)                                                        | <https://poe.com/>                                                 | 予定              | 以前の Web 接入範囲             |
+| [SkyWork](https://neice.tiangong.cn/)                                          | <https://neice.tiangong.cn/>                                       | 予定              | 以前の Web 接入範囲             |
+| [Vicuna](https://lmsys.org/blog/2023-03-30-vicuna/)                            | <https://lmsys.org/blog/2023-03-30-vicuna/>                        | 予定              | 以前の Web 接入範囲             |
+| [WizardLM](https://github.com/nlpxucan/WizardLM)                               | <https://github.com/nlpxucan/WizardLM>                             | 予定              | 以前の Web 接入範囲             |
+| [YouChat](https://you.com/)                                                    | <https://you.com/>                                                 | 予定              | 以前の Web 接入範囲             |
+| [You](https://you.com/)                                                        | <https://you.com/>                                                 | 予定              | 以前の Web 接入範囲             |
+| [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)              | <https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat>          | 予定              | 以前の Web 接入範囲             |
 
-| 対応AI                                                                        | webアクセス | API        | 確認事項                                                 |
-| ----------------------------------------------------------------------------- | ----------- | ---------- | -------------------------------------------------------- |
-| [360 AI Brain](https://ai.360.cn/)                                            | はい        | なし       |                                                          |
-| [Baidu ERNIE](https://yiyan.baidu.com/)                                       | いいえ      | あり       |                                                          |
-| [Character.AI](https://character.ai/)                                         | はい        | なし       |                                                          |
-| [ChatGLM2 6B & 130B](https://chatglm.cn/)                                     | はい        | なし       | ログイン不要                                             |
-| [ChatGPT](https://chatgpt.com)                                            | はい        | あり       | ブラウジングを含む、Azure OpenAI service                 |
-| [Claude](https://www.anthropic.com/claude)                                    | はい        | あり       |                                                          |
-| [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/)| はい        | なし       |                                                          |
-| [Cohere Aya 23](https://cohere.com/blog/aya23)                                | いいえ      | はい       |                                                          |
-| [Cohere Command R モデル](https://cohere.com/command)                          | いいえ      | はい       |                                                          |
-| [Copilot](https://copilot.microsoft.com/)                                     | はい        | なし       |                                                          |
-| [Dedao Learning Assistant](https://ai.dedao.cn/)                              | 近日登場    | なし       |                                                          |
-| [Falcon 180B](https://huggingface.co/tiiuae/falcon-180B-chat)                 | はい        | なし       |                                                          |
-| [Gemini](https://gemini.google.com/)                                          | はい        | あり       |                                                          |
-| [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/) | はい        | なし       |                                                          |
-| [Gradio](https://gradio.app/)                                                 | はい        | なし       | Hugging Face space/自己配布モデル用                      |
-| [Groq Cloud](https://console.groq.com/docs/models)                            | いいえ      | あり       |                                                          |
-| [HuggingChat](https://huggingface.co/chat/)                                   | はい        | なし       |                                                          |
-| [iFLYTEK SPARK](http://xinghuo.xfyun.cn/)                                     | はい        | 近日登場   |                                                          |
-| [Kimi](https://kimi.moonshot.cn/)                                             | はい        | なし       |                                                          |
-| [Llama 2 13B & 70B](https://ai.meta.com/llama/)                               | はい        | なし       |                                                          |
-| [MOSS](https://moss.fastnlp.top/)                                             | はい        | なし       |                                                          |
-| [Perplexity](https://www.perplexity.ai/)                                      | はい        | なし       |                                                          |
-| [Phind](https://www.phind.com/)                                               | はい        | なし       |                                                          |
-| [Pi](https://pi.ai)                                                           | はい        | なし       |                                                          |
-| [Poe](https://poe.com/)                                                       | はい        | 近日登場   |                                                          |
-| [SkyWork](https://neice.tiangong.cn/)                                         | はい        | 近日登場   |                                                          |
-| [Tongyi Qianwen](http://tongyi.aliyun.com/)                                   | はい        | 近日登場   |                                                          |
-| [Vicuna 13B & 33B](https://lmsys.org/blog/2023-03-30-vicuna/)                 | はい        | なし       | ログイン不要                                             |
-| [WizardLM 70B](https://github.com/nlpxucan/WizardLM)                          | はい        | なし       |                                                          |
-| [xAI Grok](https://x.ai)                                                      | いいえ      | あり       |                                                          |
-| [YouChat](https://you.com/)                                                   | はい        | なし       |                                                          |
-| [You](https://you.com/)                                                       | はい        | なし       |                                                          |
-| [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)             | はい        | なし       |                                                          |
+## はじめに
 
-まだまだ続きます。[Issuesタブ](https://github.com/ai-shifu/ChatALL/labels/more%20LLMs)でお気に入りのAIを提案してください。
+1. `chat_all` を起動し、各比較パネルのモデルを選びます。
+2. 公式 Web モデルでは埋め込みログインパネルでサインインします。API モデルでは設定に認証情報を入力します。
+3. プロンプトを入力し、選択したパネルへ送信します。
+4. 応答を並べて確認し、必要に応じて要約または分析します。
 
-### Webベース接続のAIボットの信頼性について
-
-Webベースで接続するAIボット（「Web Access」対応と表示されているもの）は、本質的に信頼性に欠け、安定性の問題が頻繁に発生します。これは、サービス提供者がWebインターフェースやセキュリティ対策を頻繁に更新し、その度にリバースエンジニアリングによる保守が必要となるためです。このような接続方式は維持が困難で、予期せず機能が停止することがあります。より信頼性の高いサービスを利用するため、可能な限りAPI接続を提供するボットの使用を強く推奨します。
-
-### その他特徴
-
-- クイックプロンプトモード：前の回答を待たずに次の質問を送信する機能
-- チャット履歴をローカルに保存し、プライバシーを保護
-- 気に入ったメッセージをピン止めし、悪いメッセージを削除
-- 使いたいAIをいつでも変更することができます。
-- 回答を1列～3列の表示切替
-- 最新バージョンへの自動通知と自動アップデート
-- ダークモード対応（提供者 @tanchekwei）
-- <kbd>Ctrl</kbd> + <kbd>/</kbd> または `Cmd + /` で全てのショートカットキーが表示 (提供者 @tanchekwei)
-- マルチチャット対応 (提供者 @tanchekwei)
-- プロキシ設定をサポート (提供者 @msaong)
-- プロンプト管理 (提供者 @tanchekwei)
-- 対応言語：日本語、英語、中国語、スペイン語、ドイツ語、フランス語、ロシア語、ベトナム語、韓国語、イタリア語
-- Windows、macOS、Linux対応
-
-今後リリース予定の機能:
-
-これらの機能への貢献は大歓迎です。
-
-- [ ] フロントエンドをGitHub Pagesにデプロイする。
+利用するモデルには有効なアカウントまたは API キーと、対象サービスへのネットワーク接続が必要です。
 
 ## プライバシー
 
-全てのチャット履歴、設定、ログインデータはローカルに保存されます。
+会話、設定、認証情報はコンピューターにローカル保存されます。チャットデータをエクスポートしても API キーは含まれません。
 
-ChatALLは匿名の使用データを収集し、製品の改善に役立てています。収集するデータには以下が含まれます：
+## 開発とビルド
 
-- どのAIボットがプロンプトされ、プロンプトの長さ。プロンプトの内容は含まれません。
-- 応答の長さ、削除/ハイライトされた応答。応答の内容は含まれません。
-
-## 前提条件
-
-ChatALL はプロキシではなく、クライアントです。そのため、以下のことが前提です:
-
-1. AI用のアカウントや API トークンを持っていること。
-2. サイトへの信頼性の高いネットワーク接続があること。
-
-## ダウンロード / インストール
-
-https://github.com/ai-shifu/ChatALL/releases からダウンロードできます。
-
-### Windowsの場合
-
-\*-win-x64.exe ファイルをダウンロードし、セットアップを進めてください。
-
-### macOSの場合
-
-AppleシリコンMac (頭文字にMがあるCPU)は、\*-mac-arm64.dmg ファイルをダウンロードしてください。
-
-Intel Macは、\*-mac-x64.dmg ファイルをダウンロードしてください。
-
-[Homebrew](https://brew.sh/index_ja)を使用している場合は、次の方法でもインストールできます：
-
-```bash
-brew install --cask chatall
-```
-
-### Linuxの場合
-
-Debian系ディストリビューション: .debファイルをダウンロードし、ダブルクリックしてソフトウェアをインストールします。
-Arch系ディストリビューション: AURからChatALLをクローンできます [こちら](https://aur.archlinux.org/packages/chatall-bin)。手動でインストールするか、yayやparuのようなAURヘルパーを使用してインストールできます。
-その他のディストリビューション: .AppImageファイルをダウンロードし、実行可能にしてクリックで実行します。[AppimageLauncher](https://github.com/TheAssassin/AppImageLauncher)も使用できます。
-
-## トラブルシューティング
-
-ChatALLをご利用中に問題が発生した場合は、以下の解決策をお試しください。：
-
-1. **再読み込み** - <kbd>Ctrl</kbd> + <kbd>R</kbd> または <kbd>⌘</kbd> + <kbd>R</kbd> を押す。
-2. **アプリを再起動** - ChatALLを終了し、再度実行する。
-3. **再ログイン** - 右上の設定ボタンをクリックし、各AIの `ログイン/ログアウト`をクリックして、サイトに再ログインします。
-4. **新しいチャットを作成** - `New Chat` ボタンをクリックし、再度プロンプトを送信します。
-
-上記の方法でもうまくいかない場合は、**ChatALLを初期化**してみてください。この場合、全ての設定とメッセージ履歴が削除されますのでご注意ください。
-
-ChatALLを初期化するには、以下のディレクトリを削除します：
-
-- Windows: `C:\Users\<user>\AppData\Roaming\chatall\`
-- Linux: `/home/<user>/.config/chatall/`
-- macOS: `/Users/<user>/Library/Application Support/chatall/`
-
-問題が解決しない場合は、[報告してください。](https://github.com/ai-shifu/ChatALL/issues)
-
-## デベロッパー向け
-
-### AIの提供
-
-[ガイド](https://github.com/ai-shifu/ChatALL/wiki/%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84-AI-%E5%AF%B9%E8%AF%9D%E6%9C%BA%E5%99%A8%E4%BA%BA)を参考にしてください。
-
-### 実行
+Node.js 20 を使用します。
 
 ```bash
 npm install
 npm run electron:serve
 ```
 
-### ビルド
-
-現在のプラットフォームに合わせてビルド:
+現在のプラットフォーム向けのデスクトップパッケージを作成します。
 
 ```bash
 npm run electron:build
 ```
 
-あらゆるプラットフォームに対応したビルド:
+## フィードバック
 
-```bash
-npm run electron:build -- -wml --x64 --arm64
-```
-
-## クレジット
-
-### 貢献者
-
-<a href="https://github.com/ai-shifu/ChatALL/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ai-shifu/ChatALL" />
-</a>
-
-### その他
-
-- GPT-4はコードを提供した
-- ChatGPT、Copilot、Googleは多くの解決策を提供しています（ランキング順）
-- [ChatHub](https://github.com/chathub-dev/chathub)のリスペクトです！
+不具合や機能要望は [GitHub Issues](https://github.com/justforyoudear/Chat_all/issues) に報告してください。
 
 ## 支援者
-
-このプロジェクトが気に入ったら、支援にご検討ください：
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F8KZJGJ)

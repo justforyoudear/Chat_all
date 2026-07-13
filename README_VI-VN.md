@@ -1,199 +1,93 @@
 <div align="center">
-  <img src="src/assets/logo-cover.png" width=256></img>
-  <p><strong>Trò chuyện đồng thời với tất cả những AI bots, Tìm ra câu trả lời tốt nhất </strong></p>
+  <h1>chat_all</h1>
+  <p><strong>Khong gian lam viec tren may tinh de so sanh cac cuoc tro chuyen AI</strong></p>
 
-[Deutsch](README_DE-DE.md) | [English](README.md) | [Español](README_ES-ES.md) | [Français](README_FR-FR.md) | [Italian](README_IT-IT.md) | [日本語](README_JA-JP.md) | [한국어](README_KO-KR.md) | [Русский](README_RU-RU.md) | Tiếng Việt | [简体中文](README_ZH-CN.md)
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ai-shifu/ChatALL)
+[Deutsch](README_DE-DE.md) | [English](README.md) | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | [Italiano](README_IT-IT.md) | [Japanese](README_JA-JP.md) | [Korean](README_KO-KR.md) | [Russian](README_RU-RU.md) | Tieng Viet | [Chinese](README_ZH-CN.md)
 
 </div>
 
-## Ảnh chụp màn hình
+## Anh chup man hinh
 
-![Screenshot](screenshots/screenshot-1.png?raw=true)
+## Tong quan
 
-## Tính năng
+`chat_all` la khong gian lam viec Electron tren may tinh, gui cung mot cau lenh toi nhieu mo hinh AI va so sanh ket qua tai mot noi. Viec chon mo hinh, hoi thoai va cong viec tiep theo deu duoc giu trong khong gian cuc bo.
 
-Large Language Models (LLMs) based AI bots đều rất tuyệt. Tuy nhiên, hành vi đối với các câu hỏi lại là ngẫu nhiên và mỗi bots lại có thế mạnh, sự vượt trội ở các loại nhiệm vụ khác nhau. Nếu bạn muốn có được trải nghiệm tốt nhất, đừng thử với từng cái một. ChatAll (Tên Tiếng Trung: 齐叨) sẽ gửi đồng loạt tin nhắn tới một số lượng lớn các bots AI, giúp bạn tìm ra kết quả tốt nhất. Tất cả những gì bạn cần làm là [tải xuống, cài đặt](https://github.com/ai-shifu/ChatALL/releases) và đặt câu hỏi.
+## Tinh nang
 
-### Đây có phải là bạn?
+- So sanh cau tra loi trong mot den sau bang mo hinh.
+- Dang nhap vao cac cuoc tro chuyen web chinh thuc duoc ho tro, gom [DeepSeek](https://chat.deepseek.com/), [Qianwen](https://chat.qwen.ai/), [Kimi](https://kimi.moonshot.cn/), [ChatGLM](https://chatglm.cn/) va Doubao.
+- Cau hinh cac mo hinh API cua OpenAI, Azure OpenAI, Anthropic, Google, Cohere, Groq, xAI, Baidu va diem cuoi tuong thich OpenAI.
+- Cai thien cau lenh, dinh kem tep van ban hoac ma nguon lam ngu canh, va tao anh bang mo hinh OpenAI API da cau hinh.
+- Tao tom tat nhanh hoac phan tich diem dong thuan va khac biet giua cac cau tra loi da chon.
+- Luu hoi thoai, cau lenh va cai dat tren may; quan ly nhieu hoi thoai, bo cuc va cai dat proxy.
 
-Những người dùng điển hình của ChatALL là:
+## Dang nhap web chinh thuc
 
-- 🤠**Chuyên gia về LLMs**, những người muốn tìm câu trả lời hoặc sáng tạo tốt nhất từ LLMs.
-- 🤓**Nhà nghiên cứu về LLMs**, những người muốn so sánh trực quan điểm mạnh và điểm yếu của các LLMs khác nhau trong các lĩnh vực khác nhau.
-- 😎**Nhà phát triển ứng dụng LLM**, những người muốn nhanh chóng gỡ lỗi prompts và tìm các mô hình nền tảng hoạt động tốt nhất.
+Nhung nha cung cap sau co san trong khong gian web chinh thuc tich hop. Cac muc du kien theo pham vi truy cap web cua du an nguon va hien chua kha dung.
 
-### Danh sách AI Bots được hỗ trợ
+| Nha cung cap                                                                   | URL                                                                | Dang nhap web chinh thuc | Trang thai                         |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ------------------------ | ---------------------------------- |
+| [DeepSeek](https://chat.deepseek.com/)                                         | <https://chat.deepseek.com/>                                       | Ho tro                   | Khong gian web chinh thuc tich hop |
+| [Qianwen](https://chat.qwen.ai/)                                               | <https://chat.qwen.ai/>                                            | Ho tro                   | Khong gian web chinh thuc tich hop |
+| [Kimi](https://kimi.moonshot.cn/)                                              | <https://kimi.moonshot.cn/>                                        | Ho tro                   | Khong gian web chinh thuc tich hop |
+| [ChatGLM](https://chatglm.cn/)                                                 | <https://chatglm.cn/>                                              | Ho tro                   | Khong gian web chinh thuc tich hop |
+| [Doubao](https://www.doubao.com/chat/)                                         | <https://www.doubao.com/chat/>                                     | Ho tro                   | Khong gian web chinh thuc tich hop |
+| [360 AI Brain](https://ai.360.cn/)                                             | <https://ai.360.cn/>                                               | Du kien                  | Pham vi truy cap web truoc day     |
+| [Character.AI](https://character.ai/)                                          | <https://character.ai/>                                            | Du kien                  | Pham vi truy cap web truoc day     |
+| [ChatGPT](https://chatgpt.com/)                                                | <https://chatgpt.com/>                                             | Du kien                  | Pham vi truy cap web truoc day     |
+| [Claude](https://www.anthropic.com/claude)                                     | <https://www.anthropic.com/claude>                                 | Du kien                  | Pham vi truy cap web truoc day     |
+| [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/) | <https://ai.meta.com/blog/code-llama-large-language-model-coding/> | Du kien                  | Pham vi truy cap web truoc day     |
+| [Copilot](https://copilot.microsoft.com/)                                      | <https://copilot.microsoft.com/>                                   | Du kien                  | Pham vi truy cap web truoc day     |
+| [Dedao Learning Assistant](https://ai.dedao.cn/)                               | <https://ai.dedao.cn/>                                             | Du kien                  | Pham vi web tung duoc len ke hoach |
+| [Falcon 180B](https://huggingface.co/tiiuae/falcon-180b-chat)                  | <https://huggingface.co/tiiuae/falcon-180b-chat>                   | Du kien                  | Pham vi truy cap web truoc day     |
+| [Gemini](https://gemini.google.com/)                                           | <https://gemini.google.com/>                                       | Du kien                  | Pham vi truy cap web truoc day     |
+| [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/)  | <https://blog.google/technology/developers/gemma-open-models/>     | Du kien                  | Pham vi truy cap web truoc day     |
+| [Gradio](https://gradio.app/)                                                  | <https://gradio.app/>                                              | Du kien                  | Pham vi truy cap web truoc day     |
+| [HuggingChat](https://huggingface.co/chat/)                                    | <https://huggingface.co/chat/>                                     | Du kien                  | Pham vi truy cap web truoc day     |
+| [iFLYTEK SPARK](http://xinghuo.xfyun.cn/)                                      | <http://xinghuo.xfyun.cn/>                                         | Du kien                  | Pham vi truy cap web truoc day     |
+| [Llama 2](https://ai.meta.com/llama/)                                          | <https://ai.meta.com/llama/>                                       | Du kien                  | Pham vi truy cap web truoc day     |
+| [MOSS](https://moss.fastnlp.top/)                                              | <https://moss.fastnlp.top/>                                        | Du kien                  | Pham vi truy cap web truoc day     |
+| [Perplexity](https://www.perplexity.ai/)                                       | <https://www.perplexity.ai/>                                       | Du kien                  | Pham vi truy cap web truoc day     |
+| [Phind](https://www.phind.com/)                                                | <https://www.phind.com/>                                           | Du kien                  | Pham vi truy cap web truoc day     |
+| [Pi](https://pi.ai/)                                                           | <https://pi.ai/>                                                   | Du kien                  | Pham vi truy cap web truoc day     |
+| [Poe](https://poe.com/)                                                        | <https://poe.com/>                                                 | Du kien                  | Pham vi truy cap web truoc day     |
+| [SkyWork](https://neice.tiangong.cn/)                                          | <https://neice.tiangong.cn/>                                       | Du kien                  | Pham vi truy cap web truoc day     |
+| [Vicuna](https://lmsys.org/blog/2023-03-30-vicuna/)                            | <https://lmsys.org/blog/2023-03-30-vicuna/>                        | Du kien                  | Pham vi truy cap web truoc day     |
+| [WizardLM](https://github.com/nlpxucan/WizardLM)                               | <https://github.com/nlpxucan/WizardLM>                             | Du kien                  | Pham vi truy cap web truoc day     |
+| [YouChat](https://you.com/)                                                    | <https://you.com/>                                                 | Du kien                  | Pham vi truy cap web truoc day     |
+| [You](https://you.com/)                                                        | <https://you.com/>                                                 | Du kien                  | Pham vi truy cap web truoc day     |
+| [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)              | <https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat>          | Du kien                  | Pham vi truy cap web truoc day     |
 
-| AI Bots                                                                        | Truy cập Web | API          | Ghi chú                                               |
-| ------------------------------------------------------------------------------ | ------------ | ------------ | ----------------------------------------------------- |
-| [360 AI Brain](https://ai.360.cn/)                                             | Có           | Không có     |                                                       |
-| [Baidu ERNIE](https://yiyan.baidu.com/)                                        | Không        | Có           |                                                       |
-| [Character.AI](https://character.ai/)                                          | Có           | Không có     |                                                       |
-| [ChatGLM2 6B & 130B](https://chatglm.cn/)                                      | Có           | Không có API | Không yêu cầu tài khoản                               |
-| [ChatGPT](https://chatgpt.com)                                                 | Có           | Có           | Bao gồm cả trình duyệt Web, Azure OpenAI service      |
-| [Claude](https://www.anthropic.com/claude)                                     | Có           | Có           |                                                       |
-| [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/) | Có           | Không có     |                                                       |
-| [Cohere Aya 23](https://cohere.com/blog/aya23)                                 | Không        | Có           |                                                       |
-| [Các mô hình Cohere Command R](https://cohere.com/command)                     | Không        | Có           |                                                       |
-| [Copilot](https://copilot.microsoft.com/)                                      | Có           | Không có API |                                                       |
-| [Dedao Learning Assistant](https://ai.dedao.cn/)                               | Sắp ra mắt   | Không có API |                                                       |
-| [Falcon 180B](https://huggingface.co/tiiuae/falcon-180B-chat)                  | Có           | Không có     |                                                       |
-| [Gemini](https://gemini.google.com/)                                           | Có           | Có           |                                                       |
-| [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/)  | Có           | Không có     |                                                       |
-| [Gradio](https://gradio.app/)                                                  | Có           | Không có API | Dành cho models Hugging Face không gian/tự triển khai |
-| [Groq Cloud](https://console.groq.com/docs/models)                             | Không có     | Có           |                                                       |
-| [HuggingChat](https://huggingface.co/chat/)                                    | Có           | Không có API |                                                       |
-| [iFLYTEK SPARK](http://xinghuo.xfyun.cn/)                                      | Có           | Sắp ra mắt   |                                                       |
-| [Kimi](https://kimi.moonshot.cn/)                                              | Có           | Không có     |                                                       |
-| [Llama 2 13B & 70B](https://ai.meta.com/llama/)                                | Có           | Không có     |                                                       |
-| [MOSS](https://moss.fastnlp.top/)                                              | Có           | Không có API |                                                       |
-| [Perplexity](https://www.perplexity.ai/)                                       | Có           | Không có     |                                                       |
-| [Phind](https://www.phind.com/)                                                | Có           | Không có     |                                                       |
-| [Pi](https://pi.ai)                                                            | Có           | Không có     |                                                       |
-| [Poe](https://poe.com/)                                                        | Có           | Sắp ra mắt   |                                                       |
-| [SkyWork](https://neice.tiangong.cn/)                                          | Có           | Sắp ra mắt   |                                                       |
-| [Tongyi Qianwen](http://tongyi.aliyun.com/)                                    | Có           | Sắp ra mắt   |                                                       |
-| [Vicuna 13B & 33B](https://lmsys.org/blog/2023-03-30-vicuna/)                  | Có           | Không có API | Không yêu cầu tài khoản                               |
-| [WizardLM 70B](https://github.com/nlpxucan/WizardLM)                           | Có           | Không có     |                                                       |
-| [xAI Grok](https://x.ai)                                                       | Không        | Có           |                                                       |
-| [YouChat](https://you.com/)                                                    | Có           | Không có     |                                                       |
-| [You](https://you.com/)                                                        | Có           | Không có     |                                                       |
-| [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)              | Có           | Không có     |                                                       |
+## Bat dau
 
-Bình chọn cho bot yêu thích của bạn trong [những vấn đề này](https://github.com/ai-shifu/ChatALL/labels/more%20LLMs).
+1. Khoi dong `chat_all` va chon mot mo hinh cho tung bang so sanh.
+2. Voi mo hinh web chinh thuc, hay dang nhap trong bang nhung. Voi mo hinh API, them thong tin dang nhap trong Cai dat.
+3. Nhap cau lenh va gui den cac bang da chon.
+4. Xem cac cau tra loi canh nhau, sau do tom tat hoac phan tich khi can.
 
-### Lưu ý về độ tin cậy của các bot AI dựa trên Web
+Ban can tai khoan hop le hoac khoa API cho cac mo hinh da dung, cung ket noi mang den dich vu tuong ung.
 
-Các bot AI dựa trên Web (được đánh dấu là "Web Access") vốn kém tin cậy hơn và thường xuyên gặp vấn đề về tính ổn định. Điều này là do các nhà cung cấp dịch vụ thường xuyên cập nhật giao diện web và các biện pháp bảo mật của họ, đòi hỏi phải liên tục bảo trì thông qua kỹ thuật dịch ngược. Kiểu kết nối này khó duy trì và có thể ngừng hoạt động đột ngột. Để có trải nghiệm đáng tin cậy hơn, chúng tôi đặc biệt khuyến nghị sử dụng các bot có hỗ trợ API khi có thể.
+## Quyen rieng tu
 
-### Tính năng khác
+Hoi thoai, cai dat va thong tin dang nhap duoc luu cuc bo tren may tinh. Khoa API khong duoc dua vao du lieu chat xuat ra.
 
-- Chế độ Quick-prompt: gửi prompt tiếp theo đó mà không cần chờ yêu cầu trước đó hoàn thành
-- Lưu trữ lịch sử trò chuyện trên máy tính cục bộ, bảo vệ quyền riêng tư của bạn
-- Highlight câu trả lời bạn yêu thích và xóa câu trả lời có giá trị thấp
-- Bật / Tắt bất kỳ bots nào vào bất kỳ thời điểm nào
-- Chuyển đổi giữa chế độ xem một, hai hoặc ba cột
-- Tự động cập nhật phiên bản mới nhất
-- Chế độ tối (đóng góp bởi @tanchekwei)
-- Phím tắt. Nhấn <kbd>Ctrl</kbd> + <kbd>/</kbd> để biết tất cả (đóng góp bởi @tanchekwei)
-- Nhiều cuộc trò chuyện (đóng góp bởi @tanchekwei)
-- Cài đặt proxy (đóng góp bởi @msaong)
-- Quản lý prompt (đóng góp bởi @tanchekwei)
-- Hỗ trợ đa ngôn ngữ (Tiếng Anh, Tiếng Trung, Tiếng Đức, Tiếng Pháp, Tiếng Nga, Tiếng Việt, Tiếng Hàn, Tiếng Nhật, Tiếng Tây Ban Nha, Tiếng Ý)
-- Hỗ trợ Windows, macOS và Linux
+## Phat trien va build
 
-Tính năng đang phát triển:
-
-Chúng tôi rất hoan nghênh sự đóng góp của bạn cho các tính năng này.
-
-- [ ] Triển khai front-end lên GitHub Pages
-
-## Quyền riêng tư
-
-Tất cả lịch sử trò chuyện, cài đặt và dữ liệu đăng nhập được lưu cục bộ trên máy tính của bạn.
-
-ChatALL thu thập dữ liệu sử dụng ẩn danh để giúp chúng tôi cải thiện sản phẩm. Bao gồm:
-
-- AI bots nào được sử dụng và độ dài của prompt. Không bao gồm nội dung prompt.
-- Độ dài của câu trả lời, và câu trả lời nào bị xóa/được highlight. Không bao gồm nội dung câu trả lời.
-
-## Điều kiện tiên quyết
-
-ChatALL là một client, không phải là proxy. Vì vậy, bạn cần:
-
-1. Có tài khoản đang hoạt động hoặc có khóa API tokens cho các bots.
-2. Có kết nối mạng đáng tin cậy tới các bots.
-
-## Tải xuống / Cài đặt
-
-Tải xuống từ https://github.com/ai-shifu/ChatALL/releases
-
-### Windows
-
-Chỉ cần tải xuống tệp \*-win.exe và tiến hành cài đặt.
-
-### macOS
-
-Đối với những dòng máy Mac sử dụng chip M1, M2, tải xuống tệp \*-mac-arm64.dmg.
-
-Đối với những dòng máy Mac còn lại, tải xuống tệp \*-mac-x64.dmg.
-
-Nếu bạn đang sử dụng [Homebrew](https://brew.sh/), bạn cũng có thể cài đặt bằng lệnh:
-
-```bash
-brew install --cask chatall
-```
-
-### Linux
-
-Các bản phân phối dựa trên Debian: Tải xuống tệp .deb, nhấp đúp vào nó và cài đặt phần mềm.
-Các bản phân phối dựa trên Arch: Bạn có thể clone ChatALL từ AUR [tại đây](https://aur.archlinux.org/packages/chatall-bin). Bạn có thể cài đặt thủ công hoặc sử dụng trình trợ giúp AUR như yay hoặc paru.
-Các bản phân phối khác: Tải xuống tệp .AppImage, đặt nó thành có thể thực thi và tận hưởng trải nghiệm click-to-run. Bạn cũng có thể sử dụng [AppimageLauncher](https://github.com/TheAssassin/AppImageLauncher).
-
-## Xử lý sự cố
-
-Nếu bạn gặp bất kỳ vấn đề nào khi sử dụng ChatALL, bạn có thể thử các phương pháp sau để giải quyết:
-
-1. **Làm mới** - nhấn <kbd>Ctrl</kbd> + <kbd>R</kbd> hoặc <kbd>⌘</kbd> + <kbd>R</kbd>.
-2. **Khởi động lại** - thoát ChatALL và chạy lại.
-3. **Đăng nhập lại** - nhấp vào nút cài đặt ở góc trên bên phải, sau đó nhấp vào liên kết đăng nhập/đăng xuất tương ứng để đăng nhập lại trang web.
-4. **Tạo cuộc trò chuyện mới** - nhấp vào nút `Cuộc trò chuyện mới` và gửi prompt lại.
-
-Nếu không có phương pháp nào ở trên hoạt động, bạn có thể thử **đặt lại ChatALL**. Lưu ý rằng điều này sẽ xóa tất cả cài đặt và lịch sử tin nhắn của bạn.
-
-Bạn có thể đặt lại ChatALL bằng cách xóa các thư mục sau:
-
-- Windows: `C:\Users\<user>\AppData\Roaming\chatall\`
-- Linux: `/home/<user>/.config/chatall/`
-- macOS: `/Users/<user>/Library/Application Support/chatall/`
-
-Nếu vấn đề vẫn tiếp tục, vui lòng [gửi issue](https://github.com/ai-shifu/ChatALL/issues).
-
-## Dành cho các Nhà phát triển
-
-### Đóng góp Bot
-
-[Hướng dẫn](https://github.com/ai-shifu/ChatALL/wiki/%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84-AI-%E5%AF%B9%E8%AF%9D%E6%9C%BA%E5%99%A8%E4%BA%BA) này sẽ giúp bạn.
-
-### Chạy thử
+Su dung Node.js 20.
 
 ```bash
 npm install
 npm run electron:serve
 ```
 
-### Build
-
-Build cho nền tảng hiện tại của bạn:
+Tao goi ung dung may tinh cho nen tang hien tai:
 
 ```bash
 npm run electron:build
 ```
 
-Build cho mọi nền tảng:
+## Phan hoi
 
-```bash
-npm run electron:build -- -wml --x64 --arm64
-```
-
-## Công nhận
-
-### Các nhà đóng góp
-
-<a href="https://github.com/ai-shifu/ChatALL/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ai-shifu/ChatALL" />
-</a>
-
-### Vài thông tin khác
-
-- GPT-4 đóng góp rất nhiều mã nguồn
-- ChatGPT, Copilot và Google cung cấp nhiều giải pháp (được xếp hạng theo thứ tự)
-- Lấy cảm hứng từ [ChatHub](https://github.com/chathub-dev/chathub). Tôn trọng!
+Bao loi hoac de xuat tinh nang trong [GitHub Issues](https://github.com/justforyoudear/Chat_all/issues).
 
 ## Sponsor
-
-Nếu bạn thích dự án này, xin vui lòng xem xét:
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F8KZJGJ)

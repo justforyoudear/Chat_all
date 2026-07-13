@@ -1,199 +1,93 @@
 <div align="center">
-  <img src="src/assets/logo-cover.png" width=256></img>
-  <p><strong>Общайтесь со ВСЕМИ искусственными ботами одновременно, открывайте для себя лучшие</strong></p>
+  <h1>chat_all</h1>
+  <p><strong>Настольное рабочее пространство для сравнения диалогов с ИИ</strong></p>
 
-[Deutsch](README_DE-DE.md) | [English](README.md) | [Español](README_ES-ES.md) | [Français](README_FR-FR.md) | [Italian](README_IT-IT.md) | [日本語](README_JA-JP.md) | [한국어](README_KO-KR.md) | Русский | [Tiếng Việt](README_VI-VN.md) | [简体中文](README_ZH-CN.md)
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ai-shifu/ChatALL)
+[Deutsch](README_DE-DE.md) | [English](README.md) | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | [Italiano](README_IT-IT.md) | [Japanese](README_JA-JP.md) | [Korean](README_KO-KR.md) | Русский | [Tieng Viet](README_VI-VN.md) | [Chinese](README_ZH-CN.md)
 
 </div>
 
-## Скриншоты
+## Скриншот
 
-![Скриншот](screenshots/screenshot-1.png?raw=true)
+## Обзор
+
+`chat_all` - это настольное рабочее пространство Electron, которое отправляет один запрос нескольким моделям ИИ и позволяет сравнить результаты в одном месте. Выбор моделей, диалоги и последующая работа сохраняются в локальном рабочем пространстве.
 
 ## Возможности
 
-ИИ-боты, основанные на больших языковых моделях (LLM) потрясающи. Однако их поведение может быть случайным, и разные боты преуспевают в выполнении разных задач. Если вы хотите получить наилучшие впечатления, не пробуйте их по одному. ChatALL (китайское название: 齐叨) может отправлять запросы нескольким ботам с искусственным интеллектом одновременно, помогая вам находить наилучшие результаты. Все, что вам нужно сделать, это [загрузить, установить](https://github.com/ai-shifu/ChatALL/releases) и спросить.
+- Сравнение ответов в одном-шести панелях моделей.
+- Вход в поддерживаемые официальные веб-чаты, включая [DeepSeek](https://chat.deepseek.com/), [Qianwen](https://chat.qwen.ai/), [Kimi](https://kimi.moonshot.cn/), [ChatGLM](https://chatglm.cn/) и Doubao.
+- Настройка API-моделей OpenAI, Azure OpenAI, Anthropic, Google, Cohere, Groq, xAI, Baidu и OpenAI-совместимых конечных точек.
+- Улучшение запросов, прикрепление текстовых или кодовых файлов как контекста и создание изображений настроенной моделью OpenAI API.
+- Быстрое резюме или анализ согласия и различий между выбранными ответами.
+- Локальное сохранение диалогов, запросов и настроек; управление несколькими диалогами, макетами и прокси.
 
-### Это вы?
+## Официальный веб-вход
 
-Типичными пользователями ChatALL являются:
+Следующие провайдеры доступны во встроенном официальном веб-пространстве. Планируемые записи повторяют область веб-доступа исходного проекта и пока недоступны.
 
-- 🤠**Гуру LLM**, которые хотят найти лучшие ответы или творения от LLM.
-- 🤓**Исследователи LLM**, которые хотят интуитивно сравнить сильные и слабые стороны различных LLM в разных областях.
-- 😎**Разработчики приложений LLM**, которые хотят быстро отлаживать запросы и находить наиболее эффективные базовые модели.
+| Провайдер                                                                      | URL                                                                | Официальный веб-вход | Статус                                  |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------ | -------------------- | --------------------------------------- |
+| [DeepSeek](https://chat.deepseek.com/)                                         | <https://chat.deepseek.com/>                                       | Поддерживается       | Встроенное официальное веб-пространство |
+| [Qianwen](https://chat.qwen.ai/)                                               | <https://chat.qwen.ai/>                                            | Поддерживается       | Встроенное официальное веб-пространство |
+| [Kimi](https://kimi.moonshot.cn/)                                              | <https://kimi.moonshot.cn/>                                        | Поддерживается       | Встроенное официальное веб-пространство |
+| [ChatGLM](https://chatglm.cn/)                                                 | <https://chatglm.cn/>                                              | Поддерживается       | Встроенное официальное веб-пространство |
+| [Doubao](https://www.doubao.com/chat/)                                         | <https://www.doubao.com/chat/>                                     | Поддерживается       | Встроенное официальное веб-пространство |
+| [360 AI Brain](https://ai.360.cn/)                                             | <https://ai.360.cn/>                                               | Планируется          | Прежняя область веб-доступа             |
+| [Character.AI](https://character.ai/)                                          | <https://character.ai/>                                            | Планируется          | Прежняя область веб-доступа             |
+| [ChatGPT](https://chatgpt.com/)                                                | <https://chatgpt.com/>                                             | Планируется          | Прежняя область веб-доступа             |
+| [Claude](https://www.anthropic.com/claude)                                     | <https://www.anthropic.com/claude>                                 | Планируется          | Прежняя область веб-доступа             |
+| [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/) | <https://ai.meta.com/blog/code-llama-large-language-model-coding/> | Планируется          | Прежняя область веб-доступа             |
+| [Copilot](https://copilot.microsoft.com/)                                      | <https://copilot.microsoft.com/>                                   | Планируется          | Прежняя область веб-доступа             |
+| [Dedao Learning Assistant](https://ai.dedao.cn/)                               | <https://ai.dedao.cn/>                                             | Планируется          | Ранее запланированный веб-доступ        |
+| [Falcon 180B](https://huggingface.co/tiiuae/falcon-180b-chat)                  | <https://huggingface.co/tiiuae/falcon-180b-chat>                   | Планируется          | Прежняя область веб-доступа             |
+| [Gemini](https://gemini.google.com/)                                           | <https://gemini.google.com/>                                       | Планируется          | Прежняя область веб-доступа             |
+| [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/)  | <https://blog.google/technology/developers/gemma-open-models/>     | Планируется          | Прежняя область веб-доступа             |
+| [Gradio](https://gradio.app/)                                                  | <https://gradio.app/>                                              | Планируется          | Прежняя область веб-доступа             |
+| [HuggingChat](https://huggingface.co/chat/)                                    | <https://huggingface.co/chat/>                                     | Планируется          | Прежняя область веб-доступа             |
+| [iFLYTEK SPARK](http://xinghuo.xfyun.cn/)                                      | <http://xinghuo.xfyun.cn/>                                         | Планируется          | Прежняя область веб-доступа             |
+| [Llama 2](https://ai.meta.com/llama/)                                          | <https://ai.meta.com/llama/>                                       | Планируется          | Прежняя область веб-доступа             |
+| [MOSS](https://moss.fastnlp.top/)                                              | <https://moss.fastnlp.top/>                                        | Планируется          | Прежняя область веб-доступа             |
+| [Perplexity](https://www.perplexity.ai/)                                       | <https://www.perplexity.ai/>                                       | Планируется          | Прежняя область веб-доступа             |
+| [Phind](https://www.phind.com/)                                                | <https://www.phind.com/>                                           | Планируется          | Прежняя область веб-доступа             |
+| [Pi](https://pi.ai/)                                                           | <https://pi.ai/>                                                   | Планируется          | Прежняя область веб-доступа             |
+| [Poe](https://poe.com/)                                                        | <https://poe.com/>                                                 | Планируется          | Прежняя область веб-доступа             |
+| [SkyWork](https://neice.tiangong.cn/)                                          | <https://neice.tiangong.cn/>                                       | Планируется          | Прежняя область веб-доступа             |
+| [Vicuna](https://lmsys.org/blog/2023-03-30-vicuna/)                            | <https://lmsys.org/blog/2023-03-30-vicuna/>                        | Планируется          | Прежняя область веб-доступа             |
+| [WizardLM](https://github.com/nlpxucan/WizardLM)                               | <https://github.com/nlpxucan/WizardLM>                             | Планируется          | Прежняя область веб-доступа             |
+| [YouChat](https://you.com/)                                                    | <https://you.com/>                                                 | Планируется          | Прежняя область веб-доступа             |
+| [You](https://you.com/)                                                        | <https://you.com/>                                                 | Планируется          | Прежняя область веб-доступа             |
+| [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)              | <https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat>          | Планируется          | Прежняя область веб-доступа             |
 
-### Поддерживаемые боты
+## Начало работы
 
-| ИИ-боты                                                                        | Доступ к интернету | API         | Подпись                                                 |
-| ------------------------------------------------------------------------------ | ------------------ | ----------- | ------------------------------------------------------- |
-| [360 AI Brain](https://ai.360.cn/)                                             | Да                 | Нет         |                                                         |
-| [Baidu ERNIE](https://yiyan.baidu.com/)                                        | Нет                | Да          |                                                         |
-| [Character.AI](https://character.ai/)                                          | Да                 | Нет         |                                                         |
-| [ChatGLM2 6B & 130B](https://chatglm.cn/)                                      | Да                 | Нет API     | Вход в ученую запись не требуется                       |
-| [ChatGPT](https://chatgpt.com)                                             | Да                 | Да          | Просмотр веб-страниц, включая службу Azure OpenAI       |
-| [Claude](https://www.anthropic.com/claude)                                     | Да                 | Да          |                                                         |
-| [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/) | Да                 | Нет         |                                                         |
-| [Cohere Aya 23](https://cohere.com/blog/aya23)                                 | Нет                | Да          |                                                         |
-| [Модели Cohere Command R](https://cohere.com/command)                          | Нет                | Да          |                                                         |
-| [Copilot](https://copilot.microsoft.com/)                                      | Да                 | Нет API     |                                                         |
-| [Dedao Learning Assistant](https://ai.dedao.cn/)                               | Скоро будет        | Нет API     |                                                         |
-| [Falcon 180B](https://huggingface.co/tiiuae/falcon-180B-chat)                  | Да                 | Нет         |                                                         |
-| [Gemini](https://gemini.google.com/)                                           | Да                 | Да          |                                                         |
-| [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/)  | Да                 | Нет         |                                                         |
-| [Gradio](https://gradio.app/)                                                  | Да                 | Нет API     | Для моделей, размещенных на Hugging Face или автономно  |
-| [Groq Cloud](https://console.groq.com/docs/models)                             | Нет                | Да          |                                                         |
-| [HuggingChat](https://huggingface.co/chat/)                                    | Да                 | Нет API     |                                                         |
-| [iFLYTEK SPARK](http://xinghuo.xfyun.cn/)                                      | Да                 | Скоро будет |                                                         |
-| [Kimi](https://kimi.moonshot.cn/)                                              | Да                 | Нет         |                                                         |
-| [Llama 2 13B & 70B](https://ai.meta.com/llama/)                                | Да                 | Нет         |                                                         |
-| [MOSS](https://moss.fastnlp.top/)                                              | Да                 | Нет API     |                                                         |
-| [Perplexity](https://www.perplexity.ai/)                                       | Да                 | Нет         |                                                         |
-| [Phind](https://www.phind.com/)                                                | Да                 | Нет         |                                                         |
-| [Pi](https://pi.ai)                                                            | Да                 | Нет         |                                                         |
-| [Poe](https://poe.com/)                                                        | Да                 | Скоро будет |                                                         |
-| [SkyWork](https://neice.tiangong.cn/)                                          | Да                 | Скоро будет |                                                         |
-| [Tongyi Qianwen](http://tongyi.aliyun.com/)                                    | Да                 | Скоро будет |                                                         |
-| [Vicuna 13B & 33B](https://lmsys.org/blog/2023-03-30-vicuna/)                  | Да                 | Нет API     | Вход в ученую запись не требуется                       |
-| [WizardLM 70B](https://github.com/nlpxucan/WizardLM)                           | Да                 | Нет         |                                                         |
-| [xAI Grok](https://x.ai)                                                       | Нет                | Да          |                                                         |
-| [YouChat](https://you.com/)                                                    | Да                 | Нет         |                                                         |
-| [You](https://you.com/)                                                        | Да                 | Нет         |                                                         |
-| [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)              | Да                 | Нет         |                                                         |
+1. Запустите `chat_all` и выберите модель для каждой панели сравнения.
+2. Для официальной веб-модели войдите во встроенной панели. Для API-модели добавьте учетные данные в настройках.
+3. Введите запрос и отправьте его в выбранные панели.
+4. Просмотрите ответы рядом и при необходимости создайте резюме или выполните анализ.
 
-Скоро будет еще больше. Проголосуйте за своих любимых ботов в [этих issues](https://github.com/ai-shifu/ChatALL/labels/more%20LLMs).
-
-### Примечание о надёжности веб-ботов ИИ
-
-Веб-боты ИИ (отмеченные как "Web Access") по своей природе менее надёжны и часто сталкиваются с проблемами стабильности. Это связано с тем, что поставщики услуг регулярно обновляют свои веб-интерфейсы и меры безопасности, что требует постоянного обслуживания с помощью реверс-инжиниринга. Такой тип подключения сложно поддерживать, и он может неожиданно перестать работать. Для более надёжной работы мы настоятельно рекомендуем использовать ботов с API-доступом, когда это возможно.
-
-### Другие функции
-
-- Режим быстрого запроса: отправьте следующее приглашение, не дожидаясь завершения предыдущего запроса
-- Сохраняйте историю чата локально, защищайте вашу частную жизнь
-- Выделите понравившийся вам ответ, удалите плохой
-- Включать / отключать любых ботов в любое время
-- Переключение между просмотром в одну, две или три колонки
-- Автоматическое обновление до последней версии
-- Темный режим (автор @tanchekwei)
-- Короткие клавиши. Нажмите "Ctrl + /", чтобы узнать их все (автор @tanchekwei)
-- Несколько чатов (автор: @tanchekwei)
-- Настройка прокси-сервера (предоставлено @msaong)
-- Управление запросами (автор @tanchekwei)
-- Поддерживает несколько языков (Китайский, Английский, Немецкий, Французкий, Русский, Вьетнамский, Корейский, Японский, Испанский, Итальянский).
-- Поддерживает Windows, macOS и Linux
-
-Планируемые функции:
-
-Вы можете внести свой вклад в эти функции.
-
-- [ ] Развертывание фронт-энда на GitHub Pages
+Для используемых моделей нужны действующая учетная запись или API-ключ и сетевой доступ к соответствующему сервису.
 
 ## Конфиденциальность
 
-Вся история чата, настройки и данные для входа сохраняются локально на вашем компьютере.
+Диалоги, настройки и учетные данные хранятся локально на компьютере. API-ключи не включаются в экспортируемые данные чатов.
 
-ChatALL собирает анонимные данные об использовании, чтобы помочь нам улучшить продукт. Включая:
+## Разработка и сборка
 
-- Какие боты с искусственным интеллектом получают запросы и какова длина запроса. Не включая содержание запроса.
-- Насколько длинным является ответ, и какой ответ удален/выделен. Не включая содержание ответа.
-
-## Условия
-
-ChatALL - это клиент, а не прокси. Следовательно, вы должны:
-
-1. Иметь рабочие учетные записи и/или токены API для ботов.
-2. Обеспечьте надежное сетевое подключение к ботам.
-
-## Скачать / установить
-
-Скачать с https://github.com/ai-shifu/ChatALL/releases
-
-### В Windows
-
-Просто скачайте \*-win.exe сохраните файл и приступайте к настройке.
-
-### На macOS
-
-Для Apple Silicon Mac (процессор M1, M2) загрузите файл \*-mac-arm64.dmg.
-
-Для других компьютеров Mac загрузите файл \*-mac-x64.dmg.
-
-Если вы используете [Homebrew](https://brew.sh/), вы также можете установить его с помощью:
-
-```bash
-brew install --cask chatall
-```
-
-### На Linux
-
-Дистрибутивы на базе Debian: Загрузите файл .deb, дважды щелкните его и установите программное обеспечение.
-Дистрибутивы на базе Arch: Вы можете клонировать ChatALL из AUR [здесь](https://aur.archlinux.org/packages/chatall-bin). Вы можете установить его вручную или с помощью помощника AUR, такого как yay или paru.
-Другие дистрибутивы: Скачайте файл .AppImage, сделайте его исполняемым и наслаждайтесь процессом запуска по щелчку мыши. Вы также можете использовать [AppimageLauncher](https://github.com/TheAssassin/AppImageLauncher).
-
-## Решение проблем
-
-Если вы столкнетесь с какими-либо проблемами при использовании ChatALL, вы можете попробовать следующие методы их устранения:
-
-1. **Обновить** - нажмите <kbd>Ctrl</kbd> + <kbd>R</kbd> или <kbd>⌘</kbd> + <kbd>R</kbd>.
-2. **Перезапустить** - выйдите из ChatALL и запустите его снова.
-3. **Повторный вход в систему** - нажмите кнопку настройки в правом верхнем углу, затем перейдите по соответствующей ссылке входа/выхода из системы, чтобы повторно войти на вебсайт.
-4. **Создайте новый чат** - нажмите кнопку "Создать чат" и отправьте запрос еще раз.
-
-Если ни один из вышеперечисленных методов не работает, вы можете попробовать **сбросить настройки ChatALL**. Обратите внимание, что при этом будут удалены все ваши настройки и история сообщений.
-
-Вы можете сбросить настройки ChatALL, удалив следующие каталоги:
-
-- Windows: `C:\Users\<user>\AppData\Roaming\chatall\`
-- Linux: `/home/<user>/.config/chatall/`
-- macOS: `/Users/<user>/Library/Application Support/chatall/`
-
-Если проблема не устранена, пожалуйста, [отправьте issue](https://github.com/ai-shifu/ChatALL/issues).
-
-## Для разработчиков
-
-### Сделать бота
-
-[Этот гайд](https://github.com/ai-shifu/ChatALL/wiki/%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84-AI-%E5%AF%B9%E8%AF%9D%E6%9C%BA%E5%99%A8%E4%BA%BA) может помочь вам.
-
-### Запуск
+Используйте Node.js 20.
 
 ```bash
 npm install
 npm run electron:serve
 ```
 
-### Сборка
-
-Сборка для вашей текущей платформы:
+Соберите настольный пакет для текущей платформы:
 
 ```bash
 npm run electron:build
 ```
 
-Сборка для всех платформ:
+## Обратная связь
 
-```bash
-npm run electron:build -- -wml --x64 --arm64
-```
-
-## Благодарность
-
-### Участники
-
-<a href="https://github.com/ai-shifu/ChatALL/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ai-shifu/ChatALL" />
-</a>
-
-### Другие
-
-- GPT-4 внес большой вклад в разработку кода
-- ChatGPT, Copilot и Google предоставляют множество решений (ранжированных по порядку)
-- Вдохновленно с помощью [ChatHub](https://github.com/chathub-dev/chathub). Респект!
+Сообщайте об ошибках и предлагайте функции в [GitHub Issues](https://github.com/justforyoudear/Chat_all/issues).
 
 ## Поддержать
-
-Если вам нравится этот проект, пожалуйста, рассмотрите:
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F8KZJGJ)
