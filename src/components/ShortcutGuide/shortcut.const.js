@@ -28,15 +28,6 @@ export const SHORTCUT_FIND = {
   flexDirection: "column",
 };
 
-export const SHORTCUT_CLEAR_MESSAGES = {
-  elementId: "clear-messages-btn",
-  key: [modifier, "e"],
-  offset: {
-    top: 40,
-  },
-  flexDirection: "column",
-};
-
 export const SHORTCUT_SETTINGS = {
   elementId: "settings-btn",
   key: [modifier, ","],
@@ -108,7 +99,6 @@ export const SHORTCUT_LIST = [
   SHORTCUT_SETTINGS,
   SHORTCUT_BOTS_MENU,
   SHORTCUT_SHORTCUT_GUIDE,
-  SHORTCUT_CLEAR_MESSAGES,
   SHORTCUT_PROMPT_TEXTAREA,
   SHORTCUT_CHAT_DRAWER,
   SHORTCUT_NEW_CHAT,

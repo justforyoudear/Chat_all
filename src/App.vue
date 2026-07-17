@@ -27,31 +27,28 @@
             @shortkey="isChatDrawerOpen = !isChatDrawerOpen"
             v-shortkey="SHORTCUT_CHAT_DRAWER.key"
             > </v-app-bar-nav-icon
-          > <img
-            :class="{ 'dark-png': store.state.theme === Theme.DARK }"
-            class="logo"
-            src="@/assets/logo-banner.png"
-            alt="ChatALL"
-          />
+          >
         </div>
 
         <div class="panel-layout-controls header-content">
 
           <div class="column-icons" v-show="isSelectedResponsesEmpty">
-             <img
+             <v-btn
               v-for="columnCount in 6"
               :id="`column-${columnCount}`"
               :key="columnCount"
-              :src="getColumnImage(columnCount)"
+              :icon="`mdi-numeric-${columnCount}-box-outline`"
               @click="changeColumns(columnCount)"
               @shortkey="changeColumns(columnCount)"
               v-shortkey="[`f${columnCount}`]"
               :title="columnTitle(columnCount)"
+              :aria-label="columnTitle(columnCount)"
+              class="column-icon"
               :class="{
                 selected: columns === columnCount,
-                'dark-png': store.state.theme === Theme.DARK,
               }"
-            />
+            ></v-btn
+            >
           </div>
 
           <div
@@ -94,16 +91,6 @@
             icon="mdi-magnify"
             size="x-large"
             @click="openFind()"
-          ></v-icon
-          > <v-icon
-            v-shortkey="SHORTCUT_CLEAR_MESSAGES.key"
-            @shortkey="clearMessages"
-            :id="SHORTCUT_CLEAR_MESSAGES.elementId"
-            class="cursor-pointer"
-            color="primary"
-            icon="mdi-broom"
-            size="x-large"
-            @click="clearMessages()"
           ></v-icon
           > <v-icon
             class="cursor-pointer"
@@ -179,9 +166,8 @@
         @update-active-bots="(bots) => (activeBots = bots)"
       ></FooterBar
       > </v-main
-    > <SettingsModal v-model:open="isSettingsOpen" /> <ConfirmModal
-      ref="confirmModal"
-    /> <UpdateNotification></UpdateNotification> <ShortcutGuide
+    > <SettingsModal v-model:open="isSettingsOpen" /> <UpdateNotification
+    ></UpdateNotification> <ShortcutGuide
       ref="shortcutGuideRef"
       v-model:open="isShortcutGuideOpen"
     ></ShortcutGuide
@@ -202,12 +188,11 @@ import { ref, computed, onMounted, nextTick, watch } from "vue";
 import { useTheme } from "vuetify";
 import { useStore } from "vuex";
 import { v4 as uuidv4 } from "uuid";
-import { applyTheme, resolveTheme, Theme } from "./theme";
+import { applyTheme, resolveTheme } from "./theme";
 import {
   SHORTCUT_FIND,
   SHORTCUT_SETTINGS,
   SHORTCUT_SHORTCUT_GUIDE,
-  SHORTCUT_CLEAR_MESSAGES,
   SHORTCUT_CHAT_DRAWER,
   SHORTCUT_APP_BAR,
 } from "./components/ShortcutGuide/shortcut.const";
@@ -223,7 +208,6 @@ import { onScroll } from "./helpers/scroll-helper";
 import ChatDrawer from "@/components/ChatDrawer/ChatDrawer.vue";
 import ChatMessages from "@/components/Messages/ChatMessages.vue";
 import SettingsModal from "@/components/SettingsModal.vue";
-import ConfirmModal from "@/components/ConfirmModal.vue";
 import FooterBar from "@/components/Footer/FooterBar.vue";
 import UpdateNotification from "@/components/Notification/UpdateNotificationModal.vue";
 import FindModal from "@/components/FindModal.vue";
@@ -256,7 +240,6 @@ const currentChat = useObservable(
 
 ipcRenderer.on("on-updated-system-theme", onUpdatedSystemTheme);
 
-const confirmModal = ref(null);
 const findRef = ref(null);
 const footerBarRef = ref(null);
 const shortcutGuideRef = ref(null);
@@ -322,15 +305,6 @@ function toggleShortcutGuide() {
   }
 }
 
-async function clearMessages() {
-  const result = await confirmModal.value.showModal(
-    i18n.global.t("header.clearMessages"),
-  );
-  if (result) {
-    store.commit("clearMessages");
-  }
-}
-
 function focusPromptTextarea() {
   footerBarRef.value.focusPromptTextarea();
 }
@@ -340,8 +314,7 @@ onMounted(() => {
   window._paq.push(["setUserId", store.state.uuid]);
   window._paq.push(["trackPageView"]);
 
-  const ver = require("../package.json").version;
-  document.title = `ChatALL.ai - v${ver}`;
+  document.title = "AI Chat Hub";
 
   initializeQueues(store);
   startQueuesProcessing();
@@ -364,10 +337,6 @@ watch(
       isShowMenuBar: isShowAppBar.value,
     }),
 );
-
-function getColumnImage(columnCount) {
-  return require(`@/assets/column-${columnCount}.svg`);
-}
 
 function columnTitle(columnCount) {
   const titles = [
@@ -424,13 +393,10 @@ header {
   align-items: center;
 }
 
-.logo {
-  height: 40px;
-}
-
-.column-icons img {
+.column-icons .column-icon {
   opacity: 0.5;
   cursor: pointer;
+  min-width: 22px !important;
   width: 22px;
   height: 22px;
   margin: 0;
@@ -466,12 +432,12 @@ header {
   font-size: 0.75rem;
 }
 
-.column-icons img:hover {
+.column-icons .column-icon:hover {
   opacity: 0.85;
   background-color: rgba(var(--v-theme-primary), 0.12);
 }
 
-.column-icons img.selected {
+.column-icons .column-icon.selected {
   opacity: 1;
   background-color: rgba(var(--v-theme-primary), 0.18);
 }
@@ -485,10 +451,6 @@ header {
 
 .cursor-pointer {
   cursor: pointer;
-}
-
-.dark-png {
-  filter: grayscale(1) brightness(5);
 }
 
 .v-toolbar__content {

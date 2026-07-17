@@ -97,15 +97,7 @@ import ProxySettings from "@/components/ProxySetting.vue";
 import ChatSettings from "@/components/ChatSetting.vue";
 import CommonBotSettings from "@/components/BotSettings/CommonBotSettings.vue";
 
-import OpenAIAPIBotSettings from "@/components/BotSettings/OpenAIAPIBotSettings.vue";
-import GeminiAPIBotSettings from "@/components/BotSettings/GeminiAPIBotSettings.vue";
-import AzureOpenAIAPIBotSettings from "./BotSettings/AzureOpenAIAPIBotSettings.vue";
-import CohereAPIBotSettings from "./BotSettings/CohereAPIBotSettings.vue";
-
 import { resolveTheme, applyTheme, Mode } from "../theme";
-import ClaudeAPIBotSettings from "./BotSettings/ClaudeAPIBotSettings.vue";
-import GroqAPIBotSettings from "./BotSettings/GroqAPIBotSettings.vue";
-import xAIAPIBotSettings from "./BotSettings/xAIAPIBotSettings.vue";
 import CustomOpenAIAPIBotSettings from "./BotSettings/CustomOpenAIAPIBotSettings.vue";
 import DeepSeekWebBotSettings from "./BotSettings/DeepSeekWebBotSettings.vue";
 
@@ -120,15 +112,8 @@ const emit = defineEmits(["update:open", "done"]);
 const tab = ref(null);
 
 const botSettings = [
-  { brand: "azureOpenaiApi", component: AzureOpenAIAPIBotSettings },
   { brand: "customApi", component: CustomOpenAIAPIBotSettings },
   { brand: "deepSeek", component: DeepSeekWebBotSettings },
-  { brand: "claudeApi", component: ClaudeAPIBotSettings },
-  { brand: "cohereApi", component: CohereAPIBotSettings },
-  { brand: "geminiApi", component: GeminiAPIBotSettings },
-  { brand: "groqApi", component: GroqAPIBotSettings },
-  { brand: "openaiApi", component: OpenAIAPIBotSettings },
-  { brand: "xaiApi", component: xAIAPIBotSettings },
 ];
 
 const proxy = ProxySettings;
