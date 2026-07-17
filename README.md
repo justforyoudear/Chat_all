@@ -1,16 +1,16 @@
 <div align="center">
-  <h1>chat_all</h1>
+  <h1>AI Chat Hub</h1>
   <p><strong>One desktop workspace for comparing AI conversations</strong></p>
 
 [Deutsch](README_DE-DE.md) | English | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | [Italiano](README_IT-IT.md) | [Japanese](README_JA-JP.md) | [Korean](README_KO-KR.md) | [Russian](README_RU-RU.md) | [Tieng Viet](README_VI-VN.md) | [Chinese](README_ZH-CN.md)
 
 </div>
 
-## Screenshot
+## Product Overview
 
-## Overview
+`AI Chat Hub` is an Electron desktop workspace for sending a prompt to several AI models and comparing their results in one place. It keeps model selection, conversations, and follow-up work in a single local workspace.
 
-`chat_all` is an Electron desktop workspace for sending a prompt to several AI models and comparing their results in one place. It keeps model selection, conversations, and follow-up work in a single local workspace.
+![AI Chat Hub multi-model workspace](screenshots/ai-chat-hub-workspace.png)
 
 ## Features
 
@@ -60,7 +60,7 @@ The following providers are available through the embedded official web workspac
 
 ## Get Started
 
-1. Launch `chat_all` and choose a model for each comparison panel.
+1. Launch `AI Chat Hub` and choose a model for each comparison panel.
 2. For an official web model, sign in in its embedded login panel. For an API model, add its credentials in Settings.
 3. Enter a prompt and send it to the selected panels.
 4. Review the responses side by side, then summarize or analyze the results when needed.
@@ -71,14 +71,28 @@ You need a valid account or API key for the models you use, plus network access 
 
 Chats, settings, and credentials are stored locally on your computer. API keys are not included when exporting chat data.
 
-## Development
+## Run AI Chat Hub
 
-Use Node.js 20.
+### Run from source
+
+Install Node.js 20 and npm, then run these commands from the repository root:
 
 ```bash
 npm install
 npm run electron:serve
 ```
+
+Keep the terminal open while using the app. Use the Electron window that opens automatically; opening `http://localhost:8080` in a browser does not support the embedded official chat pages.
+
+### Run the Windows EXE
+
+1. Download the Windows installer `.exe`, or build it from source with the command below. Local builds are written to `dist_electron/`.
+2. Double-click the `.exe` and complete the installation wizard.
+3. Start the installed app from its desktop shortcut, Start menu entry, or installation directory.
+
+Local builds are unsigned. Windows may show a SmartScreen warning; only choose **More info > Run anyway** when you trust the file's source.
+
+### Build an installer
 
 Build a desktop package for the current platform:
 

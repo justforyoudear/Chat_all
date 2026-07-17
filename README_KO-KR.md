@@ -1,16 +1,16 @@
 <div align="center">
-  <h1>chat_all</h1>
+  <h1>AI Chat Hub</h1>
   <p><strong>여러 AI 대화를 비교하는 데스크톱 작업 공간</strong></p>
 
 [Deutsch](README_DE-DE.md) | [English](README.md) | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | [Italiano](README_IT-IT.md) | [Japanese](README_JA-JP.md) | 한국어 | [Russian](README_RU-RU.md) | [Tieng Viet](README_VI-VN.md) | [Chinese](README_ZH-CN.md)
 
 </div>
 
-## 스크린샷
+## 제품 소개
 
-## 개요
+`AI Chat Hub`은 같은 프롬프트를 여러 AI 모델에 보내고 한곳에서 결과를 비교하는 Electron 데스크톱 작업 공간입니다. 모델 선택, 대화, 후속 작업은 하나의 로컬 작업 공간에 유지됩니다.
 
-`chat_all`은 같은 프롬프트를 여러 AI 모델에 보내고 한곳에서 결과를 비교하는 Electron 데스크톱 작업 공간입니다. 모델 선택, 대화, 후속 작업은 하나의 로컬 작업 공간에 유지됩니다.
+![AI Chat Hub 멀티 모델 작업 공간](screenshots/ai-chat-hub-workspace.png)
 
 ## 기능
 
@@ -60,7 +60,7 @@
 
 ## 시작하기
 
-1. `chat_all`을 시작하고 각 비교 패널의 모델을 선택합니다.
+1. `AI Chat Hub`을 시작하고 각 비교 패널의 모델을 선택합니다.
 2. 공식 웹 모델은 내장 로그인 패널에서 로그인합니다. API 모델은 설정에서 자격 증명을 추가합니다.
 3. 프롬프트를 입력하고 선택한 패널로 보냅니다.
 4. 응답을 나란히 검토하고 필요할 때 요약하거나 분석합니다.
@@ -71,14 +71,28 @@
 
 대화, 설정, 자격 증명은 컴퓨터에 로컬로 저장됩니다. 채팅 데이터를 내보낼 때 API 키는 포함되지 않습니다.
 
-## 개발 및 빌드
+## AI Chat Hub 실행
 
-Node.js 20을 사용합니다.
+### 소스 코드에서 실행
+
+Node.js 20과 npm을 설치한 후 저장소 루트에서 다음 명령을 실행합니다.
 
 ```bash
 npm install
 npm run electron:serve
 ```
+
+앱을 사용하는 동안 터미널을 열어 두세요. 자동으로 열리는 Electron 창을 사용해야 합니다. 브라우저에서 `http://localhost:8080`을 직접 열면 내장 공식 채팅 페이지가 작동하지 않습니다.
+
+### Windows EXE 실행
+
+1. Windows 설치 프로그램 `.exe`를 다운로드하거나 아래 명령으로 빌드합니다. 로컬 빌드는 `dist_electron/`에 생성됩니다.
+2. `.exe`를 두 번 클릭하고 설치 마법사를 완료합니다.
+3. 바탕 화면 바로 가기, 시작 메뉴 또는 설치 폴더에서 앱을 실행합니다.
+
+로컬 빌드는 서명되지 않습니다. SmartScreen이 표시되면 파일 출처를 신뢰할 수 있을 때만 **추가 정보 > 실행**을 선택하세요.
+
+### 설치 프로그램 빌드
 
 현재 플랫폼용 데스크톱 패키지를 빌드합니다.
 

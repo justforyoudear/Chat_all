@@ -1,16 +1,16 @@
 <div align="center">
-  <h1>chat_all</h1>
+  <h1>AI Chat Hub</h1>
   <p><strong>在一个桌面工作台中对比多个 AI 对话</strong></p>
 
 [Deutsch](README_DE-DE.md) | [English](README.md) | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | [Italiano](README_IT-IT.md) | [Japanese](README_JA-JP.md) | [Korean](README_KO-KR.md) | [Russian](README_RU-RU.md) | [Tieng Viet](README_VI-VN.md) | 简体中文
 
 </div>
 
-## 屏幕截图
+## 产品介绍
 
-## 项目简介
+`AI Chat Hub` 是一个 Electron 桌面工作台，可将同一条提示词发送给多个 AI 模型，并在同一界面中比较结果。模型选择、对话和后续处理都保留在一个本地工作区中。
 
-`chat_all` 是一个 Electron 桌面工作台，可将同一条提示词发送给多个 AI 模型，并在同一界面中比较结果。模型选择、对话和后续处理都保留在一个本地工作区中。
+![AI Chat Hub 多模型对话工作台](screenshots/ai-chat-hub-workspace.png)
 
 ## 当前能力
 
@@ -60,7 +60,7 @@
 
 ## 开始使用
 
-1. 启动 `chat_all`，为每个对比面板选择模型。
+1. 启动 `AI Chat Hub`，为每个对比面板选择模型。
 2. 使用官方网页模型时，在内嵌登录面板完成登录；使用 API 模型时，在设置中填写凭据。
 3. 输入提示词并发送到已选面板。
 4. 并排查看回答，需要时生成摘要或执行分析。
@@ -71,14 +71,28 @@
 
 聊天记录、设置和凭据均保存在你的计算机本地。导出对话数据时不会包含 API 密钥。
 
-## 开发与构建
+## 运行 AI Chat Hub
 
-使用 Node.js 20。
+### 从源码启动
+
+先安装 Node.js 20 和 npm，然后在仓库根目录运行：
 
 ```bash
 npm install
 npm run electron:serve
 ```
+
+使用期间需要保持终端运行。请使用自动打开的 Electron 窗口；直接在浏览器访问 `http://localhost:8080` 无法使用内嵌官方聊天页面。
+
+### 使用 Windows EXE
+
+1. 下载 Windows 安装程序 `.exe`，或者使用下面的命令从源码构建。本地构建产物位于 `dist_electron/`。
+2. 双击 `.exe`，按照安装向导完成安装。
+3. 从桌面快捷方式、开始菜单或安装目录启动软件。
+
+本地构建的 EXE 未进行数字签名。Windows 可能显示 SmartScreen 提示；仅在确认文件来源可信时选择“更多信息 > 仍要运行”。
+
+### 构建安装包
 
 为当前平台构建桌面安装包：
 

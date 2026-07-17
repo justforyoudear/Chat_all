@@ -1,16 +1,16 @@
 <div align="center">
-  <h1>chat_all</h1>
+  <h1>AI Chat Hub</h1>
   <p><strong>Uno spazio di lavoro desktop per confrontare conversazioni IA</strong></p>
 
 [Deutsch](README_DE-DE.md) | [English](README.md) | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | Italiano | [Japanese](README_JA-JP.md) | [Korean](README_KO-KR.md) | [Russian](README_RU-RU.md) | [Tieng Viet](README_VI-VN.md) | [Chinese](README_ZH-CN.md)
 
 </div>
 
-## Schermata
+## Presentazione del prodotto
 
-## Panoramica
+`AI Chat Hub` e uno spazio di lavoro desktop Electron che invia lo stesso prompt a piu modelli IA e ne confronta i risultati in un unico punto. Selezione dei modelli, conversazioni e lavoro successivo rimangono in un ambiente locale.
 
-`chat_all` e uno spazio di lavoro desktop Electron che invia lo stesso prompt a piu modelli IA e ne confronta i risultati in un unico punto. Selezione dei modelli, conversazioni e lavoro successivo rimangono in un ambiente locale.
+![Area di lavoro multimodello AI Chat Hub](screenshots/ai-chat-hub-workspace.png)
 
 ## Funzionalita
 
@@ -60,7 +60,7 @@ I seguenti provider sono disponibili nello spazio web ufficiale integrato. Le vo
 
 ## Per iniziare
 
-1. Avvia `chat_all` e scegli un modello per ogni pannello di confronto.
+1. Avvia `AI Chat Hub` e scegli un modello per ogni pannello di confronto.
 2. Per un modello web ufficiale, accedi nel pannello integrato. Per un modello API, aggiungi le credenziali nelle Impostazioni.
 3. Scrivi un prompt e invialo ai pannelli selezionati.
 4. Esamina le risposte affiancate e, quando serve, riepilogale o analizzale.
@@ -71,14 +71,28 @@ Sono necessari un account valido o una chiave API per i modelli utilizzati e l'a
 
 Conversazioni, impostazioni e credenziali sono archiviate localmente sul computer. Le chiavi API non vengono incluse nell'esportazione dei dati delle chat.
 
-## Sviluppo e build
+## Eseguire AI Chat Hub
 
-Usa Node.js 20.
+### Eseguire dal codice sorgente
+
+Installa Node.js 20 e npm, quindi esegui questi comandi dalla cartella principale del repository:
 
 ```bash
 npm install
 npm run electron:serve
 ```
+
+Mantieni aperto il terminale. Usa la finestra Electron aperta automaticamente; `http://localhost:8080` nel browser non supporta le pagine di chat ufficiali integrate.
+
+### Eseguire l'EXE di Windows
+
+1. Scarica il programma di installazione `.exe` o crealo con il comando seguente. Le build locali sono salvate in `dist_electron/`.
+2. Fai doppio clic sul file `.exe` e completa la procedura di installazione.
+3. Avvia l'app dal collegamento sul desktop, dal menu Start o dalla cartella di installazione.
+
+Le build locali non sono firmate. Se appare SmartScreen, scegli **Ulteriori informazioni > Esegui comunque** solo se ritieni attendibile l'origine.
+
+### Creare il programma di installazione
 
 Genera un pacchetto desktop per la piattaforma corrente:
 

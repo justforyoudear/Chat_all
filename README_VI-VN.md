@@ -1,16 +1,16 @@
 <div align="center">
-  <h1>chat_all</h1>
+  <h1>AI Chat Hub</h1>
   <p><strong>Khong gian lam viec tren may tinh de so sanh cac cuoc tro chuyen AI</strong></p>
 
 [Deutsch](README_DE-DE.md) | [English](README.md) | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | [Italiano](README_IT-IT.md) | [Japanese](README_JA-JP.md) | [Korean](README_KO-KR.md) | [Russian](README_RU-RU.md) | Tieng Viet | [Chinese](README_ZH-CN.md)
 
 </div>
 
-## Anh chup man hinh
+## Gioi thieu san pham
 
-## Tong quan
+`AI Chat Hub` la khong gian lam viec Electron tren may tinh, gui cung mot cau lenh toi nhieu mo hinh AI va so sanh ket qua tai mot noi. Viec chon mo hinh, hoi thoai va cong viec tiep theo deu duoc giu trong khong gian cuc bo.
 
-`chat_all` la khong gian lam viec Electron tren may tinh, gui cung mot cau lenh toi nhieu mo hinh AI va so sanh ket qua tai mot noi. Viec chon mo hinh, hoi thoai va cong viec tiep theo deu duoc giu trong khong gian cuc bo.
+![Khong gian lam viec da mo hinh AI Chat Hub](screenshots/ai-chat-hub-workspace.png)
 
 ## Tinh nang
 
@@ -60,7 +60,7 @@ Nhung nha cung cap sau co san trong khong gian web chinh thuc tich hop. Cac muc 
 
 ## Bat dau
 
-1. Khoi dong `chat_all` va chon mot mo hinh cho tung bang so sanh.
+1. Khoi dong `AI Chat Hub` va chon mot mo hinh cho tung bang so sanh.
 2. Voi mo hinh web chinh thuc, hay dang nhap trong bang nhung. Voi mo hinh API, them thong tin dang nhap trong Cai dat.
 3. Nhap cau lenh va gui den cac bang da chon.
 4. Xem cac cau tra loi canh nhau, sau do tom tat hoac phan tich khi can.
@@ -71,14 +71,28 @@ Ban can tai khoan hop le hoac khoa API cho cac mo hinh da dung, cung ket noi man
 
 Hoi thoai, cai dat va thong tin dang nhap duoc luu cuc bo tren may tinh. Khoa API khong duoc dua vao du lieu chat xuat ra.
 
-## Phat trien va build
+## Chay AI Chat Hub
 
-Su dung Node.js 20.
+### Chay tu ma nguon
+
+Cai dat Node.js 20 va npm, sau do chay cac lenh sau tai thu muc goc cua kho ma nguon:
 
 ```bash
 npm install
 npm run electron:serve
 ```
+
+Giu cua so terminal mo trong khi su dung. Hay dung cua so Electron duoc mo tu dong; truy cap `http://localhost:8080` bang trinh duyet se khong ho tro cac trang chat chinh thuc duoc nhung.
+
+### Chay EXE tren Windows
+
+1. Tai bo cai dat `.exe` hoac build bang lenh ben duoi. Ban build cuc bo nam trong `dist_electron/`.
+2. Bam dup vao `.exe` va hoan tat trinh cai dat.
+3. Mo ung dung tu loi tat desktop, menu Start hoac thu muc cai dat.
+
+Ban build cuc bo khong duoc ky so. Neu Windows hien SmartScreen, chi chon **More info > Run anyway** khi ban tin cay nguon cua tep.
+
+### Build bo cai dat
 
 Tao goi ung dung may tinh cho nen tang hien tai:
 

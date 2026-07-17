@@ -1,16 +1,16 @@
 <div align="center">
-  <h1>chat_all</h1>
+  <h1>AI Chat Hub</h1>
   <p><strong>Ein Desktop-Arbeitsbereich zum Vergleichen von KI-Gesprachen</strong></p>
 
 Deutsch | [English](README.md) | [Espanol](README_ES-ES.md) | [Francais](README_FR-FR.md) | [Italiano](README_IT-IT.md) | [Japanese](README_JA-JP.md) | [Korean](README_KO-KR.md) | [Russian](README_RU-RU.md) | [Tieng Viet](README_VI-VN.md) | [Chinese](README_ZH-CN.md)
 
 </div>
 
-## Bildschirmfoto
+## Produktubersicht
 
-## Uberblick
+`AI Chat Hub` ist ein Electron-Desktop-Arbeitsbereich, der dieselbe Eingabe an mehrere KI-Modelle sendet und ihre Ergebnisse an einer Stelle vergleichbar macht. Modellauswahl, Gesprache und die weitere Arbeit bleiben lokal zusammen.
 
-`chat_all` ist ein Electron-Desktop-Arbeitsbereich, der dieselbe Eingabe an mehrere KI-Modelle sendet und ihre Ergebnisse an einer Stelle vergleichbar macht. Modellauswahl, Gesprache und die weitere Arbeit bleiben lokal zusammen.
+![AI Chat Hub Arbeitsbereich mit mehreren Modellen](screenshots/ai-chat-hub-workspace.png)
 
 ## Funktionen
 
@@ -60,7 +60,7 @@ Die folgenden Anbieter sind im eingebetteten offiziellen Web-Arbeitsbereich verf
 
 ## Erste Schritte
 
-1. `chat_all` starten und fur jeden Vergleichsbereich ein Modell auswahlen.
+1. `AI Chat Hub` starten und fur jeden Vergleichsbereich ein Modell auswahlen.
 2. Bei offiziellen Web-Modellen im eingebetteten Anmeldefenster anmelden; fur API-Modelle die Zugangsdaten in den Einstellungen eintragen.
 3. Eine Eingabe schreiben und an die ausgewahlten Bereiche senden.
 4. Antworten nebeneinander prufen und bei Bedarf zusammenfassen oder analysieren.
@@ -71,14 +71,28 @@ Fur die verwendeten Modelle sind ein gultiges Konto oder ein API-Schlussel sowie
 
 Gesprache, Einstellungen und Zugangsdaten werden lokal auf dem Computer gespeichert. Exportierte Chatdaten enthalten keine API-Schlussel.
 
-## Entwicklung und Build
+## AI Chat Hub ausfuhren
 
-Node.js 20 verwenden.
+### Aus dem Quellcode starten
+
+Node.js 20 und npm installieren und im Stammverzeichnis des Repositorys ausfuhren:
 
 ```bash
 npm install
 npm run electron:serve
 ```
+
+Das Terminal muss geoffnet bleiben. Das automatisch gestartete Electron-Fenster verwenden; `http://localhost:8080` im Browser unterstutzt die eingebetteten offiziellen Chatseiten nicht.
+
+### Windows-EXE starten
+
+1. Die Windows-Installer-`.exe` herunterladen oder mit dem folgenden Befehl erstellen. Lokale Builds liegen unter `dist_electron/`.
+2. Die `.exe` doppelt anklicken und dem Installationsassistenten folgen.
+3. Die App uber Desktop-Verknupfung, Startmenu oder Installationsordner starten.
+
+Lokale Builds sind nicht signiert. Eine SmartScreen-Warnung nur uber **Weitere Informationen > Trotzdem ausfuhren** bestatigen, wenn die Quelle vertrauenswurdig ist.
+
+### Installer erstellen
 
 Desktop-Paket fur die aktuelle Plattform erstellen:
 
