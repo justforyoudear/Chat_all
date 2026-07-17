@@ -19,10 +19,10 @@
               > <v-tab value="proxy">{{ $t("proxy.name") }}</v-tab
               > <v-tab value="chat">{{ $t("chat.name") }}</v-tab
               > <v-tab
-                v-for="(setting, index) in botSettings"
-                :key="index"
-                :value="index"
-                > {{ $t(`${setting.brand}.name`) }} </v-tab
+                v-for="setting in botSettings"
+                :key="setting.key"
+                :value="setting.key"
+                > {{ setting.label }} </v-tab
               > </v-tabs
             > </v-col
           > <v-col class="h-100 overflow-auto"
@@ -70,10 +70,12 @@
               <div v-if="tab == 'chat'">
                  <component :is="chat" @close-dialog="closeDialog"></component>
               </div>
-               <template v-for="(setting, index) in botSettings" :key="index"
+               <template v-for="setting in botSettings" :key="setting.key"
                 > <component
-                  v-if="tab == index"
+                  v-if="tab == setting.key"
                   :is="setting.component"
+                  :config-id="setting.configId"
+                  @saved="handleCustomApiSaved"
                 ></component
                 > </template
               > </v-list
@@ -87,7 +89,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
 import { useTheme } from "vuetify";
@@ -99,7 +101,7 @@ import CommonBotSettings from "@/components/BotSettings/CommonBotSettings.vue";
 
 import { resolveTheme, applyTheme, Mode } from "../theme";
 import CustomOpenAIAPIBotSettings from "./BotSettings/CustomOpenAIAPIBotSettings.vue";
-import DeepSeekWebBotSettings from "./BotSettings/DeepSeekWebBotSettings.vue";
+import { getCustomApiConfigs } from "@/bots/custom/customApiConfigs";
 
 const { ipcRenderer } = window.require("electron");
 const { t: $t, locale } = useI18n();
@@ -111,10 +113,25 @@ const emit = defineEmits(["update:open", "done"]);
 
 const tab = ref(null);
 
-const botSettings = [
-  { brand: "customApi", component: CustomOpenAIAPIBotSettings },
-  { brand: "deepSeek", component: DeepSeekWebBotSettings },
-];
+const botSettings = computed(() => [
+  {
+    key: "customApi-new",
+    label: $t("customApi.name"),
+    component: CustomOpenAIAPIBotSettings,
+    configId: null,
+  },
+  ...getCustomApiConfigs(store.state.customApi).map((config) => ({
+    key: `customApi-${config.id}`,
+    label: config.modelName,
+    component: CustomOpenAIAPIBotSettings,
+    configId: config.id,
+  })),
+]);
+
+async function handleCustomApiSaved(configId) {
+  await nextTick();
+  tab.value = `customApi-${configId}`;
+}
 
 const proxy = ProxySettings;
 const chat = ChatSettings;

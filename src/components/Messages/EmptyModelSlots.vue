@@ -132,17 +132,13 @@ const props = defineProps({
 const { ipcRenderer } = window.require("electron");
 const store = useStore();
 const officialLogin = computed(() => store.state.officialLogin);
-const hasConfiguredCustomApi = computed(() => {
-  const { apiKey, baseUrl, modelName } = store.state.customApi;
-  return Boolean(apiKey && baseUrl && modelName);
-});
 const categories = computed(() => [
   {
     key: "officialWeb",
     label: "footer.officialWeb",
     bots: (botTags.officialWeb || []).filter(Boolean),
   },
-  ...(hasConfiguredCustomApi.value
+  ...(botTags.openAICompatible.length > 0
     ? [
         {
           key: "openAICompatible",

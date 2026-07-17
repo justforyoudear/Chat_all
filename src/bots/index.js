@@ -63,6 +63,8 @@ import Grok2APIBot from "./xai/Grok2APIBot";
 import Grok3APIBot from "./xai/Grok3APIBot";
 import Grok3MiniAPIBot from "./xai/Grok3MiniAPIBot";
 import CustomOpenAIAPIBot from "./custom/CustomOpenAIAPIBot";
+import { getCustomApiConfigs } from "./custom/customApiConfigs";
+import store from "@/store";
 import DeepSeekWebBot from "./deepseek/DeepSeekWebBot";
 import {
   ChatGLMWebBot,
@@ -134,7 +136,6 @@ const all = [
   Grok2APIBot.getInstance(),
   Grok3APIBot.getInstance(),
   Grok3MiniAPIBot.getInstance(),
-  CustomOpenAIAPIBot.getInstance(),
   DeepSeekWebBot.getInstance(),
   QianWenWebBot.getInstance(),
   KimiWebBot.getInstance(),
@@ -148,10 +149,29 @@ if (process.env.NODE_ENV !== "production") {
   all.push(DevBot.getInstance());
 }
 
+const customApiBots = new Map();
+
+function getCustomApiBots() {
+  const configs = getCustomApiConfigs(store.state.customApi);
+  const activeIds = new Set(configs.map((config) => config.id));
+  for (const id of customApiBots.keys()) {
+    if (!activeIds.has(id)) customApiBots.delete(id);
+  }
+  return configs.map((config) => {
+    if (!customApiBots.has(config.id)) {
+      customApiBots.set(config.id, new CustomOpenAIAPIBot(config.id));
+    }
+    return customApiBots.get(config.id);
+  });
+}
+
 const bots = {
   all,
   getBotByClassName(className) {
-    return all.find((bot) => bot.getClassname() === className);
+    return (
+      all.find((bot) => bot.getClassname() === className) ||
+      getCustomApiBots().find((bot) => bot.getClassname() === className)
+    );
   },
 };
 
@@ -168,7 +188,9 @@ export const botTags = {
     bots.getBotByClassName("ChatGLMWebBot"),
     bots.getBotByClassName("DoubaoWebBot"),
   ],
-  openAICompatible: [bots.getBotByClassName("CustomOpenAIAPIBot")],
+  get openAICompatible() {
+    return getCustomApiBots();
+  },
   free: [
     bots.getBotByClassName("BardBot"),
     bots.getBotByClassName("BingChatBalancedBot"),
@@ -241,7 +263,6 @@ export const botTags = {
     bots.getBotByClassName("Grok2APIBot"),
     bots.getBotByClassName("Grok3APIBot"),
     bots.getBotByClassName("Grok3MiniAPIBot"),
-    bots.getBotByClassName("CustomOpenAIAPIBot"),
   ],
   madeInChina: [
     bots.getBotByClassName("Qihoo360AIBrainBot"),

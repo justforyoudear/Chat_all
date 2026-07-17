@@ -2,6 +2,10 @@ import LangChainBot from "@/bots/LangChainBot";
 import store from "@/store";
 import i18n from "@/i18n";
 import { ChatOpenAI } from "@langchain/openai";
+import {
+  getCustomApiBotClassname,
+  getCustomApiConfigs,
+} from "./customApiConfigs";
 
 export default class CustomOpenAIAPIBot extends LangChainBot {
   static _brandId = "customApi";
@@ -9,18 +13,25 @@ export default class CustomOpenAIAPIBot extends LangChainBot {
   static _logoFilename = "custom-api-logo.svg";
   static _model = "";
 
-  constructor() {
+  constructor(configId) {
     super();
+    this.configId = configId;
+  }
+
+  getConfig() {
+    return getCustomApiConfigs(store.state.customApi).find(
+      (config) => config.id === this.configId,
+    );
+  }
+
+  getClassname() {
+    return getCustomApiBotClassname(this.configId);
   }
 
   async _checkAvailability() {
     let available = false;
 
-    if (
-      store.state.customApi.apiKey &&
-      store.state.customApi.baseUrl &&
-      store.state.customApi.modelName
-    ) {
+    if (this.getConfig()) {
       this.setupModel();
       available = true;
     }
@@ -28,26 +39,25 @@ export default class CustomOpenAIAPIBot extends LangChainBot {
   }
 
   _setupModel() {
+    const config = this.getConfig();
     const chatModel = new ChatOpenAI({
       configuration: {
-        basePath: store.state.customApi.baseUrl,
+        basePath: config.baseUrl,
       },
-      openAIApiKey: store.state.customApi.apiKey,
-      modelName: store.state.customApi.modelName,
-      temperature: store.state.customApi.temperature,
+      openAIApiKey: config.apiKey,
+      modelName: config.modelName,
+      temperature: config.temperature,
       streaming: true,
     });
     return chatModel;
   }
 
   getPastRounds() {
-    return store.state.customApi.pastRounds
-      ? store.state.customApi.pastRounds
-      : 5;
+    return this.getConfig()?.pastRounds || 5;
   }
 
   getModelName() {
-    const model = store.state.customApi.modelName;
+    const model = this.getConfig()?.modelName;
     return model ? model.replace(/[^a-zA-Z0-9-_]/g, "") : "";
   }
 
@@ -56,10 +66,6 @@ export default class CustomOpenAIAPIBot extends LangChainBot {
       ? `(${i18n.global.t("bot.disabled")}) `
       : "";
     const modelName = this.getModelName();
-    const brandName = this.getBrandName();
-    if (modelName) {
-      return `${prefix}${modelName}@${brandName}`;
-    }
-    return `${prefix}${brandName}`;
+    return `${prefix}${modelName || this.getBrandName()}`;
   }
 }

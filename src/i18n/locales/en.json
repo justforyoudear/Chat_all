@@ -331,6 +331,7 @@
   },
   "customApi": {
     "name": "Custom OpenAI API",
+    "save": "Save",
     "baseUrl": "Base URL",
     "baseUrlPrompt": "The API endpoint base URL, e.g. https://api.deepseek.com/v1, http://localhost:11434/v1",
     "modelName": "Model Name",

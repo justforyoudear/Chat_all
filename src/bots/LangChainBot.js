@@ -39,7 +39,7 @@ export default class LangChainBot extends Bot {
     await bufferMemory.chatHistory.addUserMessage(prompt);
 
     let res = "";
-    const model = this.constructor._chatModel;
+    const model = this._chatModel;
     messages = await bufferMemory.chatHistory.getMessages();
     const callbacks = [
       {
@@ -65,7 +65,7 @@ export default class LangChainBot extends Bot {
   }
 
   setupModel() {
-    this.constructor._chatModel = this._setupModel();
+    this._chatModel = this._setupModel();
   }
 
   _setupModel() {

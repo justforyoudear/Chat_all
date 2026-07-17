@@ -9,6 +9,7 @@ import Messages from "@/store/messages";
 import { v4 as uuidv4 } from "uuid";
 import Threads from "./threads";
 import { messageQueue, threadMessageQueue } from "./queue";
+import { getCustomApiConfigs } from "@/bots/custom/customApiConfigs";
 
 const vuexPersist = new VuexPersistence({
   key: "chatall-app",
@@ -136,6 +137,7 @@ export default createStore({
       pastRounds: 5,
     },
     customApi: {
+      configs: [],
       baseUrl: "",
       apiKey: "",
       modelName: "",
@@ -309,6 +311,13 @@ export default createStore({
     },
     setCustomApi(state, values) {
       state.customApi = { ...state.customApi, ...values };
+    },
+    saveCustomApiConfig(state, config) {
+      const configs = [...getCustomApiConfigs(state.customApi)];
+      const index = configs.findIndex((item) => item.id === config.id);
+      if (index === -1) configs.push(config);
+      else configs[index] = config;
+      state.customApi = { ...state.customApi, configs };
     },
     setLatestPromptIndex(state, promptIndex) {
       Chats.table.update(state.currentChatIndex, {
