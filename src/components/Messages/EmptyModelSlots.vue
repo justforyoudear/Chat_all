@@ -133,17 +133,25 @@ const { ipcRenderer } = window.require("electron");
 const store = useStore();
 const favoriteBots = computed(() => props.chat?.favBots || []);
 const officialLogin = computed(() => store.state.officialLogin);
+const hasConfiguredCustomApi = computed(() => {
+  const { apiKey, baseUrl, modelName } = store.state.customApi;
+  return Boolean(apiKey && baseUrl && modelName);
+});
 const categories = computed(() => [
   {
     key: "officialWeb",
     label: "footer.officialWeb",
     bots: (botTags.officialWeb || []).filter(Boolean),
   },
-  {
-    key: "workbenchApi",
-    label: "footer.openAICompatible",
-    bots: (botTags.workbenchApi || []).filter(Boolean),
-  },
+  ...(hasConfiguredCustomApi.value
+    ? [
+        {
+          key: "openAICompatible",
+          label: "footer.openAICompatible",
+          bots: (botTags.openAICompatible || []).filter(Boolean),
+        },
+      ]
+    : []),
 ]);
 
 const cardWebviews = new Map();
