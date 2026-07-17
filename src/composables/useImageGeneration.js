@@ -1,23 +1,16 @@
 import store from "@/store";
 import i18n from "@/i18n";
+import { getCustomApiConfigs } from "@/bots/custom/customApiConfigs";
 
 const SIZES = ["256x256", "512x512", "1024x1024"];
 const MODELS = ["dall-e-3", "dall-e-2"];
 
 function getOpenAIConfig() {
-  const openaiState = store.state.openaiApi;
-  const customState = store.state.customApi;
-  if (openaiState.apiKey) {
+  const config = getCustomApiConfigs(store.state.customApi)[0];
+  if (config) {
     return {
-      apiKey: openaiState.apiKey,
-      basePath: openaiState.alterUrl || undefined,
-      source: "openai",
-    };
-  }
-  if (customState.apiKey && customState.baseUrl) {
-    return {
-      apiKey: customState.apiKey,
-      basePath: customState.baseUrl,
+      apiKey: config.apiKey,
+      basePath: config.baseUrl,
       source: "custom",
     };
   }

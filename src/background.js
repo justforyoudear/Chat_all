@@ -302,31 +302,6 @@ async function createWindow() {
         }
       }
 
-      // To depress the 403 error
-      if (url.startsWith("https://gemini.google.com/app")) {
-        requestHeaders["sec-fetch-mode"] = "navigate";
-      } else if (url.includes("BardChatUi")) {
-        requestHeaders["origin"] = "https://gemini.google.com";
-        requestHeaders["sec-fetch-site"] = "same-origin";
-      }
-
-      // To make Copilot work
-      if (url.startsWith("wss://sydney.bing.com/")) {
-        requestHeaders["Origin"] = "https://copilot.microsoft.com";
-      }
-
-      if (
-        url.startsWith("https://character.ai/_next/data/") &&
-        /^https:\/\/character\.ai\/_next\/data\/.+\/index\.json/.test(url)
-      ) {
-        const parts = url.split("/");
-        if (parts.length >= 6) {
-          mainWindow.webContents.send("commit", "setCharacterAI", {
-            version: parts[5],
-          });
-        }
-      }
-
       callback({ requestHeaders });
     },
   );
@@ -369,59 +344,8 @@ function createNewWindow({ url, userAgent = "", loginScript }) {
       newWin.webContents.executeJavaScript(loginScript);
     }
   });
-  newWin.on("close", async (e) => {
+  newWin.on("close", (e) => {
     e.preventDefault(); // Prevent the window from closing
-
-    try {
-      // Hacking secrets
-      const getLocalStorage = async (key) => {
-        return await newWin.webContents.executeJavaScript(
-          `localStorage.getItem("${key}");`,
-        );
-      };
-
-      const getCookie = async (key) => {
-        return await newWin.webContents.executeJavaScript(
-          `document.cookie.split("; ").find((cookie) => cookie.startsWith("${key}="))?.split("=")[1];`,
-        );
-      };
-
-      if (url.startsWith("https://moss.fastnlp.top/")) {
-        // Get the secret of MOSS
-        const secret = await getLocalStorage("flutter.token");
-        mainWindow.webContents.send("moss-secret", secret);
-      } else if (url.startsWith("https://qianwen.aliyun.com/")) {
-        // Get QianWen bot's XSRF-TOKEN
-        const token = await getCookie("XSRF-TOKEN");
-        mainWindow.webContents.send("QIANWEN-XSRF-TOKEN", token);
-      } else if (url.startsWith("https://chat.tiangong.cn/")) {
-        // Get the tokens of SkyWork
-        const inviteToken = await getLocalStorage("aiChatQueueWaitToken");
-        const token = await getLocalStorage("aiChatResearchToken");
-        mainWindow.webContents.send("SKYWORK-TOKENS", { inviteToken, token });
-      } else if (url.startsWith("https://claude.ai/")) {
-        const org = await getCookie("lastActiveOrg");
-        mainWindow.webContents.send("CLAUDE-2-ORG", org);
-      } else if (url.startsWith("https://poe.com/")) {
-        const formkey = await newWin.webContents.executeJavaScript(
-          "window.ereNdsRqhp2Rd3LEW();",
-        );
-        mainWindow.webContents.send("POE-FORMKEY", formkey);
-      } else if (url.startsWith("https://chatglm.cn/")) {
-        const token = await getCookie("chatglm_token");
-        mainWindow.webContents.send("CHATGLM-TOKENS", { token });
-      } else if (url.startsWith("https://kimi.moonshot.cn/")) {
-        const access_token = await getLocalStorage("access_token");
-        const refresh_token = await getLocalStorage("refresh_token");
-        mainWindow.webContents.send("KIMI-TOKENS", {
-          access_token,
-          refresh_token,
-        });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
     newWin.destroy(); // Destroy the window manually
     // Tell renderer process to check aviability
     mainWindow.webContents.send("CHECK-AVAILABILITY", url);

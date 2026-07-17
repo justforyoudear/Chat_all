@@ -245,19 +245,19 @@ const userActions = computed(() => {
 });
 const previewSampleData = [
   {
-    botName: "Copilot (Creative)",
-    botResponse: "Hello, this is Bing. How are you today? 😊",
+    botName: "DeepSeek",
+    botResponse: "Hello! How can I help you today?",
   },
   {
-    botName: "ChatGPT (GPT-3.5)",
+    botName: "Qwen",
     botResponse: "Hello! How can I assist you today?",
   },
   {
-    botName: "Bard",
+    botName: "Kimi",
     botResponse: "Hi there! How can I help you today?",
   },
   {
-    botName: "YouChat",
+    botName: "GLM",
     botResponse: "Hi there! How can I assist you today?",
   },
 ];

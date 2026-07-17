@@ -1,4 +1,8 @@
 {
+  "10": "10",
+  "25": "25",
+  "50": "50",
+  "100": "100",
   "settings": {
     "enable": "Aktivieren",
     "forExample": "z.B. { example }",
@@ -103,222 +107,18 @@
     "pastRounds": "Wie viele vergangene Chat-Runden sollen mitgeführt werden?",
     "pastRoundsPrompt": "Mehr mitgeführte Chat-Runden verbessern die Kontextverständnis, erhöhen aber auch die Kosten."
   },
-  "360AiBrain": {
-    "name": "360 AI Brain"
-  },
-  "azureOpenaiApi": {
-    "name": "Azure OpenAI Service",
-    "temperature": "Temperatur",
-    "temperaturePrompt": "Je höher die Temperatur, desto kreativer der Text, aber desto wahrscheinlicher ist es, dass er inkohärent ist",
-    "temperature0": "Stärker deterministisch",
-    "temperature2": "Mehr zufällig",
-    "azureOpenAIApiKey": "Schlüssel",
-    "azureApiInstanceName": "Instanzname",
-    "azureApiInstanceNamePrompt": "Den Instanznamen unter https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/~/OpenAI einsehen",
-    "azureOpenAIApiDeploymentName": "Bereitstellungsname",
-    "azureOpenAIApiDeploymentNamePrompt": "Den Bereitstellungsnamen unter Verwaltung -> Bereitstellungen unter https://oai.azure.com/ einsehen",
-    "azureOpenAIApiVersion": "API-Version",
-    "azureOpenAIApiVersionPrompt": "Die unterstützten Versionen unter https://learn.microsoft.com/de-de/azure/cognitive-services/openai/reference#completions einsehen"
-  },
-  "bard": {
-    "name": "Gemini",
-    "gemini-pro": "Gemini",
-    "gemini-ultra": "Gemini Advanced"
-  },
-  "claudeApi": {
-    "name": "Claude API",
-    "claude-3-opus-20240229": "claude-3-opus",
-    "claude-3-5-haiku-latest": "claude-3.5-haiku",
-    "claude-3-5-sonnet-latest": "claude-3.5-sonnet",
-    "claude-3-7-sonnet-latest": "claude-3.7-sonnet",
-    "claude-21": "claude-2.1",
-    "claude-20": "claude-2.0"
-  },
-  "cohereApi": {
-    "name": "Cohere API",
-    "command": "Command",
-    "command-light": "Command Light",
-    "command-r": "Command R",
-    "command-r-plus": "Command R+",
-    "c4ai-aya-23": "Aya 23",
-    "temperature": "Temperatur",
-    "temperaturePrompt": "Die Einstellung der Zufälligkeit der Modellausgaben reicht von 0 bis 5. Niedrigere Werte gewährleisten eine präzise und konsistente Ausgabe, ideal für Aufgaben, die genaue Informationen erfordern, wie das Erstellen von Zusammenfassungen. Höhere Einstellungen fördern die Kreativität, können jedoch die Kohärenz bei spezifischen Kontexten oder kurzen Antworten beeinträchtigen."
-  },
-  "bingChat": {
-    "name": "Copilot",
-    "solveCaptcha": "Sie müssen <a { attributes }>CAPTCHA lösen</a>, um fortzufahren.",
-    "h3imaginative": "Kreativ",
-    "galileo": "Ausgewogen",
-    "h3precise": "Präzise"
-  },
-  "characterAI": {
-    "name": "Character.AI"
-  },
-  "chatGpt": {
-    "name": "ChatGPT",
-    "autoRefresh": "Automatischer Schutz vor Verbindungsabbruch",
-    "autoRefreshPrompt": "Aktivieren Sie diese Funktion nur, wenn Sie häufig aufgefordert werden, sich anzumelden.",
-    "notice": "Nur bezahlte Plus-Mitglieder können GPT-4 nutzen.",
-    "gpt-4": "GPT-4"
-  },
-  "geminiApi": {
-    "name": "Gemini API",
-    "gemini-pro": "Gemini-Pro",
-    "gemini-15-pro-latest": "Gemini 1.5 Pro",
-    "gemini-15-flash-latest": "Gemini 1.5 Flash",
-    "gemini-20-flash-001": "Gemini 2.0 Flash",
-    "gemini-20-flash-lite": "Gemini 2.0 Flash Lite",
-    "topK": "topK",
-    "topKPrompt": "Ein topK von 1 bedeutet, dass das ausgewählte Token das wahrscheinlichste unter allen Token im Vokabular des Modells ist (auch gieriges Decodieren genannt).",
-    "topP": "topP",
-    "topPPrompt": "Token werden vom wahrscheinlichsten bis zum am wenigsten wahrscheinlichen ausgewählt, bis die Summe ihrer Wahrscheinlichkeiten den topP-Wert ergibt."
-  },
-  "claudeAi": {
-    "name": "Claude"
-  },
-  "ernie": {
-    "name": "ERNIE"
-  },
-  "huggingChat": {
-    "name": "HuggingChat",
-    "codellamaCodeLlama-34b-Instruct-hf": "Code Llama",
-    "OpenAssistantoasst-sft-6-llama-30b-xor": "oasst-sft-6-llama-30b",
-    "meta-llamaLlama-2-70b-chat-hf": "llama-2-70b",
-    "tiiuaefalcon-180B-chat": "falcon-180b",
-    "HuggingFaceH4zephyr-7b-beta": "zephyr-7b"
-  },
-  "gradio": {
-    "fnIndex": "fn_index",
-    "fnIndexPrompt": "Der fn_index der Funktion, die Sie anfordern. Meistens ist er 0",
-    "name": "Gradio",
-    "queueFull": "Die Warteschlange ist voll, bitte versuchen Sie es später noch einmal",
-    "url": "Gradio App URL",
-    "urlPrompt": "URL Ihrer Gradio-App. Wenn Sie den Raum Hugging Face verwenden, erhalten Sie die direkte URL, indem Sie auf \"Diesen Raum einbetten\" in der oberen rechten Ecke klicken.",
-    "waiting": "Es gibt { queue_size } Anfragen in der Warteschlange, Sie stehen an { rank } Stelle, und es wird erwartet, dass Sie { queue_eta } Sekunden warten"
-  },
   "kimi": {
     "name": "Kimi",
     "found": "Gefunden {num}: ",
     "searching": "Suchen..."
   },
-  "lmsys": {
-    "name": "LMSYS",
-    "vicuna-7b": "vicuna-7b",
-    "vicuna-13b": "vicuna-13b",
-    "vicuna-33b": "vicuna-33b",
-    "chatglm-6b": "chatglm-6b",
-    "chatglm2-6b": "chatglm2-6b",
-    "chatglm3-6b": "chatglm3-6b",
-    "alpaca-13b": "alpaca-13b",
-    "wizardlm-13b": "WizardLM-13B",
-    "wizardlm-70b": "WizardLM-70B",
-    "codellama-34b-instruct": "Code Llama",
-    "llama-2-13b-chat": "llama-2-13b",
-    "llama-2-7b-chat": "llama-2-7b",
-    "llama-2-70b-chat": "llama-2-70b",
-    "gemma-7b-it": "gemma-7b-it",
-    "gemma-2b-it": "gemma-2b-it",
-    "claude-3-sonnet-20240229": "claude-3-sonnet-20240229",
-    "claude-3-opus-20240229": "claude-3-opus-20240229"
-  },
-  "mistral": {
-    "name": "Mistral"
-  },
-  "moss": {
-    "name": "MOSS"
-  },
-  "openaiApi": {
-    "name": "OpenAI API",
-    "alterUrl": "Alternative Basis-URL",
-    "alterUrlPrompt": "Basis-URL-Pfad für API-Aufrufe, leer lassen, wenn kein Proxy oder Dienstemulator verwendet wird",
-    "gpt-35-turbo": "gpt-3.5-turbo",
-    "gpt-4": "gpt-4",
-    "gpt-4-turbo": "gpt-4-turbo",
-    "gpt-4o": "gpt-4o",
-    "gpt-4o-mini": "gpt-4o-mini",
-    "gpt-45-preview": "gpt-4.5-preview",
-    "o1": "o1",
-    "o1-mini": "o1-mini",
-    "o3": "o3",
-    "o3-mini": "o3-mini",
-    "o4-mini": "o4-mini",
-    "gpt-41": "gpt-4.1",
-    "gpt-41-mini": "gpt-4.1-mini",
-    "gpt-41-nano": "gpt-4.1-nano",
-    "temperature": "Temperatur",
-    "temperaturePrompt": "Je höher die Temperatur, desto kreativer der Text, aber desto wahrscheinlicher ist es, dass er inkohärent ist",
-    "temperature0": "Stärker deterministisch",
-    "temperature2": "Mehr zufällig"
-  },
-  "poe": {
-    "name": "Poe",
-    "beaver": "GPT-4",
-    "capybara": "Assistant",
-    "chinchilla": "ChatGPT 3.5",
-    "vizcacha": "GPT-4-32k",
-    "code_llama_34b_instruct": "Code-Llama-34b",
-    "acouchy": "Google-PaLM-2",
-    "llama_2_70b_chat": "Llama-2-70b"
-  },
   "qianWen": {
     "name": "QianWen"
-  },
-  "skyWork": {
-    "name": "SkyWork"
-  },
-  "spark": {
-    "name": "iFlytek Spark"
-  },
-  "wenxinQianfan": {
-    "name": "Wenxin Qianfan",
-    "ERNIE-Bot": "ERNIE-Bot",
-    "ERNIE-Bot-turbo": "ERNIE-Bot-turbo",
-    "ERNIE-Bot-4": "ERNIE-Bot-4"
-  },
-  "youChat": {
-    "name": "YouChat"
   },
   "chatGlm": {
     "name": "ChatGLM",
     "GLM-3": "GLM-3",
     "GLM-4": "GLM-4"
-  },
-  "pi": {
-    "name": "Pi",
-    "waitPiIntro": "Bitte klicken Sie auf den untenstehenden Link zur Chatbot-Website und warten Sie, bis die Pi-Einführung abgeschlossen ist, und schließen Sie dann das Fenster."
-  },
-  "falcon": {
-    "name": "Falcon",
-    "falcon-180b": "180b",
-    "temperature": "Temperatur",
-    "temperaturePrompt": "Höhere Werte erzeugen vielfältigere Ausgaben",
-    "maxNewTokens": "Maximale neue Token",
-    "maxNewTokensPrompt": "Die maximale Anzahl neuer Token",
-    "topP": "Top-p (Nukleus-Sampling)",
-    "topPPrompt": "Token werden vom wahrscheinlichsten bis zum am wenigsten wahrscheinlichen ausgewählt, bis die Summe ihrer Wahrscheinlichkeiten den topP-Wert ergibt",
-    "repetitionPenalty": "Wiederholungsstrafe",
-    "repetitionPenaltyPrompt": "Wiederholte Token bestrafen"
-  },
-  "phind": {
-    "name": "Phind"
-  },
-  "dev": {
-    "name": "Dev Bot"
-  },
-  "groqApi": {
-    "name": "Groq API",
-    "llama3-8b-8192": "Llama 3 8b",
-    "llama3-70b-8192": "Llama 3 70b",
-    "meta-llamallama-4-maverick-17b-128e-instruct": "Llama 4 Maverick",
-    "meta-llamallama-4-scout-17b-16e-instruct": "Llama 4 Scout",
-    "gemma-7b-it": "Gemma 7b",
-    "gemma2-9b-it": "Gemma2 9b"
-  },
-  "xaiApi": {
-    "name": "xAI API",
-    "grok-2-latest": "Grok-2",
-    "grok-3": "Grok 3",
-    "grok-3-mini": "Grok 3 Mini"
   },
   "updates": {
     "updateAvailable": "Update verfügbar!",
@@ -389,9 +189,5 @@
       "clear": "Löschen"
     },
     "open": "Öffnen"
-  },
-  "10": "10",
-  "25": "25",
-  "50": "50",
-  "100": "100"
+  }
 }

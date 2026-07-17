@@ -127,68 +127,24 @@ const snackbar = reactive({
 
 const bots = ref([
   {
-    name: i18n.global.t("bard.name"),
-    bypassList: "*.google.com",
-  },
-  {
-    name: i18n.global.t("bingChat.name"),
-    bypassList: "*.bing.com",
-  },
-  {
-    name: i18n.global.t("chatGpt.name"),
-    bypassList: "*.openai.com",
-  },
-  {
-    name: i18n.global.t("ernie.name"),
-    bypassList: "yiyan.baidu.com",
-  },
-  {
-    name: i18n.global.t("huggingChat.name"),
-    bypassList: "*.huggingface.co",
-  },
-  {
-    name: i18n.global.t("gradio.name"),
-    bypassList: "*.gradio.app",
-  },
-  {
-    name: i18n.global.t("lmsys.name"),
-    bypassList: "*.lmsys.org",
-  },
-  {
-    name: i18n.global.t("moss.name"),
-    bypassList: "*.moss.fastnlp.top",
-  },
-  {
-    name: i18n.global.t("openaiApi.name"),
-    bypassList: "*.openai.com",
-  },
-  {
-    name: i18n.global.t("azureOpenaiApi.name"),
-    bypassList: "*.azure.com",
-  },
-  {
-    name: i18n.global.t("poe.name"),
-    bypassList: "*.poe.com",
+    name: i18n.global.t("deepSeek.name"),
+    bypassList: "*.deepseek.com",
   },
   {
     name: i18n.global.t("qianWen.name"),
-    bypassList: "*.aliyun.com",
+    bypassList: "*.qwen.ai",
   },
   {
-    name: i18n.global.t("skyWork.name"),
-    bypassList: "*.tiangong.cn",
+    name: i18n.global.t("kimi.name"),
+    bypassList: "*.moonshot.cn;*.kimi.com",
   },
   {
-    name: i18n.global.t("spark.name"),
-    bypassList: "*.xfyun.cn;*.mudu.tv;geetest.com",
+    name: i18n.global.t("chatGlm.name"),
+    bypassList: "*.chatglm.cn",
   },
   {
-    name: i18n.global.t("wenxinQianfan.name"),
-    bypassList: "*.aip.baidubce.com",
-  },
-  {
-    name: i18n.global.t("proxy.googleService"),
-    bypassList: "*.google.com",
+    name: i18n.global.t("doubao.name"),
+    bypassList: "*.doubao.com",
   },
 ]);
 const botsProxy = ref([]);

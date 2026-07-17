@@ -1,4 +1,8 @@
 {
+  "10": "10",
+  "25": "25",
+  "50": "50",
+  "100": "100",
   "settings": {
     "enable": "启用",
     "forExample": "例如：{ example }",
@@ -109,226 +113,23 @@
     "pastRounds": "携带多少轮过去的会话？",
     "pastRoundsPrompt": "带的历史会话越多，多轮对话效果越好，但也会消耗更多费用"
   },
-  "360AiBrain": {
-    "name": "360 智脑"
-  },
-  "azureOpenaiApi": {
-    "name": "Azure OpenAI 服务",
-    "temperature": "Temperature",
-    "temperaturePrompt": "Temperature 越高，生成的文本越有创造性，但也越没条理",
-    "temperature0": "更具确定性",
-    "temperature2": "更具随机性",
-    "azureOpenAIApiKey": "密钥",
-    "azureApiInstanceName": "实例名",
-    "azureApiInstanceNamePrompt": "在 https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/~/OpenAI 查看",
-    "azureOpenAIApiDeploymentName": "部署名",
-    "azureOpenAIApiDeploymentNamePrompt": "在 https://oai.azure.com/ 的「管理 -> 部署」下查看",
-    "azureOpenAIApiVersion": "API 版本",
-    "azureOpenAIApiVersionPrompt": "在 https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/reference#completions 查看支持的版本"
-  },
-  "bard": {
-    "name": "Gemini",
-    "gemini-pro": "Gemini",
-    "gemini-ultra": "Gemini Advanced"
-  },
-  "claudeApi": {
-    "name": "Claude API",
-    "claude-3-opus-20240229": "claude-3-opus",
-    "claude-3-5-haiku-latest": "claude-3.5-haiku",
-    "claude-3-5-sonnet-latest": "claude-3.5-sonnet",
-    "claude-3-7-sonnet-latest": "claude-3.7-sonnet",
-    "claude-21": "claude-2.1",
-    "claude-20": "claude-2.0"
-  },
-  "cohereApi": {
-    "name": "Cohere API",
-    "command": "Command",
-    "command-light": "Command Light",
-    "command-r": "Command R",
-    "command-r-plus": "Command R+",
-    "c4ai-aya-23": "Aya 23",
-    "temperature": "Temperature",
-    "temperaturePrompt": "调整模型的输出随机性设置范围为 0 至 5。较低的设置值能够确保输出结果的精确性和一致性，非常适合用于需要精确信息的任务，如撰写摘要。相反，较高的设置值则有助于激发创造性思维，但可能使内容在特定情境或简短回应中显得不够连贯。"
-  },
-  "bingChat": {
-    "name": "Copilot",
-    "solveCaptcha": "你需要<a { attributes }>通过真人验证</a>才能继续。",
-    "h3imaginative": "创造力",
-    "galileo": "平衡",
-    "h3precise": "精确"
-  },
-  "characterAI": {
-    "name": "Character.AI"
-  },
-  "chatGpt": {
-    "name": "ChatGPT",
-    "autoRefresh": "自动防掉线",
-    "autoRefreshPrompt": "如果没有被要求频繁登录，不需要启用此功能",
-    "notice": "只有付费的 Plus 用户才能使用 GPT-4",
-    "gpt-4": "GPT-4"
-  },
-  "geminiApi": {
-    "name": "Gemini API",
-    "gemini-pro": "Gemini-Pro",
-    "gemini-15-pro-latest": "Gemini 1.5 Pro",
-    "gemini-15-flash-latest": "Gemini 1.5 Flash",
-    "gemini-20-flash-001": "Gemini 2.0 Flash",
-    "gemini-20-flash-lite": "Gemini 2.0 Flash Lite",
-    "topK": "topK",
-    "topKPrompt": "topK为1意味着选定的标记在模型词汇中所有标记里是最有可能的（也称为贪婪解码）",
-    "topP": "topP",
-    "topPPrompt": "从最可能到最不可能的标记被选出，直到它们的概率总和等于topP值"
-  },
-  "claudeAi": {
-    "name": "Claude"
-  },
-  "ernie": {
-    "name": "文心一言"
-  },
-  "huggingChat": {
-    "name": "HuggingChat",
-    "codellamaCodeLlama-34b-Instruct-hf": "Code Llama",
-    "OpenAssistantoasst-sft-6-llama-30b-xor": "oasst-sft-6-llama-30b",
-    "meta-llamaLlama-2-70b-chat-hf": "llama-2-70b",
-    "tiiuaefalcon-180B-chat": "falcon-180b",
-    "HuggingFaceH4zephyr-7b-beta": "zephyr-7b"
-  },
-  "gradio": {
-    "fnIndex": "fn_index",
-    "fnIndexPrompt": "要调用的功能的 fn_index。通常是 0",
-    "name": "Gradio",
-    "queueFull": "队列已满，请稍后再试",
-    "url": "Gradio App URL",
-    "urlPrompt": "您自己的 Gradio app URL。如使用 Hugging Face 的 space，点击 space 右上角的 \"Embed this space\" 获取 direct URL",
-    "waiting": "当前有 { queue_size } 个请求在队列中，你在第 { rank } 位，预计还要等待 { queue_eta } 秒"
-  },
   "kimi": {
     "name": "Kimi",
     "found": "找到了第 {num} 篇资料：",
     "searching": "搜索中..."
   },
-  "lmsys": {
-    "name": "LMSYS",
-    "vicuna-7b": "vicuna-7b",
-    "vicuna-13b": "vicuna-13b",
-    "vicuna-33b": "vicuna-33b",
-    "chatglm-6b": "chatglm-6b",
-    "chatglm2-6b": "chatglm2-6b",
-    "chatglm3-6b": "chatglm3-6b",
-    "alpaca-13b": "alpaca-13b",
-    "wizardlm-13b": "WizardLM-13B",
-    "wizardlm-70b": "WizardLM-70B",
-    "codellama-34b-instruct": "Code Llama",
-    "llama-2-13b-chat": "llama-2-13b",
-    "llama-2-7b-chat": "llama-2-7b",
-    "llama-2-70b-chat": "llama-2-70b",
-    "gemma-7b-it": "gemma-7b-it",
-    "gemma-2b-it": "gemma-2b-it",
-    "claude-3-sonnet-20240229": "claude-3-sonnet-20240229",
-    "claude-3-opus-20240229": "claude-3-opus-20240229"
-  },
-  "mistral": {
-    "name": "Mistral"
-  },
-  "moss": {
-    "name": "MOSS"
-  },
-  "openaiApi": {
-    "name": "OpenAI API",
-    "alterUrl": "自定义基础 URL",
-    "alterUrlPrompt": "API 请求的基础 URL 路径。如果没有使用代理或服务模拟器，就留空",
-    "gpt-35-turbo": "gpt-3.5-turbo",
-    "gpt-4": "gpt-4",
-    "gpt-4-turbo": "gpt-4-turbo",
-    "gpt-4o": "gpt-4o",
-    "gpt-4o-mini": "gpt-4o-mini",
-    "gpt-45-preview": "gpt-4.5-preview",
-    "o1": "o1",
-    "o1-mini": "o1-mini",
-    "o3": "o3",
-    "o3-mini": "o3-mini",
-    "o4-mini": "o4-mini",
-    "gpt-41": "gpt-4.1",
-    "gpt-41-mini": "gpt-4.1-mini",
-    "gpt-41-nano": "gpt-4.1-nano",
-    "temperature": "Temperature",
-    "temperaturePrompt": "Temperature 越高，生成的文本越有创造性，但也越没条理",
-    "temperature0": "更具确定性",
-    "temperature2": "更具随机性"
-  },
-  "poe": {
-    "name": "Poe",
-    "beaver": "GPT-4",
-    "capybara": "Assistant",
-    "chinchilla": "ChatGPT 3.5",
-    "vizcacha": "GPT-4-32k",
-    "code_llama_34b_instruct": "Code-Llama-34b",
-    "acouchy": "Google-PaLM-2",
-    "llama_2_70b_chat": "Llama-2-70b"
-  },
   "qianWen": {
     "name": "通义千问"
-  },
-  "skyWork": {
-    "name": "天工"
-  },
-  "spark": {
-    "name": "讯飞星火"
-  },
-  "wenxinQianfan": {
-    "name": "文心千帆",
-    "ERNIE-Bot": "ERNIE-Bot",
-    "ERNIE-Bot-turbo": "ERNIE-Bot-turbo",
-    "ERNIE-Bot-4": "ERNIE-Bot-4"
-  },
-  "youChat": {
-    "name": "YouChat"
   },
   "chatGlm": {
     "name": "智谱清言",
     "GLM-3": "GLM-3",
     "GLM-4": "GLM-4"
   },
-  "pi": {
-    "name": "Pi",
-    "waitPiIntro": "请点击下面的网站链接，等待Pi介绍完成后，然后关闭窗口。"
-  },
-  "falcon": {
-    "name": "Falcon",
-    "falcon-180b": "180b",
-    "temperature": "Temperature",
-    "temperaturePrompt": "较高的值会产生更多元的输出",
-    "maxNewTokens": "最大新 token 数量",
-    "maxNewTokensPrompt": "新 token 的最大数量",
-    "topP": "Top-p （核心抽样）",
-    "topPPrompt": "从最可能到最不可能的 token 被选出，直到它们的概率总和等于 topP 值",
-    "repetitionPenalty": "重复惩罚",
-    "repetitionPenaltyPrompt": "对重复的 token 进行惩罚"
-  },
-  "phind": {
-    "name": "Phind"
-  },
-  "dev": {
-    "name": "开发专用 Bot"
-  },
-  "groqApi": {
-    "name": "Groq API",
-    "llama3-8b-8192": "Llama 3 8b",
-    "llama3-70b-8192": "Llama 3 70b",
-    "meta-llamallama-4-maverick-17b-128e-instruct": "Llama 4 Maverick",
-    "meta-llamallama-4-scout-17b-16e-instruct": "Llama 4 Scout",
-    "gemma-7b-it": "Gemma 7b",
-    "gemma2-9b-it": "Gemma2 9b"
-  },
-  "xaiApi": {
-    "name": "xAI API",
-    "grok-2-latest": "Grok-2",
-    "grok-3": "Grok 3",
-    "grok-3-mini": "Grok 3 Mini"
-  },
   "customApi": {
     "name": "自定义 OpenAI API",
     "save": "保存",
+    "temperature": "Temperature",
     "baseUrl": "Base URL",
     "baseUrlPrompt": "API 端点基础 URL，例如 https://api.deepseek.com/v1、http://localhost:11434/v1",
     "modelName": "模型名称",
@@ -464,9 +265,5 @@
       "clear": "清除"
     },
     "open": "打开"
-  },
-  "10": "10",
-  "25": "25",
-  "50": "50",
-  "100": "100"
+  }
 }

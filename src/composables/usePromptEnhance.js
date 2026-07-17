@@ -24,7 +24,7 @@ function getPreferredApiBot() {
       return bot;
     }
   }
-  const apiBotList = botTags?.workbenchApi || [];
+  const apiBotList = botTags?.openAICompatible || [];
   for (const bot of apiBotList) {
     if (bot && !bot.isDisabled() && bot.isAvailable()) {
       return bot;

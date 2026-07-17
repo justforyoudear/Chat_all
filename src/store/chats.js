@@ -15,22 +15,11 @@ class Chats {
         "selectChat",
         await Chats.add({
           favBots: [
-            // default bots
-            { classname: "AzureOpenAIAPIBot", selected: false },
-            { classname: "ClaudeAPIHaikuBot", selected: false },
-            { classname: "ClaudeAPISonnetBot", selected: false },
-            { classname: "ClaudeAPI37SonnetBot", selected: false },
-            { classname: "Gemini20FlashAPIBot", selected: false },
-            { classname: "Gemini20FlashLiteAPIBot", selected: false },
-            { classname: "Gemma29bGroqAPIBot", selected: false },
-            { classname: "Grok3APIBot", selected: false },
-            { classname: "Grok3MiniAPIBot", selected: false },
-            { classname: "Llama4ScoutGroqAPIBot", selected: false },
-            { classname: "Llama4MaverickGroqAPIBot", selected: false },
-            { classname: "OpenAIAPI41Bot", selected: false },
-            { classname: "OpenAIAPI41MiniBot", selected: false },
-            { classname: "OpenAIAPI41NanoBot", selected: false },
-            { classname: "OpenAIAPIo4MiniBot", selected: false },
+            { classname: "DeepSeekWebBot", selected: true },
+            { classname: "QianWenWebBot", selected: true },
+            { classname: "KimiWebBot", selected: true },
+            { classname: "ChatGLMWebBot", selected: true },
+            { classname: "DoubaoWebBot", selected: true },
           ],
         }),
       );

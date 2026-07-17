@@ -111,15 +111,6 @@ const vuetify = createVuetify({
   },
 });
 
-// Inject geetest script for iFlytek Spark
-fetch("https://static.geetest.com/g5/gd.js")
-  .then((response) => response.text())
-  .then((text) => {
-    const script = document.createElement("script");
-    script.textContent = text;
-    document.head.appendChild(script);
-  });
-
 createApp(App)
   .use(i18n)
   .use(store)

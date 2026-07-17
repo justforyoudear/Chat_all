@@ -26,7 +26,7 @@
       placeholder="qwen-plus, llama3, etc."
       hide-details
     /> <v-list-item-title class="mt-6">{{
-      $t("openaiApi.temperature")
+      $t("customApi.temperature")
     }}</v-list-item-title
     > <v-slider
       v-model="form.temperature"
