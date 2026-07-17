@@ -42,7 +42,7 @@ export default class CustomOpenAIAPIBot extends LangChainBot {
     const config = this.getConfig();
     const chatModel = new ChatOpenAI({
       configuration: {
-        basePath: config.baseUrl,
+        baseURL: config.baseUrl,
       },
       openAIApiKey: config.apiKey,
       modelName: config.modelName,
@@ -50,6 +50,11 @@ export default class CustomOpenAIAPIBot extends LangChainBot {
       streaming: true,
     });
     return chatModel;
+  }
+
+  async _sendPrompt(prompt, onUpdateResponse, callbackParam) {
+    this.setupModel();
+    return super._sendPrompt(prompt, onUpdateResponse, callbackParam);
   }
 
   getPastRounds() {

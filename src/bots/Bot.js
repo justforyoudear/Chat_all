@@ -249,27 +249,33 @@ export default class Bot {
   /**
    * Get the context from the store. If not available, create a new one.
    * @param {boolean} createIfNotExists - Create a new context if not exists
+   * @param {string} chatIndex - Chat that owns the context
    * @returns {object} - Chat context defined by the bot
    */
-  async getChatContext(createIfNotExists = true) {
-    let context = (await Chats.getCurrentChat())?.contexts?.[
+  async getChatContext(
+    createIfNotExists = true,
+    chatIndex = store.state.currentChatIndex,
+  ) {
+    let context = (await Chats.table.get(chatIndex))?.contexts?.[
       this.getClassname()
     ];
     if (!context && createIfNotExists) {
       context = await this.createChatContext();
-      this.setChatContext(context);
+      this.setChatContext(context, chatIndex);
     }
     return context;
   }
 
   /**
    * @param {*} context
+   * @param {string} chatIndex - Chat that owns the context
    * @returns Nothing
    */
-  setChatContext(context) {
+  setChatContext(context, chatIndex = store.state.currentChatIndex) {
     store.commit("setChatContext", {
       botClassname: this.getClassname(),
       context,
+      chatIndex,
     });
   }
 

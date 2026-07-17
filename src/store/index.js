@@ -178,8 +178,8 @@ export default createStore({
     incrementUpdateCounter(state) {
       state.updateCounter += 1;
     },
-    setChatContext(state, { botClassname, context }) {
-      Chats.table.update(state.currentChatIndex, {
+    setChatContext(state, { botClassname, context, chatIndex }) {
+      Chats.table.update(chatIndex ?? state.currentChatIndex, {
         [`contexts.${botClassname}`]: context,
       });
     },

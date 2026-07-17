@@ -75,8 +75,20 @@
          {{ $t("modelSlots.selectModel") }}
       </div>
 
-      <div v-if="getSlotResponse(slot - 1)" class="slot-response">
-         <v-md-preview :text="getSlotResponse(slot - 1).content" />
+      <div v-if="getSlotConversation(slot - 1).length" class="slot-response">
+
+        <div
+          v-for="turn in getSlotConversation(slot - 1)"
+          :key="turn.response.index"
+          class="slot-turn"
+        >
+
+          <div v-if="turn.prompt" class="slot-prompt">
+             {{ turn.prompt.content }}
+          </div>
+           <v-md-preview :text="turn.response.content" />
+        </div>
+
       </div>
 
       <div
@@ -247,7 +259,15 @@ function setWebviewChatTarget(webview, chatIndex, rootUrl, url) {
   webview.dataset.rootUrl = rootUrl;
   webview.dataset.targetUrl = url;
   webview.dataset.restoring = "true";
-  if (webview.getAttribute("src") !== url) {
+  let currentUrl = webview.getAttribute("src");
+  if (webview.isConnected) {
+    try {
+      currentUrl = webview.getURL();
+    } catch {
+      // Electron exposes getURL only after the webview has emitted dom-ready.
+    }
+  }
+  if (!isSameOfficialUrl(currentUrl, url)) {
     webview.setAttribute("src", url);
   } else {
     webview.dataset.restoring = "false";
@@ -258,8 +278,18 @@ function rememberOfficialNavigation(webview, url) {
   if (webview.dataset.restoring === "true") {
     if (isSameOfficialUrl(url, webview.dataset.targetUrl)) {
       webview.dataset.restoring = "false";
+      return;
     }
-    return;
+    if (
+      !isOfficialConversationUrl(
+        webview.dataset.providerId,
+        webview.dataset.rootUrl,
+        url,
+      )
+    ) {
+      return;
+    }
+    webview.dataset.restoring = "false";
   }
   void persistOfficialChatBindings(webview.dataset.chatIndex, [
     {
@@ -308,11 +338,8 @@ function ensureCardWebview(slot) {
     rememberOfficialNavigation(wv, navigatedUrl);
   });
   wv.addEventListener("did-stop-loading", () => {
-    // A configured provider root can redirect to its canonical landing page.
-    // Keep suppressing navigation persistence only until that load settles.
-    if (wv.dataset.restoring === "true") {
-      wv.dataset.restoring = "false";
-    }
+    rememberOfficialNavigation(wv, wv.getURL());
+    wv.dataset.restoring = "false";
   });
   wv.addEventListener("did-attach", () => {
     console.log("[CARD] did-attach, slot:", slot);
@@ -381,6 +408,25 @@ function getSlotResponse(slot) {
     if (response?.className === bot.getClassname()) return response;
   }
   return null;
+}
+
+function getSlotConversation(slot) {
+  const bot = getSlotBot(slot);
+  if (!bot || bot instanceof WebChatBot) return [];
+
+  const conversation = [];
+  let prompt = null;
+  for (const message of props.messages) {
+    if (!Array.isArray(message)) {
+      if (message?.type === "prompt") prompt = message;
+      continue;
+    }
+    const response = message.at(-1);
+    if (response?.className === bot.getClassname()) {
+      conversation.push({ prompt, response });
+    }
+  }
+  return conversation;
 }
 
 function isOfficialLoginSlot(slot) {
@@ -553,6 +599,22 @@ onBeforeUnmount(() => {
   flex: 1;
   overflow-y: auto;
   padding: 12px 16px;
+}
+
+.slot-turn + .slot-turn {
+  margin-top: 20px;
+}
+
+.slot-prompt {
+  width: fit-content;
+  max-width: 80%;
+  margin: 0 0 12px auto;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgb(var(--v-theme-prompt));
+  color: rgb(var(--v-theme-font));
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 </style>
 

@@ -1,5 +1,6 @@
 import Bot from "@/bots/Bot";
 import { BufferMemory } from "langchain/memory";
+import store from "@/store";
 
 export default class LangChainBot extends Bot {
   static _brandId = "langChainBot";
@@ -10,7 +11,8 @@ export default class LangChainBot extends Bot {
   }
 
   async _sendPrompt(prompt, onUpdateResponse, callbackParam) {
-    let messages = await this.getChatContext();
+    const chatIndex = store.state.currentChatIndex;
+    let messages = await this.getChatContext(true, chatIndex);
     let bufferMemory = new BufferMemory();
 
     // Remove old messages if exceeding the pastRounds limit
@@ -56,8 +58,9 @@ export default class LangChainBot extends Bot {
     await model.call(messages);
     await bufferMemory.chatHistory.addAIChatMessage(res);
     // Serialize the messages before storing
+    messages = await bufferMemory.chatHistory.getMessages();
     messages = messages.map((item) => JSON.stringify(item.toDict()));
-    this.setChatContext(messages);
+    this.setChatContext(messages, chatIndex);
   }
 
   async createChatContext() {
