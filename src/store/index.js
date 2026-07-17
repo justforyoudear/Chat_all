@@ -154,8 +154,8 @@ export default createStore({
       else configs[index] = config;
       state.customApi = { ...state.customApi, configs };
     },
-    setLatestPromptIndex(state, promptIndex) {
-      Chats.table.update(state.currentChatIndex, {
+    setLatestPromptIndex(state, { promptIndex, chatIndex }) {
+      Chats.table.update(chatIndex ?? state.currentChatIndex, {
         latestPromptIndex: promptIndex,
       });
     },
@@ -383,8 +383,14 @@ export default createStore({
         }
       }
     },
-    async sendPrompt({ commit, dispatch }, { prompt, bots, promptIndex }) {
-      const currentChat = await Chats.getCurrentChat();
+    async sendPrompt(
+      { commit, dispatch },
+      { prompt, bots, promptIndex, chatIndex },
+    ) {
+      const currentChat = chatIndex
+        ? await Chats.table.get(chatIndex)
+        : await Chats.getCurrentChat();
+      if (!currentChat) return;
       if (promptIndex === undefined) {
         // if promptIndex not found, not resend, push to messages array
         const promptMessage = {
@@ -395,7 +401,10 @@ export default createStore({
         // add message
         promptIndex = await Messages.add(currentChat.index, promptMessage);
       }
-      commit("setLatestPromptIndex", promptIndex); // to keep track of the latest prompt index for hiding old prompt's resend button
+      commit("setLatestPromptIndex", {
+        promptIndex,
+        chatIndex: currentChat.index,
+      }); // to keep track of the latest prompt index for hiding old prompt's resend button
 
       const msgs = [];
       for (const bot of bots) {
@@ -424,12 +433,15 @@ export default createStore({
           );
           return bot.sendPrompt(
             prompt,
-            (messageIndex, values) =>
+            (callbackParam, values) =>
               dispatch("updateMessage", {
-                index: messageIndex,
+                index: callbackParam.messageIndex,
                 message: values,
               }),
-            message.index,
+            {
+              messageIndex: message.index,
+              chatIndex: currentChat.index,
+            },
           );
         }),
       );

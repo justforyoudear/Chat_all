@@ -97,6 +97,37 @@
         class="slot-webview-host"
       ></div>
 
+      <div v-if="isApiBot(slot - 1)" class="slot-composer">
+         <v-textarea
+          :model-value="getSlotPrompt(slot - 1)"
+          :placeholder="$t('footer.promptPlaceholder')"
+          auto-grow
+          :disabled="isSlotSending(slot - 1)"
+          hide-details
+          max-rows="4"
+          rows="1"
+          variant="outlined"
+          @keydown="handleSlotPromptKeydown($event, slot - 1)"
+          @update:model-value="setSlotPrompt(slot - 1, $event)"
+          > <template #append-inner
+            > <v-btn
+              :aria-label="$t('footer.sendPrompt')"
+              :disabled="
+                isSlotSending(slot - 1) || !getSlotPrompt(slot - 1).trim()
+              "
+              :loading="isSlotSending(slot - 1)"
+              :title="$t('footer.sendPrompt')"
+              color="primary"
+              icon="mdi-send"
+              size="small"
+              variant="text"
+              @click="sendPromptToSlot(slot - 1)"
+            ></v-btn
+            > </template
+          > </v-textarea
+        >
+      </div>
+
     </section>
 
   </div>
@@ -109,6 +140,7 @@ import {
   nextTick,
   onBeforeUnmount,
   onMounted,
+  reactive,
   ref,
   watch,
 } from "vue";
@@ -176,6 +208,8 @@ const favoriteBots = computed(() =>
 
 const cardWebviews = new Map();
 const wasOverlayOpen = ref(false);
+const slotPrompts = reactive({});
+const sendingBotClassnames = reactive(new Set());
 
 function isSameOfficialUrl(left, right) {
   if (!left || !right) return left === right;
@@ -438,6 +472,82 @@ function isOfficialWebBot(slot) {
   return bot instanceof WebChatBot;
 }
 
+function isApiBot(slot) {
+  const bot = getSlotBot(slot);
+  return Boolean(bot && !(bot instanceof WebChatBot));
+}
+
+function getSlotPromptKey(slot) {
+  return getSlotBot(slot)?.getClassname();
+}
+
+function getSlotPrompt(slot) {
+  return slotPrompts[getSlotPromptKey(slot)] || "";
+}
+
+function setSlotPrompt(slot, value) {
+  const key = getSlotPromptKey(slot);
+  if (key) slotPrompts[key] = value;
+}
+
+function isSlotSending(slot) {
+  return sendingBotClassnames.has(getSlotPromptKey(slot));
+}
+
+async function handleSlotPromptKeydown(event, slot) {
+  if (
+    event.key === "Enter" &&
+    !event.shiftKey &&
+    !event.ctrlKey &&
+    !event.altKey &&
+    !event.metaKey &&
+    !event.isComposing
+  ) {
+    event.preventDefault();
+    await sendPromptToSlot(slot);
+  }
+}
+
+async function sendPromptToSlot(slot) {
+  const bot = getSlotBot(slot);
+  const key = bot?.getClassname();
+  const chatIndex = props.chat?.index;
+  const prompt = getSlotPrompt(slot).trim();
+  if (
+    !key ||
+    !chatIndex ||
+    !prompt ||
+    bot instanceof WebChatBot ||
+    isSlotSending(slot)
+  ) {
+    return;
+  }
+
+  sendingBotClassnames.add(key);
+  try {
+    if (!bot.isAvailable()) await bot.checkAvailability();
+    if (!bot.isAvailable()) return;
+
+    const isFirstPrompt =
+      props.messages.filter((message) => !Array.isArray(message)).length === 0;
+    await store.dispatch("sendPrompt", {
+      prompt,
+      bots: [bot],
+      chatIndex,
+    });
+    slotPrompts[key] = "";
+
+    if (isFirstPrompt) {
+      store.commit("editChatTitle", {
+        index: chatIndex,
+        payload: { title: prompt.substring(0, 30) },
+      });
+    }
+  } finally {
+    sendingBotClassnames.delete(key);
+  }
+}
+
 async function assignBot(slot, bot) {
   const favorites = favoriteBots.value.map((favorite) => ({ ...favorite }));
   for (const favorite of favorites) {
@@ -615,6 +725,17 @@ onBeforeUnmount(() => {
   color: rgb(var(--v-theme-font));
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.slot-composer {
+  flex: none;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+
+.slot-composer :deep(.v-field__append-inner) {
+  align-items: flex-end;
+  padding-top: 0;
 }
 </style>
 

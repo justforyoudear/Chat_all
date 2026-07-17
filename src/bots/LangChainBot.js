@@ -11,7 +11,7 @@ export default class LangChainBot extends Bot {
   }
 
   async _sendPrompt(prompt, onUpdateResponse, callbackParam) {
-    const chatIndex = store.state.currentChatIndex;
+    const chatIndex = callbackParam?.chatIndex || store.state.currentChatIndex;
     let messages = await this.getChatContext(true, chatIndex);
     let bufferMemory = new BufferMemory();
 
