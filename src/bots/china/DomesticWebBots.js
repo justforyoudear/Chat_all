@@ -46,7 +46,7 @@ export class KimiWebBot extends DeepSeekWebBot {
       })()
     `);
     await this.insertOfficialText(prompt);
-    const clickTarget = await this.evaluateOfficialChat(`
+    await this.evaluateOfficialChat(`
       (async () => {
         const isVisible = (element) => {
           const style = window.getComputedStyle(element);
@@ -70,14 +70,9 @@ export class KimiWebBot extends DeepSeekWebBot {
         if (!submittedText.trim()) {
           throw new Error("Kimi did not receive the prompt text.");
         }
-        const rect = sendButton.getBoundingClientRect();
-        return {
-          x: Math.round(rect.left + rect.width / 2),
-          y: Math.round(rect.top + rect.height / 2),
-        };
+        sendButton.click();
       })()
     `);
-    await this.clickOfficialChat(clickTarget.x, clickTarget.y);
     await this.evaluateOfficialChat(`
       (async () => {
         const isVisible = (element) => {
@@ -118,6 +113,7 @@ export class ChatGLMWebBot extends DeepSeekWebBot {
   static _lock = new AsyncLock();
   static _inputSelector = "textarea.scroll-display-none";
   static _sendSelector = "img.enter_icon";
+  static _sendWithEnter = true;
   static _webviewZoomFactor = 0.8;
 }
 

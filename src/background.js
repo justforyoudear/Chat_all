@@ -54,30 +54,8 @@ async function getOfficialWebContents(providerId) {
 }
 
 function keepWebChatInPlace(contents) {
-  contents.setWindowOpenHandler(({ url }) => {
-    bgLog("[DEBUG-chat-send] popup denied", contents.id, url);
+  contents.setWindowOpenHandler(() => {
     return { action: "deny" };
-  });
-
-  if (contents.__chatSendDiagnosticsBound) return;
-  contents.__chatSendDiagnosticsBound = true;
-  contents.on("did-start-navigation", (_event, url, isInPlace, isMainFrame) => {
-    bgLog(
-      "[DEBUG-chat-send] navigation started",
-      contents.id,
-      isMainFrame ? "main" : "subframe",
-      isInPlace ? "in-page" : "document",
-      url,
-    );
-  });
-  contents.on("did-navigate", (_event, url) => {
-    bgLog("[DEBUG-chat-send] navigation committed", contents.id, url);
-  });
-  contents.on("did-navigate-in-page", (_event, url) => {
-    bgLog("[DEBUG-chat-send] in-page navigation committed", contents.id, url);
-  });
-  contents.on("did-stop-loading", () => {
-    bgLog("[DEBUG-chat-send] loading stopped", contents.id, contents.getURL());
   });
 }
 

@@ -35,7 +35,10 @@ export default class DeepSeekWebBot extends WebChatBot {
     const hasConfiguredSendSelector = JSON.stringify(
       Boolean(this.constructor._sendSelector),
     );
-    const inputTarget = await this.evaluateOfficialChat(`
+    const sendWithEnter = JSON.stringify(
+      Boolean(this.constructor._sendWithEnter),
+    );
+    await this.evaluateOfficialChat(`
       (() => {
         const isVisible = (element) => {
           const style = window.getComputedStyle(element);
@@ -49,20 +52,12 @@ export default class DeepSeekWebBot extends WebChatBot {
         if (!input) {
           throw new Error("Official chat input box not found. Open the official chat page and sign in first.");
         }
-        const rect = input.getBoundingClientRect();
-        return {
-          x: Math.round(rect.left + rect.width / 2),
-          y: Math.round(rect.top + rect.height / 2),
-        };
+        input.focus();
       })()
     `);
-    await this.clickOfficialChat(inputTarget.x, inputTarget.y);
-    // The trusted mouse event is queued in the WebView. Let the official
-    // editor receive focus before Electron inserts text into it.
-    await new Promise((resolve) => setTimeout(resolve, 100));
     await this.insertOfficialText(prompt);
 
-    const clickTarget = await this.evaluateOfficialChat(`
+    await this.evaluateOfficialChat(`
       (async () => {
         const isVisible = (element) => {
           const style = window.getComputedStyle(element);
@@ -81,6 +76,19 @@ export default class DeepSeekWebBot extends WebChatBot {
 
         await new Promise((resolve) => requestAnimationFrame(resolve));
         await new Promise((resolve) => requestAnimationFrame(resolve));
+        if (${sendWithEnter}) {
+          for (const type of ["keydown", "keypress", "keyup"]) {
+            input.dispatchEvent(new KeyboardEvent(type, {
+              key: "Enter",
+              code: "Enter",
+              keyCode: 13,
+              which: 13,
+              bubbles: true,
+              cancelable: true,
+            }));
+          }
+          return "enter";
+        }
         const composerRoots = [];
         for (let element = input; element && composerRoots.length < 5; element = element.parentElement) {
           composerRoots.push(element);
@@ -139,14 +147,10 @@ export default class DeepSeekWebBot extends WebChatBot {
             "Official chat send button not found or disabled in the composer.",
           );
         }
-        const rect = sendButton.getBoundingClientRect();
-        return {
-          x: Math.round(rect.left + rect.width / 2),
-          y: Math.round(rect.top + rect.height / 2),
-        };
+        sendButton.click();
+        return "button";
       })()
     `);
-    await this.clickOfficialChat(clickTarget.x, clickTarget.y);
 
     await this.evaluateOfficialChat(`
       (async () => {

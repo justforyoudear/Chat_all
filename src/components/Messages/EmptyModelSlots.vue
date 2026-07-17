@@ -410,10 +410,16 @@ watch(
   },
 );
 
-watch(favoriteBots, async () => {
-  await nextTick();
-  syncCardWebviews();
-});
+watch(
+  () =>
+    favoriteBots.value
+      .map((bot) => `${bot.classname}:${bot.slot}:${bot.selected}`)
+      .join("|"),
+  async () => {
+    await nextTick();
+    syncCardWebviews();
+  },
+);
 
 watch(
   () => props.chat?.index,
