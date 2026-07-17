@@ -131,7 +131,6 @@ const props = defineProps({
 
 const { ipcRenderer } = window.require("electron");
 const store = useStore();
-const favoriteBots = computed(() => props.chat?.favBots || []);
 const officialLogin = computed(() => store.state.officialLogin);
 const hasConfiguredCustomApi = computed(() => {
   const { apiKey, baseUrl, modelName } = store.state.customApi;
@@ -153,6 +152,19 @@ const categories = computed(() => [
       ]
     : []),
 ]);
+const allowedBotClassnames = computed(
+  () =>
+    new Set(
+      categories.value.flatMap((category) =>
+        category.bots.map((bot) => bot.getClassname()),
+      ),
+    ),
+);
+const favoriteBots = computed(() =>
+  (props.chat?.favBots || []).filter((favorite) =>
+    allowedBotClassnames.value.has(favorite.classname),
+  ),
+);
 
 const cardWebviews = new Map();
 const wasOverlayOpen = ref(false);
@@ -341,6 +353,16 @@ function syncCardWebviews() {
   }
 }
 
+function removeUnsupportedFavorites() {
+  const favorites = props.chat?.favBots || [];
+  const supportedFavorites = favorites.filter((favorite) =>
+    allowedBotClassnames.value.has(favorite.classname),
+  );
+  if (supportedFavorites.length !== favorites.length) {
+    store.commit("setFavoriteBot", supportedFavorites);
+  }
+}
+
 function getSlotBot(slot) {
   const assigned = favoriteBots.value.find((bot) => bot.slot === slot);
   if (assigned) return bots.getBotByClassName(assigned.classname);
@@ -438,6 +460,7 @@ watch(
         captureCurrentChatBindings(),
       );
     }
+    removeUnsupportedFavorites();
     await nextTick();
     syncCardWebviews();
   },
@@ -445,6 +468,7 @@ watch(
 );
 
 onMounted(async () => {
+  removeUnsupportedFavorites();
   await nextTick();
   syncCardWebviews();
 });
