@@ -26,20 +26,20 @@ module.exports = defineConfig({
         mac: {
           category: "public.app-category.utilities",
           target: "default",
-          icon: "src/assets/icon.icns",
           hardenedRuntime: true,
           notarize: {
             teamId: "M4934264PN",
           },
         },
         win: {
+          sign: false,
+          signAndEditExecutable: false,
           target: [
             {
               target: "nsis",
               arch: ["x64"],
             },
           ],
-          icon: "src/assets/icon.ico",
         },
         linux: {
           target: ["AppImage", "deb"],
