@@ -1,4 +1,4 @@
-const is_mac = process.platform === "darwin";
+const is_mac = navigator.platform.startsWith("Mac");
 const modifier = is_mac ? "meta" : "ctrl";
 export const SHORTCUT_PROMPT_TEXTAREA = {
   elementId: "prompt-textarea",
