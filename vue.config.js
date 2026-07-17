@@ -16,8 +16,8 @@ module.exports = defineConfig({
     electronBuilder: {
       builderOptions: {
         // options placed here will be merged with default configuration and passed to electron-builder
-        appId: "ai.chatall",
-        productName: "ChatALL",
+        appId: "ai.chat.hub",
+        productName: "AI Chat Hub",
         artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
         directories: {
           buildResources: "src/assets",

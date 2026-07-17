@@ -13,8 +13,6 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension from "electron-devtools-installer";
 import fs from "fs";
 import path from "path";
-import { setMenuItems } from "./menu";
-import updateApp from "./update";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 const allowedDomains = ["aliyun.com", "qianwen.aliyun.com"];
@@ -568,8 +566,6 @@ app.on("ready", async () => {
   }
 
   createWindow();
-  setMenuItems();
-  updateApp(mainWindow);
 });
 
 // Exit cleanly on request from parent process in development mode.

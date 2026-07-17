@@ -112,7 +112,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeMount, reactive, watch, nextTick } from "vue";
+import { ref, computed, onBeforeMount, watch, nextTick } from "vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
 
@@ -122,7 +122,6 @@ import BotsMenu from "./BotsMenu.vue";
 import PromptModal from "@/components/PromptModal.vue";
 
 // Composables
-import { useMatomo } from "@/composables/matomo";
 import { usePromptEnhance } from "@/composables/usePromptEnhance";
 import { useFileAttach } from "@/composables/useFileAttach";
 
@@ -134,11 +133,9 @@ const { ipcRenderer } = window.require("electron");
 
 const store = useStore();
 const { t } = useI18n();
-const matomo = useMatomo();
 const { enhancePrompt } = usePromptEnhance();
 const { selectFiles, formatFileSize, buildContextString, canAddMore } =
   useFileAttach();
-const emit = defineEmits(["updateActiveBots"]);
 const props = defineProps({
   chat: {
     type: Object,
@@ -155,7 +152,6 @@ const promptTextArea = ref(null);
 const botsMenuRef = ref(null);
 const isPromptManagementOpen = ref(false);
 
-const activeBots = reactive({});
 const favBots = computed(() => {
   if (!props.chat || !props.chat.favBots) {
     return [];
@@ -205,11 +201,6 @@ watch(favBots, async (newValue, oldValue) => {
 });
 
 async function updateActiveBots() {
-  const currentClassnames = new Set(favBots.value.map((bot) => bot.classname));
-  for (const classname of Object.keys(activeBots)) {
-    if (!currentClassnames.has(classname)) delete activeBots[classname];
-  }
-
   for (const favBot of favBots.value) {
     // Unselect the bot if user has not confirmed to use it
     if (favBot.selected) {
@@ -223,10 +214,7 @@ async function updateActiveBots() {
         });
       }
     }
-    activeBots[favBot.classname] =
-      favBot.instance.isAvailable() && favBot.selected;
   }
-  emit("updateActiveBots", activeBots);
 }
 
 function focusPromptTextarea() {
@@ -246,21 +234,6 @@ function filterEnterKey(event) {
   ) {
     event.preventDefault();
     sendPromptToBots();
-  }
-
-  // up or down
-  const isUpOrDown =
-    keyCode == historyKeyCode.pre || keyCode == historyKeyCode.next;
-
-  const isAuxiliaryKey = event.metaKey || event.ctrlKey;
-
-  // macOS: Cmd + up/down, Windows: Ctrl + up/down
-  if (isAuxiliaryKey && isUpOrDown) {
-    event.preventDefault();
-
-    // get new prompt and set it
-    const newPrompt = getHistoryPrompt(keyCode);
-    prompt.value = newPrompt.content;
   }
 }
 
@@ -303,16 +276,6 @@ async function sendPromptToBots() {
     // Clear the textarea and attachments after sending the prompt
     prompt.value = "";
     attachedFiles.value = [];
-
-    // reset prompt index
-    promptIndex = 0;
-
-    matomo.value?.trackEvent(
-      "prompt",
-      "send",
-      "Active bots count",
-      toBots.length,
-    );
   } finally {
     isSending.value = false;
   }
@@ -353,30 +316,6 @@ function removeAttachedFile(index) {
 
 function clearAttachedFiles() {
   attachedFiles.value = [];
-}
-
-// current prompt index
-let promptIndex = 0;
-
-// up and down key code
-const historyKeyCode = { pre: 38, next: 40 };
-
-// Listen to the up and down arrow keys to obtain historical records.
-function getHistoryPrompt(keyCode) {
-  const historyPrompts = store.getters.getCurrentChatPrompt;
-
-  if (!historyPrompts || !historyPrompts.length) return false;
-
-  if (keyCode === historyKeyCode.pre) {
-    // get previous prompt
-    promptIndex =
-      (promptIndex - 1 + historyPrompts.length) % historyPrompts.length;
-  } else if (keyCode === historyKeyCode.next) {
-    // get next prompt
-    promptIndex = (promptIndex + 1) % historyPrompts.length;
-  }
-
-  return historyPrompts[promptIndex];
 }
 
 onBeforeMount(async () => {

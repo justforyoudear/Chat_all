@@ -1,5 +1,4 @@
-import bots, { botTags } from "@/bots";
-import store from "@/store";
+import { botTags } from "@/bots";
 import i18n from "@/i18n";
 
 const ENHANCE_PROMPT = `You are a prompt engineering expert. The user has written a vague or brief question. Your job is to rewrite it into a clear, well-structured prompt that will get better answers from AI models.
@@ -17,13 +16,6 @@ Original prompt:
 Rewritten prompt:`;
 
 function getPreferredApiBot() {
-  const preferred = store.state.consensusAnalysis?.preferredBot;
-  if (preferred) {
-    const bot = bots.getBotByClassName(preferred);
-    if (bot && !bot.isDisabled() && bot.isAvailable()) {
-      return bot;
-    }
-  }
   const apiBotList = botTags?.openAICompatible || [];
   for (const bot of apiBotList) {
     if (bot && !bot.isDisabled() && bot.isAvailable()) {

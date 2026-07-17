@@ -1,59 +1,60 @@
 <template>
 
-  <div class="quick-summary-bar" :style="{ '--columns': columns }">
-     <!-- Summary button (before summary) --> <v-btn
-      v-if="!summary && !isSummarizing && !error"
-      class="summary-btn"
-      color="info"
-      variant="tonal"
+  <div class="quick-summary-bar">
+     <v-btn
+      :aria-label="$t('summary.button')"
+      :disabled="!promptIndex"
+      :loading="isSummarizing"
+      color="primary"
+      icon="mdi-text-box-check-outline"
       size="small"
-      @click="startSummary"
-      > <v-icon size="18" class="mr-1">mdi-flash-outline</v-icon> {{
-        $t("summary.button")
-      }} </v-btn
-    > <!-- Loading state --> <v-btn
-      v-if="isSummarizing"
-      class="summary-btn"
-      color="info"
-      variant="tonal"
-      size="small"
-      disabled
-      > <v-progress-circular indeterminate size="14" width="2" class="mr-2" />
-      {{ $t("summary.summarizing") }} </v-btn
-    > <!-- Error state -->
-    <div v-if="error && !isSummarizing" class="error-bar">
-       <v-alert type="error" density="compact" variant="tonal" class="mb-2"
-        > {{ error }} </v-alert
-      > <v-btn color="info" variant="tonal" size="small" @click="startSummary"
-        > <v-icon size="18" class="mr-1">mdi-refresh</v-icon> {{
-          $t("summary.retry")
-        }} </v-btn
-      >
-    </div>
-     <!-- Summary result card --> <v-card
-      v-if="summary && !isSummarizing"
-      class="summary-card"
-      flat
-      border
-      > <v-card-title class="summary-title"
-        > <v-icon color="info" size="18" class="mr-2">mdi-flash-outline</v-icon>
-        {{ $t("summary.title") }} <v-spacer></v-spacer> <v-btn
-          flat
-          size="x-small"
-          icon
-          @click="closeSummary"
-          > <v-icon>mdi-close</v-icon> </v-btn
-        > </v-card-title
-      > <v-card-text class="summary-content"
-        > <v-md-preview :text="summary" /> </v-card-text
-      > </v-card
+      variant="text"
+      v-tooltip="$t('summary.button')"
+      @click="openSummary"
+    ></v-btn
+    > <v-dialog v-model="dialogOpen" max-width="900"
+      > <v-card
+        > <v-card-title class="summary-title"
+          > <v-icon color="info" size="20" class="mr-2"
+            > mdi-flash-outline </v-icon
+          > {{ $t("summary.title") }} <v-spacer></v-spacer> <v-btn
+            :aria-label="$t('updates.close')"
+            icon="mdi-close"
+            size="small"
+            variant="text"
+            @click="dialogOpen = false"
+          ></v-btn
+          > </v-card-title
+        > <v-card-text class="summary-content"
+          >
+          <div v-if="isSummarizing" class="dialog-status">
+             <v-progress-circular indeterminate size="24" width="2" /> <span>{{
+              $t("summary.summarizing")
+            }}</span
+            >
+          </div>
+
+          <div v-else-if="error" class="dialog-error">
+             <v-alert type="error" density="compact" variant="tonal"
+              > {{ error }} </v-alert
+            > <v-btn
+              color="info"
+              prepend-icon="mdi-refresh"
+              variant="tonal"
+              @click="startSummary"
+              > {{ $t("summary.retry") }} </v-btn
+            >
+          </div>
+           <v-md-preview v-else-if="summary" :text="summary" /> </v-card-text
+        > </v-card
+      > </v-dialog
     >
   </div>
 
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useQuickSummary } from "@/composables/useQuickSummary";
 import Messages from "@/store/messages";
@@ -61,25 +62,43 @@ import Messages from "@/store/messages";
 const props = defineProps({
   promptIndex: {
     type: String,
-    required: true,
-  },
-  columns: {
-    type: Number,
-    default: 3,
+    default: null,
   },
 });
 
 const store = useStore();
 const { summarizeResponses } = useQuickSummary();
 const error = ref("");
+const dialogOpen = ref(false);
 
-const summary = computed(() => store.state.summaryResults[props.promptIndex]);
+const summary = computed(() =>
+  props.promptIndex ? store.state.summaryResults[props.promptIndex] : null,
+);
 const isSummarizing = computed(
-  () => store.state.summarizingPromptIndex === props.promptIndex,
+  () =>
+    Boolean(props.promptIndex) &&
+    store.state.summarizingPromptIndex === props.promptIndex,
 );
 
+watch(
+  () => props.promptIndex,
+  () => {
+    dialogOpen.value = false;
+    error.value = "";
+  },
+);
+
+async function openSummary() {
+  dialogOpen.value = true;
+  if (!summary.value && !isSummarizing.value) {
+    await startSummary();
+  }
+}
+
 async function startSummary() {
+  if (!props.promptIndex) return;
   error.value = "";
+  dialogOpen.value = true;
   store.commit("setSummarizingPromptIndex", props.promptIndex);
 
   try {
@@ -87,21 +106,24 @@ async function startSummary() {
     if (!promptMessage) {
       throw new Error("Prompt not found");
     }
-    const prompt = promptMessage.content;
 
     const allMessages = await Messages.table
       .where("promptIndex")
       .equals(props.promptIndex)
       .toArray();
     const responses = allMessages.filter(
-      (m) => m.type === "response" && m.done && !m.hide && m.content,
+      (message) =>
+        message.type === "response" &&
+        message.done &&
+        !message.hide &&
+        message.content,
     );
 
     if (responses.length < 2) {
       throw new Error("Need at least 2 responses to summarize.");
     }
 
-    const result = await summarizeResponses(prompt, responses);
+    const result = await summarizeResponses(promptMessage.content, responses);
     store.commit("setSummaryResult", {
       promptIndex: props.promptIndex,
       result,
@@ -112,44 +134,37 @@ async function startSummary() {
     store.commit("setSummarizingPromptIndex", null);
   }
 }
-
-function closeSummary() {
-  store.commit("clearSummaryResult", props.promptIndex);
-}
 </script>
 
 <style scoped>
 .quick-summary-bar {
-  grid-column: 1 / span var(--columns);
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.summary-btn {
-  text-transform: none !important;
-  border-radius: 8px;
-}
-
-.error-bar {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.summary-card {
-  border-radius: 8px;
+  align-items: center;
 }
 
 .summary-title {
   display: flex;
   align-items: center;
-  font-size: 0.95rem;
-  padding: 8px 16px;
-  background-color: rgba(var(--v-theme-info), 0.05);
+  font-size: 1rem;
+  background-color: rgba(var(--v-theme-info), 0.06);
 }
 
 .summary-content {
-  padding: 8px 16px 16px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 16px 20px 20px;
+}
+
+.dialog-status,
+.dialog-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dialog-error {
+  flex-direction: column;
+  align-items: stretch;
 }
 </style>
 

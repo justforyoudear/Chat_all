@@ -1,5 +1,4 @@
 import bots, { botTags } from "@/bots";
-import store from "@/store";
 import i18n from "@/i18n";
 
 const ANALYSIS_PROMPT_PREFIX = `You are an expert analyst. Below are responses from multiple AI models to the same question.
@@ -34,26 +33,7 @@ const ANALYSIS_PROMPT_TEMPLATE = `--- {botName} ---
 `;
 const ANALYSIS_PROMPT_SUFFIX = `Now provide your analysis as valid JSON only, no markdown formatting, no code fences.`;
 
-function getAvailableApiBots() {
-  const apiBots = [];
-  for (const bot of bots.all) {
-    if (bot.isDisabled()) continue;
-    if (bot.isAvailable()) {
-      apiBots.push(bot);
-    }
-  }
-  return apiBots;
-}
-
 function getPreferredApiBot() {
-  const preferred = store.state.consensusAnalysis?.preferredBot;
-  if (preferred) {
-    const bot = bots.getBotByClassName(preferred);
-    if (bot && !bot.isDisabled() && bot.isAvailable()) {
-      return bot;
-    }
-  }
-  // fallback: find first available API bot
   const apiBotList = botTags?.api || [];
   for (const bot of apiBotList) {
     if (bot && !bot.isDisabled() && bot.isAvailable()) {
@@ -142,7 +122,6 @@ async function analyzeResponses(prompt, responses, onProgress) {
 
 export function useConsensusAnalysis() {
   return {
-    getAvailableApiBots,
     getPreferredApiBot,
     analyzeResponses,
     buildAnalysisPrompt,

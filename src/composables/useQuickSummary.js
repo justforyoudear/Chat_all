@@ -1,5 +1,4 @@
 import bots, { botTags } from "@/bots";
-import store from "@/store";
 import i18n from "@/i18n";
 
 const SUMMARY_PROMPT_PREFIX = `You are an expert synthesizer. Below are responses from multiple AI models to the same question.
@@ -24,13 +23,6 @@ const SUMMARY_PROMPT_TEMPLATE = `--- {botName} ---
 const SUMMARY_PROMPT_SUFFIX = `Now produce the single best synthesized answer:`;
 
 function getPreferredApiBot() {
-  const preferred = store.state.consensusAnalysis?.preferredBot;
-  if (preferred) {
-    const bot = bots.getBotByClassName(preferred);
-    if (bot && !bot.isDisabled() && bot.isAvailable()) {
-      return bot;
-    }
-  }
   const apiBotList = botTags?.api || [];
   for (const bot of apiBotList) {
     if (bot && !bot.isDisabled() && bot.isAvailable()) {

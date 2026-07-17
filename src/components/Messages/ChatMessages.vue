@@ -26,6 +26,7 @@ import EmptyModelSlots from "./EmptyModelSlots.vue";
 import { autoScrollToBottom, scrollToBottom } from "@/helpers/scroll-helper";
 
 const store = useStore();
+const emit = defineEmits(["updateComparablePromptIndex"]);
 
 const props = defineProps({
   columns: {
@@ -44,6 +45,41 @@ const props = defineProps({
 const loading = ref(false);
 const displayColumns = computed(() => Math.min(props.columns, 3));
 const currentChatMessages = ref([]);
+const latestComparablePromptIndex = computed(() => {
+  let currentPrompt = null;
+  let latestPromptIndex = null;
+
+  for (const message of currentChatMessages.value) {
+    if (!Array.isArray(message)) {
+      currentPrompt =
+        message?.type === "prompt"
+          ? { index: message.index, completedResponses: 0 }
+          : null;
+      continue;
+    }
+
+    const response = message.at(-1);
+    if (
+      currentPrompt &&
+      response?.promptIndex === currentPrompt.index &&
+      response.done &&
+      !response.hide &&
+      response.content
+    ) {
+      currentPrompt.completedResponses += 1;
+      if (currentPrompt.completedResponses >= 2) {
+        latestPromptIndex = currentPrompt.index;
+      }
+    }
+  }
+
+  return latestPromptIndex;
+});
+watch(
+  latestComparablePromptIndex,
+  (promptIndex) => emit("updateComparablePromptIndex", promptIndex),
+  { immediate: true },
+);
 let createChatMessageLiveQuery = (index) => {
   return liveQuery(async () => {
     const keys = await Messages.table
@@ -124,7 +160,7 @@ onMounted(async () => {
   min-height: 0;
   overflow: hidden;
   gap: 16px;
-  padding: 0;
+  padding: 0 0 13px;
 }
 </style>
 

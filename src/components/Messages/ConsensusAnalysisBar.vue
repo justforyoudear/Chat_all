@@ -1,51 +1,60 @@
 <template>
 
-  <div class="consensus-analysis-bar" :style="{ '--columns': columns }">
-     <!-- Analysis button (before analysis) --> <v-btn
-      v-if="!result && !isAnalyzing && !error"
-      class="analyze-btn"
+  <div class="consensus-analysis-bar">
+     <v-btn
+      :aria-label="$t('consensus.analyzeButton')"
+      :disabled="!promptIndex"
+      :loading="isAnalyzing"
       color="primary"
-      variant="tonal"
+      icon="mdi-source-branch"
       size="small"
-      @click="startAnalysis"
-      > <v-icon size="18" class="mr-1">mdi-compare-horizontal</v-icon> {{
-        $t("consensus.analyzeButton")
-      }} </v-btn
-    > <!-- Loading state --> <v-btn
-      v-if="isAnalyzing"
-      class="analyze-btn"
-      color="primary"
-      variant="tonal"
-      size="small"
-      disabled
-      > <v-progress-circular indeterminate size="14" width="2" class="mr-2" />
-      {{ $t("consensus.analyzing") }} </v-btn
-    > <!-- Error state -->
-    <div v-if="error && !isAnalyzing" class="error-bar">
-       <v-alert type="error" density="compact" variant="tonal" class="mb-2"
-        > {{ error }} </v-alert
-      > <v-btn
-        color="primary"
-        variant="tonal"
-        size="small"
-        @click="startAnalysis"
-        > <v-icon size="18" class="mr-1">mdi-refresh</v-icon> {{
-          $t("consensus.retry")
-        }} </v-btn
-      >
-    </div>
-     <!-- Result report --> <ConsensusReport
-      v-if="result && !isAnalyzing"
-      :result="result"
-      :isAnalyzing="false"
-      @close="closeReport"
-    />
+      variant="text"
+      v-tooltip="$t('consensus.analyzeButton')"
+      @click="openAnalysis"
+    ></v-btn
+    > <v-dialog v-model="dialogOpen" max-width="900"
+      > <v-card
+        > <v-card-title class="analysis-title"
+          > <v-icon color="primary" size="20" class="mr-2"
+            > mdi-compare-horizontal </v-icon
+          > {{ $t("consensus.reportTitle") }} <v-spacer></v-spacer> <v-btn
+            :aria-label="$t('updates.close')"
+            icon="mdi-close"
+            size="small"
+            variant="text"
+            @click="dialogOpen = false"
+          ></v-btn
+          > </v-card-title
+        > <v-card-text class="analysis-content"
+          >
+          <div v-if="isAnalyzing" class="dialog-status">
+             <v-progress-circular indeterminate size="24" width="2" /> <span>{{
+              $t("consensus.analyzing")
+            }}</span
+            >
+          </div>
+
+          <div v-else-if="error" class="dialog-error">
+             <v-alert type="error" density="compact" variant="tonal"
+              > {{ error }} </v-alert
+            > <v-btn
+              color="primary"
+              prepend-icon="mdi-refresh"
+              variant="tonal"
+              @click="startAnalysis"
+              > {{ $t("consensus.retry") }} </v-btn
+            >
+          </div>
+           <ConsensusReport v-else-if="result" :result="result" /> </v-card-text
+        > </v-card
+      > </v-dialog
+    >
   </div>
 
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import ConsensusReport from "./ConsensusReport.vue";
 import { useConsensusAnalysis } from "@/composables/useConsensusAnalysis";
@@ -54,42 +63,61 @@ import Messages from "@/store/messages";
 const props = defineProps({
   promptIndex: {
     type: String,
-    required: true,
-  },
-  columns: {
-    type: Number,
-    default: 3,
+    default: null,
   },
 });
 
 const store = useStore();
 const { analyzeResponses } = useConsensusAnalysis();
 const error = ref("");
+const dialogOpen = ref(false);
 
-const result = computed(() => store.state.analysisResults[props.promptIndex]);
+const result = computed(() =>
+  props.promptIndex ? store.state.analysisResults[props.promptIndex] : null,
+);
 const isAnalyzing = computed(
-  () => store.state.analyzingPromptIndex === props.promptIndex,
+  () =>
+    Boolean(props.promptIndex) &&
+    store.state.analyzingPromptIndex === props.promptIndex,
 );
 
+watch(
+  () => props.promptIndex,
+  () => {
+    dialogOpen.value = false;
+    error.value = "";
+  },
+);
+
+async function openAnalysis() {
+  dialogOpen.value = true;
+  if (!result.value && !isAnalyzing.value) {
+    await startAnalysis();
+  }
+}
+
 async function startAnalysis() {
+  if (!props.promptIndex) return;
   error.value = "";
+  dialogOpen.value = true;
   store.commit("setAnalyzingPromptIndex", props.promptIndex);
 
   try {
-    // Get the prompt content
     const promptMessage = await Messages.table.get(props.promptIndex);
     if (!promptMessage) {
       throw new Error("Prompt not found");
     }
-    const prompt = promptMessage.content;
 
-    // Get all responses for this prompt
     const allMessages = await Messages.table
       .where("promptIndex")
       .equals(props.promptIndex)
       .toArray();
     const responses = allMessages.filter(
-      (m) => m.type === "response" && m.done && !m.hide && m.content,
+      (message) =>
+        message.type === "response" &&
+        message.done &&
+        !message.hide &&
+        message.content,
     );
 
     if (responses.length < 2) {
@@ -98,8 +126,10 @@ async function startAnalysis() {
       );
     }
 
-    const analysisResult = await analyzeResponses(prompt, responses);
-
+    const analysisResult = await analyzeResponses(
+      promptMessage.content,
+      responses,
+    );
     store.commit("setAnalysisResult", {
       promptIndex: props.promptIndex,
       result: analysisResult,
@@ -110,28 +140,37 @@ async function startAnalysis() {
     store.commit("setAnalyzingPromptIndex", null);
   }
 }
-
-function closeReport() {
-  store.commit("clearAnalysisResult", props.promptIndex);
-}
 </script>
 
 <style scoped>
 .consensus-analysis-bar {
-  grid-column: 1 / span var(--columns);
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.analyze-btn {
-  text-transform: none !important;
-  border-radius: 8px;
-}
-
-.error-bar {
   display: flex;
+  align-items: center;
+}
+
+.analysis-title {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  background-color: rgba(var(--v-theme-primary), 0.06);
+}
+
+.analysis-content {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 16px 20px 20px;
+}
+
+.dialog-status,
+.dialog-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dialog-error {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
 }
 </style>
 

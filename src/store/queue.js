@@ -1,25 +1,20 @@
 import Messages from "@/store/messages";
-import Threads from "@/store/threads";
 /* eslint-disable no-unused-vars */
 import { Table, UpdateSpec, TKey } from "dexie";
 import { Store } from "vuex";
 
 /** @type {Queue} */
 export let messageQueue;
-/** @type {Queue} */
-export let threadMessageQueue;
 
 /**
  * @param {Store} store
  */
 export function initializeQueues(store) {
   messageQueue = new Queue(store, Messages.table, "messageQueue");
-  threadMessageQueue = new Queue(store, Threads.table, "threadMessageQueue");
 }
 
 export function startQueuesProcessing() {
   messageQueue.processQueue();
-  threadMessageQueue.processQueue();
 }
 
 class Queue {

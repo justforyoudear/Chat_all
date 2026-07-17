@@ -19,7 +19,7 @@
         }"
         class="header-content pa-0"
         > <!-- Start Header  -->
-        <div class="header-content" v-show="isSelectedResponsesEmpty">
+        <div class="header-content">
            <v-app-bar-nav-icon
             :id="SHORTCUT_CHAT_DRAWER.elementId"
             variant="text"
@@ -32,7 +32,7 @@
 
         <div class="panel-layout-controls header-content">
 
-          <div class="column-icons" v-show="isSelectedResponsesEmpty">
+          <div class="column-icons">
              <v-btn
               v-for="columnCount in 6"
               :id="`column-${columnCount}`"
@@ -51,11 +51,7 @@
             >
           </div>
 
-          <div
-            v-if="panelPageCount > 1"
-            class="panel-page-controls"
-            v-show="isSelectedResponsesEmpty"
-          >
+          <div v-if="panelPageCount > 1" class="panel-page-controls">
              <v-btn
               icon="mdi-chevron-left"
               size="small"
@@ -79,11 +75,7 @@
 
         </div>
 
-        <div
-          class="header-content"
-          style="padding-right: 16px"
-          v-show="isSelectedResponsesEmpty"
-        >
+        <div class="header-content" style="padding-right: 16px">
            <v-icon
             :id="SHORTCUT_FIND.elementId"
             class="cursor-pointer"
@@ -100,7 +92,9 @@
             @click="isImageGenOpen = true"
             v-tooltip="$t('imageGen.tooltip')"
           ></v-icon
-          > <v-icon
+          > <QuickSummaryBar :prompt-index="latestComparablePromptIndex" />
+          <ConsensusAnalysisBar :prompt-index="latestComparablePromptIndex" />
+          <v-icon
             v-shortkey="SHORTCUT_SETTINGS.key"
             @shortkey="openSettingsModal"
             :id="SHORTCUT_SETTINGS.elementId"
@@ -122,61 +116,25 @@
           ></v-icon
           >
         </div>
-         <!-- End Header  --> <!-- Start Selected Responses  -->
-        <div
-          class="header-content pr-3"
-          style="text-wrap: nowrap"
-          v-show="!isSelectedResponsesEmpty"
-        >
-           <v-btn icon color="primary" @click="deselectAll"
-            > <v-icon>mdi-arrow-left</v-icon> </v-btn
-          > {{
-            $t("header.selectedResponsesCount", {
-              selectedCount: store.state.selectedResponses.length,
-            })
-          }}
-        </div>
-
-        <div
-          class="header-content overflow-auto"
-          v-show="!isSelectedResponsesEmpty"
-        >
-           <v-btn
-            v-for="action in userActions"
-            color="primary"
-            class="no-text-transform"
-            :text="action.name"
-            :key="action.index"
-            @click="callAction(action)"
-          ></v-btn
-          >
-        </div>
-         <!-- End Selected Responses  --> </v-app-bar
+         <!-- End Header  --> </v-app-bar
       > </v-slide-y-transition
     > <v-main class="content" :class="{ paddingTopZero: !isShowAppBar }"
       > <FindModal ref="findRef"></FindModal> <ChatMessages
         :chat="currentChat"
         :columns="columns"
         :page="panelPage"
+        @update-comparable-prompt-index="latestComparablePromptIndex = $event"
       ></ChatMessages
       > <FooterBar
         ref="footerBarRef"
         :chat="currentChat"
         :slot-count="columns"
-        @update-active-bots="(bots) => (activeBots = bots)"
       ></FooterBar
       > </v-main
-    > <SettingsModal v-model:open="isSettingsOpen" /> <UpdateNotification
-    ></UpdateNotification> <ShortcutGuide
+    > <SettingsModal v-model:open="isSettingsOpen" /> <ShortcutGuide
       ref="shortcutGuideRef"
       v-model:open="isShortcutGuideOpen"
     ></ShortcutGuide
-    > <ChatAction
-      v-model:open="isChatActionOpen"
-      :action="action"
-      :responses="store.state.selectedResponses"
-      :activeBots="activeBots"
-    ></ChatAction
     > <ImageGenerationDialog v-model:open="isImageGenOpen" />
     <OfficialLoginDialog /> </v-app
   >
@@ -187,7 +145,6 @@ import { ref, computed, onMounted, nextTick, watch } from "vue";
 
 import { useTheme } from "vuetify";
 import { useStore } from "vuex";
-import { v4 as uuidv4 } from "uuid";
 import { applyTheme, resolveTheme } from "./theme";
 import {
   SHORTCUT_FIND,
@@ -207,12 +164,12 @@ import { onScroll } from "./helpers/scroll-helper";
 // Components
 import ChatDrawer from "@/components/ChatDrawer/ChatDrawer.vue";
 import ChatMessages from "@/components/Messages/ChatMessages.vue";
+import QuickSummaryBar from "@/components/Messages/QuickSummaryBar.vue";
+import ConsensusAnalysisBar from "@/components/Messages/ConsensusAnalysisBar.vue";
 import SettingsModal from "@/components/SettingsModal.vue";
 import FooterBar from "@/components/Footer/FooterBar.vue";
-import UpdateNotification from "@/components/Notification/UpdateNotificationModal.vue";
 import FindModal from "@/components/FindModal.vue";
 import ShortcutGuide from "@/components/ShortcutGuide/ShortcutGuide.vue";
-import ChatAction from "@/components/ChatAction.vue";
 import ImageGenerationDialog from "@/components/ImageGenerationDialog.vue";
 import OfficialLoginDialog from "@/components/OfficialLoginDialog.vue";
 
@@ -248,16 +205,12 @@ const isSettingsOpen = ref(false);
 const isChatDrawerOpen = ref(store.state.isChatDrawerOpen);
 const isShowAppBar = ref(store.state.general.isShowAppBar);
 const chatDrawerRef = ref();
-const isSelectedResponsesEmpty = ref(true);
-const isChatActionOpen = ref(false);
 const isImageGenOpen = ref(false);
+const latestComparablePromptIndex = ref(null);
 
 const columns = computed(() => store.state.columns);
 const panelPage = ref(0);
 const panelPageCount = computed(() => Math.ceil(columns.value / 3));
-const userActions = computed(() => {
-  return store.state.actions.filter((p) => !p.hide);
-});
 
 function changeColumns(columnCount) {
   store.commit("changeColumns", columnCount);
@@ -274,10 +227,6 @@ function changePanelPage(delta) {
 watch(panelPageCount, (count) => {
   if (panelPage.value >= count) panelPage.value = 0;
 });
-
-const setUuid = (uuid) => store.commit("setUuid", uuid);
-let action;
-let activeBots;
 
 async function openSettingsModal() {
   if (isSettingsOpen.value) {
@@ -310,10 +259,6 @@ function focusPromptTextarea() {
 }
 
 onMounted(() => {
-  !store.state.uuid && setUuid(uuidv4());
-  window._paq.push(["setUserId", store.state.uuid]);
-  window._paq.push(["trackPageView"]);
-
   document.title = "AI Chat Hub";
 
   initializeQueues(store);
@@ -321,13 +266,6 @@ onMounted(() => {
 
   window.addEventListener("scroll", onScroll);
 });
-
-watch(
-  () => store.state.selectedResponses.length,
-  () => {
-    isSelectedResponsesEmpty.value = store.state.selectedResponses.length === 0;
-  },
-);
 
 watch(
   () => isShowAppBar.value,
@@ -348,15 +286,6 @@ function columnTitle(columnCount) {
     "header.hexaColumn",
   ];
   return i18n.global.t(titles[columnCount - 1]);
-}
-
-function deselectAll() {
-  store.commit("deleteAllSelectedResponses");
-}
-
-function callAction(value) {
-  action = value;
-  isChatActionOpen.value = true;
 }
 </script>
 

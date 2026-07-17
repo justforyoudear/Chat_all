@@ -1,30 +1,9 @@
 <template>
-   <v-card class="consensus-report" flat border
-    > <v-card-title class="report-title"
-      > <v-icon color="primary" class="mr-2">mdi-compare-horizontal</v-icon> {{
-        $t("consensus.reportTitle")
-      }} <v-spacer></v-spacer> <v-btn
-        flat
-        size="x-small"
-        icon
-        v-if="!isAnalyzing && result"
-        @click="$emit('close')"
-        > <v-icon>mdi-close</v-icon> </v-btn
-      > </v-card-title
-    > <v-card-text v-if="isAnalyzing" class="pa-4"
-      > <v-progress-circular
-        indeterminate
-        color="primary"
-        size="24"
-        class="mr-2"
-      /> <span class="text-body-2">{{ $t("consensus.analyzing") }}</span
-      > </v-card-text
-    > <v-card-text v-else-if="error" class="pa-4"
-      > <v-alert type="error" density="compact" variant="tonal"
-        > {{ error }} </v-alert
-      > </v-card-text
-    > <v-card-text v-else-if="result" class="pa-4 report-content"
-      > <!-- Consensus Section -->
+
+  <div v-if="result" class="consensus-report">
+
+    <div class="report-content">
+       <!-- Consensus Section -->
       <div class="section consensus-section" v-if="result.consensus">
 
         <div class="section-header">
@@ -91,45 +70,25 @@
         </div>
 
       </div>
-       </v-card-text
-    > </v-card
-  >
+
+    </div>
+
+  </div>
+
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
-
 defineProps({
   result: {
     type: Object,
     default: null,
   },
-  isAnalyzing: {
-    type: Boolean,
-    default: false,
-  },
-  error: {
-    type: String,
-    default: "",
-  },
 });
-
-defineEmits(["close"]);
 </script>
 
 <style scoped>
 .consensus-report {
-  grid-column: 1 / span var(--columns);
-  margin-top: 0.5rem;
-  border-radius: 8px;
-}
-
-.report-title {
-  display: flex;
-  align-items: center;
-  font-size: 0.95rem;
-  padding: 8px 16px;
-  background-color: rgba(var(--v-theme-primary), 0.05);
+  width: 100%;
 }
 
 .report-content {

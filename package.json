@@ -1,18 +1,18 @@
 {
-  "name": "chatall",
-  "version": "1.85.110",
-  "description": "Chat with multiple AI bots and discover the best.",
+  "name": "ai-chat-hub",
+  "version": "0.1.0",
+  "description": "A desktop workspace for comparing AI conversations.",
   "author": {
-    "name": "Sun Zhigang",
-    "email": "sunner@gmail.com",
-    "url": "http://sunner.cn"
+    "name": "chensp",
+    "email": "1051393758@qq.com",
+    "url": "https://github.com/justforyoudear"
   },
   "engines": {
     "node": "^20"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ai-shifu/ChatALL.git"
+    "url": "https://github.com/justforyoudear/Chat_all.git"
   },
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -37,7 +37,6 @@
     "@vueuse/rxjs": "^13.3.0",
     "async-lock": "^1.4.1",
     "babel-plugin-prismjs": "^2.1.0",
-    "compare-versions": "^6.1.1",
     "core-js": "^3.42.0",
     "dexie": "^4.0.11",
     "dexie-export-import": "^4.1.4",
@@ -46,17 +45,12 @@
     "katex": "^0.16.22",
     "langchain": "^0.3.27",
     "localforage": "^1.10.0",
-    "material-design-icons": "^3.0.1",
     "prismjs": "^1.30.0",
     "rxjs": "^7.8.2",
-    "sortablejs": "^1.15.6",
-    "update-electron-app": "^3.1.1",
     "uuid": "^11.1.0",
     "vue": "^3.5.16",
     "vue-cli-plugin-electron-builder": "^3.0.0-alpha.4",
     "vue-i18n": "^11.1.5",
-    "vue-matomo": "^4.2.0",
-    "vue3-shortkey": "^4.0.0",
     "vuetify": "^3.8.8",
     "vuex": "^4.1.0",
     "vuex-persist": "^3.1.3"

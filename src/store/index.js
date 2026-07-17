@@ -1,4 +1,3 @@
-import { getMatomo } from "@/composables/matomo";
 import i18n from "@/i18n";
 import localForage from "localforage";
 import { isProxy, isReactive, isRef, toRaw } from "vue";
@@ -8,7 +7,7 @@ import Chats from "@/store/chats";
 import Messages from "@/store/messages";
 import { v4 as uuidv4 } from "uuid";
 import Threads from "./threads";
-import { messageQueue, threadMessageQueue } from "./queue";
+import { messageQueue } from "./queue";
 import { getCustomApiConfigs } from "@/bots/custom/customApiConfigs";
 
 const vuexPersist = new VuexPersistence({
@@ -18,8 +17,6 @@ const vuexPersist = new VuexPersistence({
   reducer: (state) => {
     /* eslint-disable no-unused-vars */
     const {
-      updateCounter,
-      selectedResponses,
       analysisResults,
       analyzingPromptIndex,
       summaryResults,
@@ -34,7 +31,6 @@ const vuexPersist = new VuexPersistence({
 
 export default createStore({
   state: {
-    uuid: "",
     lang: "auto",
     columns: 2,
     customApi: {
@@ -46,7 +42,6 @@ export default createStore({
       pastRounds: 5,
     },
     currentChatIndex: 0,
-    updateCounter: 0,
     theme: undefined,
     mode: "system",
     isChatDrawerOpen: true,
@@ -58,25 +53,10 @@ export default createStore({
       slot: null,
     },
     prompts: [],
-    consensusAnalysis: {
-      preferredBot: "",
-    },
     analysisResults: {},
     analyzingPromptIndex: null,
     summaryResults: {},
     summarizingPromptIndex: null,
-    actions: [
-      {
-        name: "Summarize 1",
-        prefix:
-          "Summarize the data below in a markdown table with the bot name, difference, and response rating (1-5) columns.\nDo not include the response' value column in your table.\nSimplify the data and identify the differences.\nEach response is delimited by the `resp` tag.\nInside every response, the bot's name is delimited by the `name` tag, and the bot's response is delimited by the `value` tag.",
-        template:
-          "<resp>\n  <name>{botName}</name>\n  <value>{botResponse}</value>\n</resp>",
-        suffix: "Give me the best response.",
-        index: 0,
-      },
-    ],
-    selectedResponses: [],
     chat: {
       updateDebounceInterval: 100,
     },
@@ -88,9 +68,6 @@ export default createStore({
   mutations: {
     changeColumns(state, n) {
       state.columns = n;
-    },
-    setUuid(state, uuid) {
-      state.uuid = uuid;
     },
     async setBotSelected(state, { botClassname, selected }) {
       const currentChat = await Chats.getCurrentChat();
@@ -158,25 +135,6 @@ export default createStore({
       Chats.table.update(chatIndex ?? state.currentChatIndex, {
         latestPromptIndex: promptIndex,
       });
-    },
-    setLatestThreadPromptIndex(state, { promptIndex, messageIndex }) {
-      Chats.table.update(state.currentChatIndex, {
-        latestThreadPromptIndex: promptIndex,
-      });
-      Messages.table.update(messageIndex, {
-        hasThread: true,
-      });
-    },
-    setResponseThreadIndex(state, { responseIndex, threadIndex }) {
-      const currentChat = state.chats[state.currentChatIndex];
-      currentChat.messages[responseIndex].threadIndex = threadIndex;
-    },
-    setMessages(state, messages) {
-      const currentChat = state.chats[state.currentChatIndex];
-      currentChat.messages = messages;
-    },
-    incrementUpdateCounter(state) {
-      state.updateCounter += 1;
     },
     setChatContext(state, { botClassname, context, chatIndex }) {
       Chats.table.update(chatIndex ?? state.currentChatIndex, {
@@ -269,33 +227,6 @@ export default createStore({
       let prompt = state.prompts.find((item) => item.index === index);
       prompt.hide = true;
     },
-    addAction(state, values) {
-      state.actions.push({ ...values, index: uuidv4() });
-    },
-    editAction(state, values) {
-      const { index } = values;
-      const action = state.actions.find((item) => item.index === index);
-      for (const key in values) {
-        action[key] = values[key];
-      }
-    },
-    deleteAction(state, values) {
-      const { index } = values;
-      let action = state.actions.find((item) => item.index === index);
-      action.hide = true;
-    },
-    addSelectedResponses(state, value) {
-      value.selectedIndex = state.selectedResponses.push(value) - 1;
-    },
-    deleteSelectedResponses(state, value) {
-      const index = state.selectedResponses.findIndex(
-        (r) => r.selectedIndex === value,
-      );
-      state.selectedResponses.splice(index, 1);
-    },
-    deleteAllSelectedResponses(state) {
-      state.selectedResponses = [];
-    },
     setAnalysisResult(state, { promptIndex, result }) {
       state.analysisResults[promptIndex] = result;
     },
@@ -313,12 +244,6 @@ export default createStore({
     },
     setSummarizingPromptIndex(state, promptIndex) {
       state.summarizingPromptIndex = promptIndex;
-    },
-    setConsensusPreferredBot(state, botClassname) {
-      state.consensusAnalysis = {
-        ...state.consensusAnalysis,
-        preferredBot: botClassname,
-      };
     },
     migrateSettingsPrompts(state) {
       if (localStorage.getItem("isMigratedSettingsPrompts") === "true") {
@@ -425,12 +350,6 @@ export default createStore({
       await Promise.all(
         bots.map((bot, index) => {
           const message = msgs[index];
-          getMatomo()?.trackEvent(
-            "prompt",
-            "sendTo",
-            message.className,
-            prompt.length,
-          );
           return bot.sendPrompt(
             prompt,
             (callbackParam, values) =>
@@ -446,94 +365,11 @@ export default createStore({
         }),
       );
     },
-    async sendPromptInThread(
-      { commit, state, dispatch },
-      { prompt, bot, messageIndex, promptIndex },
-    ) {
-      if (!promptIndex) {
-        // not resend
-        const threadPromptMessage = {
-          type: "prompt",
-          content: prompt,
-        };
-        promptIndex = await Threads.add(
-          state.currentChatIndex,
-          messageIndex,
-          threadPromptMessage,
-        );
-      }
-      commit("setLatestThreadPromptIndex", { promptIndex, messageIndex }); // to keep track of the latest prompt index for hiding old prompt's resend button
-
-      const threadResponseMessage = {
-        type: "response",
-        content: "",
-        format: bot.getOutputFormat(),
-        model: bot.constructor._model,
-        className: bot.getClassname(),
-        promptIndex: promptIndex,
-      };
-      threadResponseMessage.index = await Threads.add(
-        state.currentChatIndex,
-        messageIndex,
-        threadResponseMessage,
-      );
-
-      bot.sendPrompt(
-        prompt,
-        (index, values) =>
-          dispatch("updateThreadMessage", { index, message: values }),
-        threadResponseMessage.index,
-      );
-
-      getMatomo()?.trackEvent(
-        "prompt",
-        "replyTo",
-        bot.getClassname(),
-        prompt.length,
-      );
-    },
     async updateMessage(_, { index, message: values }) {
       messageQueue.queue.push({ index, message: values });
-      if (values.done) {
-        const chat = await Messages.table.get(index);
-        const message = { ...chat, ...values };
-        getMatomo()?.trackEvent(
-          "prompt",
-          "received",
-          message.className,
-          message.content.length,
-        );
-      }
-    },
-    async updateThreadMessage(_, { index, message: values }) {
-      threadMessageQueue.queue.push({ index, message: values });
-      if (values.done) {
-        const thread = await Threads.table.get(index);
-        let message = { ...thread, ...values };
-        getMatomo()?.trackEvent(
-          "prompt",
-          "received",
-          message.className,
-          message.content.length,
-        );
-      }
-    },
-    addSelectedResponses({ commit, state }, value) {
-      commit("addSelectedResponses", value);
-      return state.selectedResponses.length - 1;
     },
   },
-  getters: {
-    currentChat: async (state) => {
-      const currentChat = await Chats.table.get(state.currentChatIndex);
-      return currentChat;
-    },
-    // get current chat prompt
-    getCurrentChatPrompt: (state, getters) => {
-      const messages = getters.currentChat.messages;
-      return messages.filter((message) => message?.type === "prompt");
-    },
-  },
+  getters: {},
   modules: {},
   plugins: [vuexPersist.plugin],
 });
